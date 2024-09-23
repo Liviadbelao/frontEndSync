@@ -1,7 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import api from '../src/config/configApi';
+import * as faceapi from 'face-api.js';
 
 const InputComponent = () => {
   const [image, setImage] = useState(null);
@@ -9,11 +10,22 @@ const InputComponent = () => {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [telefone, setTelefone] = useState('');
-  const [descriptor, setDescriptor] = useState('00');
   const [notification, setNotification] = useState(false);
   const [notiwhere, setNotiwhere] = useState(0);
   const [adm, setAdm] = useState(false);
   const [preview, setPreview] = useState(null);
+
+  useEffect(() => {
+    Promise.all([
+      faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
+      faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+      faceapi.nets.faceRecognitionNet.loadFromUri('/models')
+    ]).then(() => {
+      console.log('Models loaded');
+    }).catch((error) => {
+      console.error('Failed to load models:', error);
+    });
+  }, []);
 
   const uploadImage = async (e) => {
     e.preventDefault();
@@ -23,18 +35,26 @@ const InputComponent = () => {
     formData.append('email', email);
     formData.append('telefone', telefone);
     formData.append('adm', adm);
-    formData.append('descriptor', descriptor);
     formData.append('notification', notification);
     formData.append('notiwhere', notiwhere);
     formData.append('image', image);
 
-
-    console.log(formData);
-    
-
     try {
-      const response = await api.post("/usuarios", formData);
-      console.log(response);
+      const img = await faceapi.fetchImage(preview);
+      const detection = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+
+      if (detection) {
+        const descriptors = detection.descriptor;
+
+        const descriptor = descriptors.join(',')
+
+        formData.append('descriptor', descriptor);
+        console.log('Face descriptors:', descriptors.join(','));
+        const response = await api.post("/usuarios", formData);
+        console.log(response);
+      } else {
+        console.log('No face detected');
+      }
     } catch (err) {
       if (err.response) {
         console.log(err.response);
@@ -47,8 +67,7 @@ const InputComponent = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
-    console.log(image);
-    
+    console.log(file);
 
     if (file) {
       setPreview(URL.createObjectURL(file));
