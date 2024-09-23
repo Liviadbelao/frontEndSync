@@ -1,22 +1,55 @@
-'use client'
+'use client';
 import { useState } from 'react';
 import Image from 'next/image';
+import api from '../src/config/configApi';
 
 const InputComponent = () => {
-  const [image, setImage] = useState('');
-  const [preview, setPreview] = useState(null); // Estado para armazenar a pré-visualização
+  const [image, setImage] = useState(null);
+  const [nif, setNif] = useState('');
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [telefone, setTelefone] = useState('');
+  const [descriptor, setDescriptor] = useState('00');
+  const [notification, setNotification] = useState(false);
+  const [notiwhere, setNotiwhere] = useState(0);
+  const [adm, setAdm] = useState(false);
+  const [preview, setPreview] = useState(null);
 
   const uploadImage = async (e) => {
     e.preventDefault();
-    console.log("upload imagem");
-    console.log(image);
+    const formData = new FormData();
+    formData.append('nif', nif);
+    formData.append('nome', nome);
+    formData.append('email', email);
+    formData.append('telefone', telefone);
+    formData.append('adm', adm);
+    formData.append('descriptor', descriptor);
+    formData.append('notification', notification);
+    formData.append('notiwhere', notiwhere);
+    formData.append('image', image);
+
+
+    console.log(formData);
+    
+
+    try {
+      const response = await api.post("/usuarios", formData);
+      console.log(response);
+    } catch (err) {
+      if (err.response) {
+        console.log(err.response);
+      } else {
+        console.log("Erro, tente novamente mais tarde.");
+      }
+    }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
+    console.log(image);
+    
 
-    // Gerar a URL temporária para pré-visualização da imagem
     if (file) {
       setPreview(URL.createObjectURL(file));
     } else {
@@ -27,17 +60,52 @@ const InputComponent = () => {
   return (
     <div style={styles.container}>
       <form onSubmit={uploadImage}>
-        <label htmlFor="inputField" style={styles.label}>Imagem:</label>
+        <label style={styles.label}>Imagem:</label>
         <input
-          id="inputField"
           type="file"
           name="image"
           onChange={handleImageChange}
           style={styles.input}
         />
-        <button type='submit'>Salvar</button>
 
-        {/* Exibir a imagem de pré-visualização */}
+        <label style={styles.label}>Nif:</label>
+        <input
+          type="number"
+          name="nif"
+          value={nif}
+          onChange={(e) => setNif(e.target.value)}
+          style={styles.input}
+        />
+
+        <label style={styles.label}>Nome:</label>
+        <input
+          type="text"
+          name="nome"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          style={styles.input}
+        />
+
+        <label style={styles.label}>Telefone:</label>
+        <input
+          type="number"
+          name="telefone"
+          value={telefone}
+          onChange={(e) => setTelefone(e.target.value)}
+          style={styles.input}
+        />
+
+        <label style={styles.label}>Email:</label>
+        <input
+          type="email"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={styles.input}
+        />
+
+        <button type="submit">Enviar</button>
+
         {preview && (
           <div style={styles.imageContainer}>
             <Image
