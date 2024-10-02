@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import api from "../../../src/config/configApi";
 import * as faceapi from "face-api.js";
+import Header from "@/app/components/header/Header";
+import Input from "@/app/components/input/input";
 
 //Criando Página
 const InputComponent = () => {
@@ -92,102 +94,62 @@ const InputComponent = () => {
   //Corpo da Página
   return (
     /* Div Principal */
-    <div style={styles.container}>
+    <div className="bg-white min-h-screen flex flex-col ">
+      <Header/>
+      <div className="flex flex-col items-center justify-center">
       {/* Formulário de Cadastro de Usuário */}
-      <form onSubmit={uploadImage}>
+      <div className="mb-32 mt-10">
+        <text className="text-black text-3xl font-black">Cadastrar usuário</text></div>
+      <form className="flex flex-col bg-[#D9D9D9] text-black w-96 w-100" onSubmit={uploadImage}>
+
+                {/* Campo de Nome */}
+                <label>Nome:</label>
+
+        <Input tipo={'text'} placeholder={"Nome"} valor={nome} onChange={(e) => setNome(e.target.value)} nome={'nome'} />
+
+
         {/* Campo de Imagem */}
-        <label style={styles.label}>Imagem:</label>
-        <input
-          type="file"
-          name="image"
-          onChange={handleImageChange}
-          style={styles.input}
-        />
+        <label>Imagem:</label>
+ <Input tipo={'file'} placeholder={"image"}  onChange={handleImageChange} nome={'imagem'} /> 
 
         {/* Campo de Nif */}
-        <label style={styles.label}>Nif:</label>
-        <input
-          type="number"
-          name="nif"
-          value={nif}
-          onChange={(e) => setNif(e.target.value)}
-          style={styles.input}
-        />
+        <label >Nif:</label>
+        <Input tipo={'number'} placeholder={"nif"} valor={nif} onChange={(e) => setNif(e.target.value)} nome={'nif'} /> 
 
-        {/* Campo de Nome */}
-        <label style={styles.label}>Nome:</label>
-        <input
-          type="text"
-          name="nome"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          style={styles.input}
-        />
+     
+        
+
 
         {/* Campo de Telefone */}
-        <label style={styles.label}>Telefone:</label>
-        <input
-          type="number"
-          name="telefone"
-          value={telefone}
-          onChange={(e) => setTelefone(e.target.value)}
-          style={styles.input}
-        />
+        <label >Telefone:</label>
+        <Input tipo={'number'} placeholder={"telefone"} valor={telefone} onChange={(e) => setTelefone(e.target.value)} nome={'telefone'} /> 
 
         {/* Campo de Email */}
-        <label style={styles.label}>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
-        />
+        <label >Email:</label>
+        <Input tipo={'email'} placeholder={"email"} valor={email}   onChange={(e) => setEmail(e.target.value)} nome={'email'} /> 
+  
 
         {/* Botão Para Envio */}
         <button type="submit">Enviar</button>
 
         {/* Pré-visualização da Imagem */}
         {preview && (
-          <div style={styles.imageContainer}>
+          <div >
             <Image
               src={preview}
               alt="Imagem pré-visualizada"
               width={300}
               height={300}
-              style={styles.image}
+            
             />
           </div>
         )}
       </form>
     </div>
+    </div>
   );
 };
 
-const styles = {
-  container: {
-    padding: "20px",
-  },
-  label: {
-    fontSize: "16px",
-    marginBottom: "10px",
-    display: "block",
-  },
-  input: {
-    height: "30px",
-    border: "1px solid #ccc",
-    borderRadius: "5px",
-    padding: "5px 10px",
-    marginBottom: "20px",
-    width: "100%",
-    maxWidth: "300px",
-  },
-  imageContainer: {
-    marginTop: "20px",
-  },
-  image: {
-    borderRadius: "10px",
-  },
-};
+
 
 export default InputComponent;
