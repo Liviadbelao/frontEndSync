@@ -30,7 +30,7 @@ const Ambiente = () => {
         formData.append("maquinas", maquinas);
         formData.append("disponivel", disponivel);
         formData.append("categoria", categoria);
-        formData.append("image", image);
+        formData.append("image", imagem);
     
         try {
             const response = await api.post("/ambientes", formData);
