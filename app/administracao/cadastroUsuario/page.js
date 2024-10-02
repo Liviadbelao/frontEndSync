@@ -8,6 +8,7 @@ import api from "../../../src/config/configApi";
 import * as faceapi from "face-api.js";
 import Header from "@/app/components/header/Header";
 import Input from "@/app/components/input/input";
+import SendButton from "@/app/components/sendButton/SendButton";
 
 //Criando Página
 const InputComponent = () => {
@@ -94,62 +95,98 @@ const InputComponent = () => {
   //Corpo da Página
   return (
     /* Div Principal */
-    <div className="bg-white min-h-screen flex flex-col ">
-      <Header/>
+    
+    <div className="bg-white min-h-screen flex flex-col overflow-y-auto ">
+      <Header />
       <div className="flex flex-col items-center justify-center">
-      {/* Formulário de Cadastro de Usuário */}
-      <div className="mb-32 mt-10">
-        <text className="text-black text-3xl font-black">Cadastrar usuário</text></div>
-      <form className="flex flex-col bg-[#D9D9D9] text-black w-96 w-100" onSubmit={uploadImage}>
+        {/* Formulário de Cadastro de Usuário */}
+        <div className="mb-24 mt-10">
+          <text className="text-black text-3xl font-black">
+            Cadastrar usuário
+          </text>
+        </div>
+        <form
+          className="flex flex-col bg-[#D9D9D9] text-black w-[55%] border-2 border-red-500 items-center pt-6 mb-16 rounded-md"
+          onSubmit={uploadImage}
+        >
+          {/* Campo de Nome */}
+          <div className="w-[70%] m-2">
+            <label>Nome:</label>
 
-                {/* Campo de Nome */}
-                <label>Nome:</label>
-
-        <Input tipo={'text'} placeholder={"Nome"} valor={nome} onChange={(e) => setNome(e.target.value)} nome={'nome'} />
-
-
-        {/* Campo de Imagem */}
-        <label>Imagem:</label>
- <Input tipo={'file'} placeholder={"image"}  onChange={handleImageChange} nome={'imagem'} /> 
-
-        {/* Campo de Nif */}
-        <label >Nif:</label>
-        <Input tipo={'number'} placeholder={"nif"} valor={nif} onChange={(e) => setNif(e.target.value)} nome={'nif'} /> 
-
-     
-        
-
-
-        {/* Campo de Telefone */}
-        <label >Telefone:</label>
-        <Input tipo={'number'} placeholder={"telefone"} valor={telefone} onChange={(e) => setTelefone(e.target.value)} nome={'telefone'} /> 
-
-        {/* Campo de Email */}
-        <label >Email:</label>
-        <Input tipo={'email'} placeholder={"email"} valor={email}   onChange={(e) => setEmail(e.target.value)} nome={'email'} /> 
-  
-
-        {/* Botão Para Envio */}
-        <button type="submit">Enviar</button>
-
-        {/* Pré-visualização da Imagem */}
-        {preview && (
-          <div >
-            <Image
-              src={preview}
-              alt="Imagem pré-visualizada"
-              width={300}
-              height={300}
-            
+            <Input
+              tipo={"text"}
+              placeholder={"Nome"}
+              valor={nome}
+              onChange={(e) => setNome(e.target.value)}
+              nome={"nome"}
             />
           </div>
-        )}
-      </form>
-    </div>
+
+          {/* Campo de Telefone */}
+          <div className="w-[70%] m-2">
+            <label>Telefone:</label>
+            <Input
+              tipo={"number"}
+              placeholder={"telefone"}
+              valor={telefone}
+              onChange={(e) => setTelefone(e.target.value)}
+              nome={"telefone"}
+            />
+          </div>
+
+          {/* Campo de Email */}
+          <div className="w-[70%] m-2">
+          <label>Email:</label>
+          <Input
+            tipo={"email"}
+            placeholder={"email"}
+            valor={email}
+            onChange={(e) => setEmail(e.target.value)}
+            nome={"email"}
+          />
+          </div>
+           
+
+          {/* Campo de Nif */}
+          <div className="w-[70%] m-2">
+          <label>Nif:</label>
+          <Input
+            tipo={"number"}
+            placeholder={"nif"}
+            valor={nif}
+            onChange={(e) => setNif(e.target.value)}
+            nome={"nif"}
+          /></div>
+
+          {/* Campo de Imagem */}
+          <div className="w-[70%] m-2">
+          <label>Imagem:</label>
+          <Input
+            tipo={"file"}
+            placeholder={"image"}
+            onChange={handleImageChange}
+            nome={"imagem"}
+          />
+</div>
+          {/* Botão Para Envio */}
+
+
+          {/* Pré-visualização da Imagem */}
+          {preview && (
+            <div className="m-8">
+              <Image
+                src={preview}
+                alt="Imagem pré-visualizada"
+                width={300}
+                height={300}
+              />
+            </div>
+          )}
+          <SendButton />
+        </form>
+      </div>
     </div>
   );
 };
-
-
 
 export default InputComponent;

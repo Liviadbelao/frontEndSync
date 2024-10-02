@@ -1,7 +1,8 @@
 const Input = ({tipo,placeholder, valor, onChange, nome }) =>{
     return(
-        <div>
+        <div >
                <input
+               className="w-[100%] my-1 p-2" 
           type={tipo}
           name={nome}
           placeholder={placeholder}
