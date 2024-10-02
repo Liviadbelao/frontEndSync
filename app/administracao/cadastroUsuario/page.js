@@ -4,7 +4,7 @@
 //Importações
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import api from "../src/config/configApi";
+import api from "../../../src/config/configApi";
 import * as faceapi from "face-api.js";
 
 //Criando Página

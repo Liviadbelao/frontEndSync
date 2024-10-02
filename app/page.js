@@ -1,5 +1,6 @@
 //Necessários
 "use client";
+import { useRouter } from "next/navigation";
 
 //Importações
 
@@ -7,7 +8,13 @@
 const Selection = () => {
   //Criando Estados
 
+  const router = useRouter();
+
   //Funções
+
+  const navAdm= async () => {
+    router.push(`/administracao/cadastroUsuario`)
+  }
 
   //Corpo da Página
   return (
@@ -22,7 +29,7 @@ const Selection = () => {
       {/* Div Botões caminhos */}
       <div className="flex justify-end gap-4 fixed bottom-14 right-8">
         {/* Botão Rota Administração */}
-        <button className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
+        <button onClick={navAdm} className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
           ADMINISTRADOR
         </button>
 
