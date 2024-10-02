@@ -13,6 +13,37 @@ const Ambiente = () => {
     const [categorias, setCategorias] = useState([]);
     const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
 
+    const postAmbiente = async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        // nome, numero_ambiente, caminho_imagem, chave, capacidadeAlunos, tipodoambiente, ar_condicionado, ventilador, wifi, projetor, chave_eletronica, maquinas, disponivel, categoria
+        formData.append("nome", nome);
+        formData.append("numero_ambiente", numero_ambiente)
+        formData.append("chave", chave);
+        formData.append("capacidadeAlunos", capacidadeAlunos);
+        formData.append("tipodoambiente", tipodoambiente);
+        formData.append("ar_condicionado", ar_condicionado);
+        formData.append("ventilador", ventilador);
+        formData.append("wifi", wifi);
+        formData.append("projetor", projetor);
+        formData.append("chave_eletronica", chave_eletronica);
+        formData.append("maquinas", maquinas);
+        formData.append("disponivel", disponivel);
+        formData.append("categoria", categoria);
+        formData.append("image", image);
+    
+        try {
+            const response = await api.post("/ambientes", formData);
+            console.log(response)
+        } catch (err) {
+          if (err.response) {
+            console.log(err.response);
+          } else {
+            console.log("Erro, tente novamente mais tarde.");
+          }
+        }
+      };
+
     useEffect(() => {
         async function fetchCategorias() {
             try {
