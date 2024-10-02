@@ -16,6 +16,10 @@ const Selection = () => {
     router.push(`/administracao/cadastroUsuario`)
   }
 
+  const navImg= async () => {
+    router.push(`/administracao/cadastroAmbiente`)
+  }
+
   //Corpo da Página
   return (
     /* Div Principal */
@@ -31,6 +35,9 @@ const Selection = () => {
         {/* Botão Rota Administração */}
         <button onClick={navAdm} className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
           ADMINISTRADOR
+        </button>
+        <button onClick={navImg} className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
+          AMBIENTE
         </button>
 
         {/* Botão Rota Totem */}

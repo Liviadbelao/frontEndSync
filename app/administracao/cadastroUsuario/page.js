@@ -182,6 +182,20 @@ const InputComponent = () => {
               />
             </div>
           )}
+
+          <label>Administrador : </label>
+          <Input
+            tipo={'checkbox'}
+            placeholder={'Administrador'}
+            onChange={(e) => {
+              if (adm) {
+                setAdm(false)
+              } else {
+                setAdm(true)
+              }
+            }}
+            nome={'ADM'}
+          />
           <SendButton />
         </form>
       </div>
