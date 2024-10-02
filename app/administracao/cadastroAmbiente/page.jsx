@@ -29,9 +29,12 @@ const Ambiente = () => {
     return (
         <div className="bg-white min-h-screen flex flex-col overflow-y-auto ">
             <Header/>
+            
             <div className="flex flex-col items-center justify-center">
-            <div  className="flex flex-col bg-[#D9D9D9] text-black w-[55%] border-2 border-red-500 items-center pt-6 mb-16 rounded-md mt-40">
+            <p class="font-normal md:font-bold mt-40 text-2xl">Cadastro de Ambiente</p>
+            <div  className="flex flex-col bg-[#D9D9D9] text-black w-[55%] border-2 border-red-500 items-center pt-6 mb-16 rounded-md mt-30">
             <div className="w-[70%] m-2">
+            <label>Nome do ambiente:</label>
                 <Input
                     tipo={"text"}
                     placeholder={"Nome"}
@@ -41,6 +44,7 @@ const Ambiente = () => {
                 />
             </div>
             <div className="w-[70%] m-2">
+            <label>Selecione uma imagem do ambiente:</label>
                 <Input
                     tipo={"file"}
                     placeholder={"Imagem"}
@@ -50,6 +54,7 @@ const Ambiente = () => {
                 />
             </div>
             <div className="w-[70%] m-2">
+                <label>Capacidade de alunos no ambiente:</label>
                 <Input
                     tipo={"number"}
                     placeholder={"Capacidade"}
@@ -59,7 +64,7 @@ const Ambiente = () => {
                 />
             </div>
             <div className="w-[70%] m-2">
-                <label htmlFor="categoria">Categoria</label>
+            <label>Categoria que o ambiente pertence:</label>
                 <select
                     id="categoria"
                     value={categoriaSelecionada}
