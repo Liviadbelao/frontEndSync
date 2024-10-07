@@ -22,6 +22,7 @@ const Ambiente = () => {
     const [projetor, setProjetor] = useState(false)
     const [chaveeletronica, setChaveeletronica] = useState(false)
     const [maquinas, setMaquinas] = useState(0)
+    const [numerochave, setNumerochave] = useState(0)
 
     const postAmbiente = async (e) => {
         e.preventDefault();
@@ -49,6 +50,15 @@ const Ambiente = () => {
         try {
             const response = await api.post("/ambientes", formData);
             console.log(response)
+            if (chave) {
+                const params = {
+                    id: numerochave,
+                    disponivel: true,
+                    salas: numeroAmbiente
+                }
+                const response = await api.post("chaves", params)
+                console.log(response)
+            }
         } catch (err) {
             if (err.response) {
                 console.log(err.response);
@@ -126,6 +136,16 @@ const Ambiente = () => {
                         />
                     </div>
                     <div className="w-[70%] m-2">
+                        <label>Número do ambiente:</label>
+                        <Input
+                            tipo={"number"}
+                            placeholder={"numeroAmbiente"}
+                            valor={numeroAmbiente}
+                            onChange={(e) => setNumeroAmbiente(e.target.value)}
+                            nome={"numeroAmbiente"}
+                        />
+                    </div>
+                    <div className="w-[70%] m-2">
                         <label>Categoria que o ambiente pertence:</label>
                         <select
                             id="categoria"
@@ -196,6 +216,18 @@ const Ambiente = () => {
                             }}
                             nome={"chave"}
                         />
+                        {chave? (
+                            <>
+                             <label>Número da chave:</label>
+                        <Input
+                            tipo={"number"}
+                            placeholder={"N° :"}
+                            valor={numerochave}
+                            onChange={(e) => setNumerochave(e.target.value)}
+                            nome={"Número"}
+                        />   
+                            </>
+                        ) : null }
                     </div>
                     <div className="w-[70%] m-2">
                         <label>Projetor:</label>
