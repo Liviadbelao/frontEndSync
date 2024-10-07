@@ -1,7 +1,6 @@
 //Necessários
 "use client";
 import { useRouter } from "next/navigation";  
-import BasicModal from "./components/modal/modal";
 
 //Importações
 
@@ -21,7 +20,7 @@ const Selection = () => {
     router.push(`/administracao/cadastroAmbiente`)
   }
   const navTotem= async () => {
-    router.push(`/totem/paginaModal`)
+    router.push(`/totem/telaDescanso`)
   }
 
   //Corpo da Página
