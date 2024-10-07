@@ -21,7 +21,7 @@ const Selection = () => {
     router.push(`/administracao/cadastroAmbiente`)
   }
   const navTotem= async () => {
-    router.push(`/totem/paginaModal`)
+    router.push(`/totem/faceID`)
   }
 
   //Corpo da Página
