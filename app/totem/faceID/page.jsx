@@ -9,26 +9,32 @@ const faceID = () => {
   const [funcionarios, setFuncionarios] = useState([]);
   const videoRef = useRef(null);
 
+  // Carregar modelos do face-api.js
   useEffect(() => {
-    Promise.all([
-      faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
-      faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
-      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
-    ])
-      .then(() => {
-        console.log("Models loaded");
-      })
-      .catch((error) => {
-        console.error("Failed to load models:", error);
-      });
+    const loadModels = async () => {
+      try {
+        await Promise.all([
+          faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+          faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+          faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+        ]);
+        console.log("Modelos carregados com sucesso");
+      } catch (error) {
+        console.error("Erro ao carregar os modelos:", error);
+      }
+    };
+    loadModels();
   }, []);
 
+  // Função para capturar o vídeo
   useEffect(() => {
     const startVideo = async () => {
       try {
         const response = await api.get("/usuarios");
-        setFuncionarios(response.data)
-        console.log(funcionarios)
+        setFuncionarios(response.data);
+        console.log("Funcionários carregados", response.data);
+
+        // Iniciar captura do vídeo
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false,
@@ -44,6 +50,47 @@ const faceID = () => {
     startVideo();
   }, []);
 
+  // Função para processar vídeo e fazer reconhecimento de uma única face
+  useEffect(() => {
+    const recognizeFace = async () => {
+      if (!videoRef.current) return;
+
+      const displaySize = { width: videoRef.current.width, height: videoRef.current.height };
+      console.log(displaySize)
+      console.log(videoRef.current)
+      faceapi.matchDimensions(videoRef.current, displaySize);
+
+      // Processar vídeo em intervalos para detectar apenas uma face
+      const intervalId = setInterval(async () => {
+        const detection = await faceapi.detectSingleFace(videoRef.current)
+          .withFaceLandmarks()
+          .withFaceDescriptor();
+
+        if (detection && funcionarios.length > 0) {
+          // Converter os descritores de string para array de números
+          const faceMatcher = new faceapi.FaceMatcher(
+            funcionarios.map(func => new faceapi.LabeledFaceDescriptors(
+              func.nome,
+              [new Float32Array(func.descriptor.split(",").map(Number))]
+            ))
+          );
+
+          const resizedDetection = faceapi.resizeResults(detection, displaySize);
+          const result = faceMatcher.findBestMatch(resizedDetection.descriptor);
+
+          if (result.label !== "unknown") {
+            console.log(`Bem-vindo, ${result.label}!`);
+            alert(`Bem-vindo, ${result.label}!`);
+          }
+        }
+      }, 2000); // Verificação a cada 2 segundos
+
+      return () => clearInterval(intervalId);
+    };
+
+    recognizeFace();
+  }, [funcionarios]);
+
   return (
     <div className='bg-[#9A1915] h-screen fixed w-screen'>
       <div className='mt-20 '>
@@ -56,7 +103,9 @@ const faceID = () => {
             className="w-full h-full object-cover" 
             ref={videoRef} 
             autoPlay 
-            muted 
+            muted
+            width={200}
+            height={200}
           />
         </div>
       </div>
