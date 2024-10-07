@@ -1,14 +1,34 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from "next/image";
+import api from "../../../src/config/configApi";
+import * as faceapi from "face-api.js";
 
 const faceID = () => {
+  const [funcionarios, setFuncionarios] = useState([]);
   const videoRef = useRef(null);
+
+  useEffect(() => {
+    Promise.all([
+      faceapi.nets.ssdMobilenetv1.loadFromUri("/models"),
+      faceapi.nets.faceLandmark68Net.loadFromUri("/models"),
+      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+    ])
+      .then(() => {
+        console.log("Models loaded");
+      })
+      .catch((error) => {
+        console.error("Failed to load models:", error);
+      });
+  }, []);
 
   useEffect(() => {
     const startVideo = async () => {
       try {
+        const response = await api.get("/usuarios");
+        setFuncionarios(response.data)
+        console.log(funcionarios)
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false,
