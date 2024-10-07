@@ -6,7 +6,6 @@ const PaginaModal = () => {
     return(
     <div className=" bg-white h-screen">
         <Header />
-        <p className="" >Teste</p>
         
         <BasicModal/>
     </div>
