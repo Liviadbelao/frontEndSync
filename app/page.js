@@ -1,7 +1,6 @@
 //Necessários
 "use client";
 import { useRouter } from "next/navigation";  
-import BasicModal from "./components/modal/modal";
 
 //Importações
 
@@ -21,7 +20,11 @@ const Selection = () => {
     router.push(`/administracao/cadastroAmbiente`)
   }
   const navTotem= async () => {
+    router.push(`/totem/telaDescanso`)
     router.push(`/totem/faceID`)
+  }
+  const navTotem1= async () => {
+    router.push(`/totem/paginaModal`)
   }
 
   //Corpo da Página
@@ -47,6 +50,9 @@ const Selection = () => {
         {/* Botão Rota Totem */}
         <button onClick={navTotem} className="bg-[#D9D9D9] text-[#9A1915] xl:hidden font-extrabold text-base sm:text-xl py-3 px-6 border">
           TOTEM
+        </button>
+        <button onClick={navTotem1} className="bg-[#D9D9D9] text-[#9A1915] xl:hidden font-extrabold text-base sm:text-xl py-3 px-6 border">
+          TOTEM1
         </button>
 
       </div>
