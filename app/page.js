@@ -20,7 +20,7 @@ const Selection = () => {
     router.push(`/administracao/cadastroAmbiente`)
   }
   const navTotem= async () => {
-    router.push(`/totem/telaDescanso`)
+    router.push(`/totem/ambientes`)
   }
 
   //Corpo da Página
