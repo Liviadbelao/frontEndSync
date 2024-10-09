@@ -24,6 +24,7 @@ const GestaoAmbiente = () => {
     return (
         <div>
             <Header />
+            {/* botao para voltar para o menu */}
             <img
                 src="/images/imgMenuAdm/btvoltar.png"
                 alt="botao voltar"
@@ -34,7 +35,7 @@ const GestaoAmbiente = () => {
             <h1 className="text-center text-3xl	font-bold mt-2 mb-6">Gestão de Ambientes</h1>
            
 
-
+{/* img para add ambiente */}
             <div className="grid lg:grid-cols-4 gap-10 ml-10">
                 <div className="flex items-center ml-10 mb-4">
                     <img
@@ -44,6 +45,7 @@ const GestaoAmbiente = () => {
                         onClick={() => router.push("/administracao/cadastroAmbiente")}
                     />
                 </div>
+                {/* componentes */}
                 <GestaoAmbientes
                     nome="Sala de Reuniões"
                     imgSrc="/images/imgMenuAdm/gestaof.png"
