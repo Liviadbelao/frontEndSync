@@ -16,13 +16,16 @@ const GestaoAmbiente = () => {
         <div>
             <Header />
             <h1>Gestão de Ambientes</h1>
-            <GestaoAmbientes 
+            <div className="flex items-center ml-10">
+                <img src="/images/imgMenuAdm/botao-adicionar.png" alt="oi" className="mr-10" />
+                <GestaoAmbientes
                     nome="Sala de Reuniões"
-                    imgSrc="/images/imgMenuAdm/gestaof.png" 
-                    imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg" 
+                    imgSrc="/images/imgMenuAdm/gestaof.png"
+                    imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg"
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                 />
+            </div>
         </div>
     );
 }
