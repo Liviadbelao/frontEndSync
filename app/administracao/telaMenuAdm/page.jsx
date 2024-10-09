@@ -19,9 +19,10 @@ const TelaMenuAdm = () => {
                     <TopicosMenu
                         topicos="Monitoração de ambientes"
                         imgSrc="/images/imgMenuAdm/monitoracao.png"
-                        onClick={() => router.push('/administracao/cadastroAmbiente')}
                     />
-                    <TopicosMenu topicos="Gestão de  ambientes" imgSrc="/images/imgMenuAdm/gestaol.png" />
+                    <TopicosMenu topicos="Gestão de  ambientes" imgSrc="/images/imgMenuAdm/gestaol.png"
+                      onClick={() => router.push('/administracao/gestaoAmbiente')}
+                     />
                     <TopicosMenu topicos="Gestão de funcionários" imgSrc="/images/imgMenuAdm/gestaof.png" />
                     <TopicosMenu topicos="Reserva de ambientes" imgSrc="/images/imgMenuAdm/reservaicon.png" />
                     <TopicosMenu topicos="Controle de informações" imgSrc="/images/imgMenuAdm/painel.png" />
