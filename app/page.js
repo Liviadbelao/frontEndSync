@@ -1,6 +1,6 @@
 //Necessários
 "use client";
-import { useRouter } from "next/navigation";  
+import { useRouter } from "next/navigation";
 
 //Importações
 
@@ -12,16 +12,20 @@ const Selection = () => {
 
   //Funções
 
-  const navAdm= async () => {
+  const navAdm = async () => {
     router.push(`/administracao/cadastroUsuario`)
   }
 
-  const navImg= async () => {
+  const navImg = async () => {
     router.push(`/administracao/cadastroAmbiente`)
   }
-  const navTotem= async () => {
+  const navTotem = async () => {
     router.push(`/totem/telaDescanso`)
   }
+
+  const navTopicosMenu = () => {
+    router.push('/administracao/telaMenuAdm');
+  };
 
   //Corpo da Página
   return (
@@ -39,7 +43,7 @@ const Selection = () => {
         <button onClick={navAdm} className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
           ADMINISTRADOR
         </button>
-        <button onClick={navImg} className= "sm:hidden bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
+        <button onClick={navImg} className="sm:hidden bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
           AMBIENTE
         </button>
 
@@ -47,6 +51,12 @@ const Selection = () => {
         <button onClick={navTotem} className="bg-[#D9D9D9] text-[#9A1915] xl:hidden font-extrabold text-base sm:text-xl py-3 px-6 border">
           TOTEM
         </button>
+
+        {/* Botão Rota Tópicos Menu */}
+        <button onClick={navTopicosMenu} className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
+          Ir para Tópicos Menu
+        </button>
+
 
       </div>
     </div>
