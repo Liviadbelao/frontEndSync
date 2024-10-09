@@ -1,5 +1,10 @@
 'use client'
 import { useRouter } from "next/navigation";
+import { BsWrenchAdjustableCircle } from "react-icons/bs";
+import { TbAirConditioning } from "react-icons/tb";
+import { GiComputerFan } from "react-icons/gi";
+import { AiOutlineWifi } from "react-icons/ai";
+import { LuProjector } from "react-icons/lu";
 
 const ambientes = () => {
 
@@ -14,8 +19,13 @@ const ambientes = () => {
                     </button>
                 </div>
                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repudiandae ipsam fugit ratione inventore alias, facilis a minus perferendis impedit excepturi tempore, facere quas sint sunt! Placeat illum deserunt saepe quae.</p>
-                <div className="bg-[#9A1915] text-white z-20 p-2 rounded-full absolute  left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-                    <p>lili</p>
+                <div className="bg-[#9A1915] gap-2 flex text-white z-20 p-2 rounded-full absolute  left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                <BsWrenchAdjustableCircle />
+                <TbAirConditioning />
+                <GiComputerFan />
+                <AiOutlineWifi />
+                <LuProjector />
+
                 </div>
             </div>
         </div>
