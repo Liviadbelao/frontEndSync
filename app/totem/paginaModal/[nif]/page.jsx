@@ -2,7 +2,7 @@
 import BasicModal from "@/app/components/modal/modal";
 import Header from "@/app/components/header/Header";
 import { useEffect, useState } from "react";
-import api from "../../../src/config/configApi";
+import api from "../../../../src/config/configApi";
 
 const PaginaModal = ({ params }) => {
     const { nif } = params;
