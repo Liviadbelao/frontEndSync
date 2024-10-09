@@ -6,7 +6,7 @@ const telaDescanso = () => {
   const router = useRouter();
 
   const clicou = async () => {
-    router.push(`/totem/paginaModal`);
+    router.push(`/totem/faceID`);
   };
 
   return (

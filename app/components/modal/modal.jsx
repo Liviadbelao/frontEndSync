@@ -5,6 +5,7 @@ import Modal from '@mui/material/Modal';
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
+import { GiHouseKeys } from "react-icons/gi";
 
 //Criando página
 export default function BasicModal() {
@@ -14,6 +15,7 @@ export default function BasicModal() {
 
   //Criando estado de variáveis
   const [open, setOpen] = React.useState(false);
+  const [devolver, setDevolver] = React.useState(false)
 
   //Abrir o modal automaticamente
   React.useEffect(() => {
@@ -28,6 +30,9 @@ export default function BasicModal() {
   const fecharModal = () => {
     handleClose();
     router.push('/');
+  }
+  const cliqueDevolver = () => {
+    setDevolver(true);
   }
 
   //Corpo da página
@@ -60,19 +65,28 @@ export default function BasicModal() {
             className="absolute -top-8 -left-8 w-16 "
           />
 
-          {/* Texto 1 */}
-          <p className='text-black font-bold text-center text-5xl mb-8'>
+{
+  devolver ? (
+    <p className='text-black font-bold text-center text-5xl mb-8'>
             Deseja reservar sala pré-definida?
           </p>
+  ) : (
+    <p className='text-black font-bold text-center text-5xl mb-8'>
+            Você tem chaves pendentes!
+          </p>
+  )
+}
 
+          {/* Caso 1: não tem chaves pendentes e tem ambientes pré-definidos */}
           {/* Div com scroll */}
+          {/* Apenas aparecer setas caso tenha mais de um item */}
           <div className="flex items-center justify-between">
 
             {/* Seta esquerda */}
-            <IoIosArrowBack className="text-black text-4xl cursor-pointer" />
+            {/* <IoIosArrowBack className="text-black text-4xl cursor-pointer" /> */}
 
             {/* Div de imagens */}
-            <div className="overflow-x-auto whitespace-nowrap w-full no-scrollbar mx-2  ">
+             <div className="overflow-x-auto whitespace-nowrap w-full no-scrollbar mx-2  ">
               <div className="inline-block mr-6 text-center">
                 <img
                   src="/images/telaSelection/inicioSelection.jpg"
@@ -90,20 +104,23 @@ export default function BasicModal() {
                 />
                 <p className="text-black mt-2 text-2xl">Sala 2</p>
               </div>
-            </div>
+            </div> 
 
             {/* Seta direita */}
-            <IoIosArrowForward className="text-black text-4xl cursor-pointer" />
+            {/* <IoIosArrowForward className="text-black text-4xl cursor-pointer" /> */}
           </div>
+
+{/* Caso 2: Tem chaves pendentes */}
 
 
           {/* Texto 2 */}
-          <p className='text-black text-center text-4xl mt-10'>
+          {/* <p className='text-black text-center text-4xl mt-10'>
             Clique para reservar!
-          </p>
+          </p> */}
 
           {/* Botão outras salas */}
-          <Button className="mt-16 rounded-full bg-[#E30613] text-2xl p-4 px-10 text-white">Reservar outra sala</Button>
+          <button className="mt-16 rounded-full bg-[#E30613] text-2xl p-4 px-10 text-white" onClick={cliqueDevolver}>Devolver Chave</button>
+          <button className="mt-16 rounded-full bg-[#E30613] text-2xl p-4 px-10 text-white">Reservar outra sala</button>
         </div>
       </Modal>
     </div>
