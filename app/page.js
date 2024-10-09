@@ -13,7 +13,7 @@ const Selection = () => {
   //Funções
 
   const navAdm = async () => {
-    router.push(`/administracao/cadastroUsuario`)
+    router.push(`/administracao/login`)
   }
 
   const navImg = async () => {
