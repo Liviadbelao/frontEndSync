@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Input from '../../components/input/input';
+import { useRouter } from 'next/navigation';
 import api from "../../../src/config/configApi";
 import SendButton from '@/app/components/sendButton/SendButton';
 import Header from '@/app/components/header/Header';
@@ -23,6 +24,7 @@ const Ambiente = () => {
     const [chaveeletronica, setChaveeletronica] = useState(false)
     const [maquinas, setMaquinas] = useState(0)
     const [numerochave, setNumerochave] = useState(0)
+    const router = useRouter();
 
     const postAmbiente = async (e) => {
         e.preventDefault();
@@ -110,6 +112,12 @@ const Ambiente = () => {
     return (
         <div className="bg-white min-h-screen flex flex-col overflow-y-auto ">
             <Header />
+            <img
+                    src="/images/imgMenuAdm/btvoltar.png"
+                    alt="botao voltar"
+                    className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
+                    onClick={() => router.push("/administracao/gestaoAmbiente")}
+                />
 
             <div className="flex flex-col items-center justify-center">
                 <p class="font-normal md:font-bold mt-40 text-2xl">Cadastro de Ambiente</p>

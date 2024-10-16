@@ -29,7 +29,7 @@ export default function BasicModal() {
   //Fechar modal
   const fecharModal = () => {
     handleClose();
-    router.push('/');
+    router.push('/totem/telaDescanso');
   }
   const cliqueDevolver = () => {
     setDevolver(true);
