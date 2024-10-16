@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Input from '../../components/input/input';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import api from "../../../src/config/configApi";
 import SendButton from '@/app/components/sendButton/SendButton';
 import Header from '@/app/components/header/Header';
@@ -24,7 +24,44 @@ const Ambiente = () => {
     const [chaveeletronica, setChaveeletronica] = useState(false)
     const [maquinas, setMaquinas] = useState(0)
     const [numerochave, setNumerochave] = useState(0)
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const nif = searchParams.get('nif');
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await api.get(`/usuarios/${nif}`);
+                if (response.data.length > 0) {
+                    setUser(response.data[0]);
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar o usuário: ", error);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        if (nif) {
+            fetchUser();
+        } else {
+            setLoading(false);
+        }
+    }, [nif]);
+
+    useEffect(() => {
+        if (!loading) {
+            if (!user || !user.adm) {
+                alert("Nenhum usuário com esse NIF encontrado, redirecionando para login.");
+                router.push('/administracao/login');
+            }
+        }
+    }, [loading, user, router]);
 
     const postAmbiente = async (e) => {
         e.preventDefault();
@@ -116,7 +153,7 @@ const Ambiente = () => {
                     src="/images/imgMenuAdm/btvoltar.png"
                     alt="botao voltar"
                     className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
-                    onClick={() => router.push("/administracao/gestaoAmbiente")}
+                    onClick={() => router.push("/administracao/cadastroAmbiente")}
                 />
 
             <div className="flex flex-col items-center justify-center">

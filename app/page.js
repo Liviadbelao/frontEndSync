@@ -16,20 +16,9 @@ const Selection = () => {
     router.push(`/administracao/login`)
   }
 
-  const navImg = async () => {
-    router.push(`/administracao/cadastroAmbiente`)
-  }
   const navTotem = async () => {
     router.push(`/totem/telaDescanso`)
   }
-
-  const navTopicosMenu = () => {
-    router.push('/administracao/telaMenuAdm');
-  };
-
-  const navGestaoAmbiente = () => {
-    router.push('/administracao/gestaoAmbiente');
-  };
 
   //Corpo da Página
   return (
@@ -47,25 +36,10 @@ const Selection = () => {
         <button onClick={navAdm} className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
           ADMINISTRADOR
         </button>
-        <button onClick={navImg} className="sm:hidden bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
-          AMBIENTE
-        </button>
-
         {/* Botão Rota Totem */}
         <button onClick={navTotem} className="bg-[#D9D9D9] text-[#9A1915] xl:hidden font-extrabold text-base sm:text-xl py-3 px-6 border">
           TOTEM
         </button>
-
-        {/* Botão Rota Tópicos Menu */}
-        <button onClick={navTopicosMenu} className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
-          Ir para Tópicos Menu
-        </button>
-          
-          {/* Botão Rota Gestão de Ambiente */}
-        <button onClick={navGestaoAmbiente} className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
-          ir para Gestão de Ambiente
-        </button>
-
       </div>
     </div>
   );
