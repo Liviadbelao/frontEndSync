@@ -7,9 +7,13 @@ import api from "../../../src/config/configApi"; // Ajuste o caminho conforme ne
 import Header from "@/app/components/header/Header";
 import Input from "@/app/components/input/input";
 import SendButton from "@/app/components/sendButton/SendButton";
+import { useRouter } from "next/navigation";
+
 
 //Criando Página
 const LoginComponent = () => {
+
+  const router = useRouter();
   //Criando Estados
   const [nif, setNif] = useState("");
   const [email, setEmail] = useState("");
@@ -30,6 +34,7 @@ const LoginComponent = () => {
         // Aqui você pode redirecionar o usuário ou armazenar informações de sessão
         console.log("Login bem-sucedido:", response.data);
         // Redirecionar para a página desejada, ex: /dashboard
+        router.push(`/administracao/telaMenuAdm?nif=${response.data[0].nif}`)
       } else {
         setErrorMessage("Acesso negado. O usuário não possui privilégios administrativos.");
       }

@@ -99,7 +99,6 @@ const faceID = () => {
             console.log(`Bem-vindo, ${result}!`);
             // alert(`Bem-vindo, ${result.label}!`);
             const funcionario = funcionarios.find((f) => f.nome == result.label);
-            console.log(funcionario);
             
             router.push(`/totem/paginaModal?nif=${funcionario.nif}`);
           }
