@@ -1,12 +1,14 @@
+import Image from "next/image";
+
 const GestaoUsuarios = ({ nome, cargo, imgGestor, editar, excluir }) => {
   return (
-    <div className="w-60 h-72 max-w-sm bg-gray-200 rounded-lg overflow-hidden">
-      <div className="flex items-center justify-center bg-[#D9D9D9] h-32">
+    <div className="w-60 h-80 max-w-sm bg-gray-200 rounded-lg">
+      <div className="flex items-center justify-center h-32 " >
         {imgGestor && (
-          <img src={imgGestor} alt={nome} className="w-full  h-[170%]" />
+          <Image src={imgGestor} alt={nome} width={480} height={480}  className="w-48 h-48 object-cover mt-24"/>
         )}
       </div>
-      <h2 className="font-bold mt-12 text-center text-black">{nome}</h2>
+      <h2 className="font-bold mt-20 text-center text-black">{nome}</h2>
       <h2 className="text-center  text-black">{cargo}</h2>
       <div className="p-4">
        
