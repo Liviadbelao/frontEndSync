@@ -31,14 +31,22 @@ const Ambiente = () => {
         formData.append("nome", nome); // tem
         formData.append("numero_ambiente", numeroAmbiente)//tem
         formData.append("chave", chave);//tem
-        formData.append("capacidadeAlunos", capacidade); // tem
+        if (capacidade) {
+            formData.append("capacidadeAlunos", capacidade); // tem
+        } else {
+            formData.append("capacidadeAlunos", 0); // tem
+        }
         formData.append("tipodoambiente", tipodoambiente); //tem
         formData.append("ar_condicionado", arcondicionado);//tem
         formData.append("ventilador", ventilador);//tem
         formData.append("wifi", wifi);//tem
         formData.append("projetor", projetor);//tem
         formData.append("chave_eletronica", chaveeletronica);//tem
-        formData.append("maquinas", maquinas);//tem
+        if (maquinas) {
+            formData.append("maquinas", maquinas); // tem
+        } else {
+            formData.append("maquinas", 0); // tem
+        }
         formData.append("disponivel", disponivel); // tem
         formData.append("categoria", categoriaSelecionada); // tem
         formData.append("image", imagem); // tem
@@ -59,6 +67,7 @@ const Ambiente = () => {
                 const response = await api.post("chaves", params)
                 console.log(response)
             }
+            limparInputs();
         } catch (err) {
             if (err.response) {
                 console.log(err.response);
@@ -71,6 +80,18 @@ const Ambiente = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         setImagem(file);
+    };
+
+    const limparInputs = () => {
+        setNome("");
+        setImagem("");
+        setCapacidade(0);
+        setCategoriaSelecionada("");
+        setDisponivel(true);
+        setNumeroAmbiente(1);
+        setTipodoambiente("");
+        setMaquinas(0);
+        setNumerochave(0);
     };
 
     useEffect(() => {
