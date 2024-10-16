@@ -1,4 +1,3 @@
-//Necessários
 "use client";
 
 //Importações
@@ -9,7 +8,6 @@ import Input from "@/app/components/input/input";
 import SendButton from "@/app/components/sendButton/SendButton";
 import { useRouter } from "next/navigation";
 
-
 //Criando Página
 const LoginComponent = () => {
 
@@ -19,6 +17,12 @@ const LoginComponent = () => {
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [successImg, setSuccessImg] = useState(false);
+
+  function clearFields() {
+    setNif("");
+    setEmail("");
+  }
 
   //Função de Login
   const handleLogin = async (e) => {
@@ -28,19 +32,32 @@ const LoginComponent = () => {
 
     try {
       const response = await api.post("/usuarios/login", { email, nif });
-      
+
       // Verifica se o retorno contém adm = true
       if (response.data[0].adm) {
-        // Aqui você pode redirecionar o usuário ou armazenar informações de sessão
         console.log("Login bem-sucedido:", response.data);
-        // Redirecionar para a página desejada, ex: /dashboard
-        router.push(`/administracao/telaMenuAdm?nif=${response.data[0].nif}`)
+        clearFields();
+
+        // Atrasar redirecionamento por 2 segundos
+        setTimeout(() => {
+          router.push(`/administracao/telaMenuAdm?nif=${response.data[0].nif}`)
+        }, 2000); // 2 segundos de atraso
       } else {
         setErrorMessage("Acesso negado. O usuário não possui privilégios administrativos.");
+
+        // Remover mensagem de erro após 5 segundos
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 5000); // 5 segundos
       }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
       setErrorMessage("Credenciais inválidas. Tente novamente.");
+
+      // Remover mensagem de erro após 5 segundos
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 5000); // 5 segundos
     } finally {
       setLoading(false);
     }
@@ -50,17 +67,23 @@ const LoginComponent = () => {
   return (
     <div className="bg-white min-h-screen flex flex-col overflow-y-auto">
       <Header />
+      {successImg ? <Image
+        src="/images/success.svg"
+        alt="Sucesso"
+        width={400}
+        height={400}>
+      </Image> : null}
       <div className="flex flex-col items-center justify-center">
         <div className="mb-24 mt-10">
           <text className="text-black text-3xl font-black">Login</text>
         </div>
         <form
-          className="flex flex-col bg-[#D9D9D9] text-black w-[55%] border-2 border-red-500 items-center pt-6 mb-16 rounded-md"
+          className="flex flex-col bg-[#D9D9D9] text-black w-[40%] border-4 border-red-500 items-center pt-6 mb-16 rounded-md"
           onSubmit={handleLogin}
         >
           {/* Campo de Email */}
-          <div className="w-[70%] m-2">
-            <label>Email:</label>
+          <div className="w-[70%] m-6">
+            <label className="text-lg font-medium">Email:</label>
             <Input
               tipo={"email"}
               placeholder={"Email"}
@@ -72,7 +95,7 @@ const LoginComponent = () => {
 
           {/* Campo de NIF */}
           <div className="w-[70%] m-2">
-            <label>NIF:</label>
+            <label className="text-lg font-medium">NIF:</label>
             <Input
               tipo={"number"}
               placeholder={"NIF"}
