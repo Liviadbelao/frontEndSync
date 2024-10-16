@@ -2,23 +2,23 @@
 const GestaoAmbientes = ({ nome, imgSrc, imgSrc2, onEdit, onDelete }) => {
 
     return (
-        <div className="w-60 h-60  max-w-sm bg-gray-200 rounded-lg overflow-hidden">
+        <div className="w-60 h-60 max-w-sm bg-gray-200 rounded-lg overflow-hidden">
             <div className="flex items-center justify-center bg-gray-300 h-32">
                 {imgSrc2 && <img src={imgSrc2} alt={nome} className="w-full h-full" />}
             </div>
-            <div className="p-4">
-                <h2 className=" font-bold mb-2 text-center">{nome}</h2>
-                <div className="w-8 h-0.5 bg-red-500 mb--12 ml-20 "></div>
-                {imgSrc && <img src={imgSrc} alt={nome} className="w-full h-32 object-cover mb-4" />}
-                <div className="flex justify-between">
+            <div className="p-4 flex flex-col items-center">
+                <h2 className="font-bold text-center">{nome}</h2>
+                <div className="w-8 h-0.5 bg-red-500 mb-2"></div>
+                {imgSrc && <img src={imgSrc} alt={nome} className="w-8 h-8" />}
+                <div className="flex justify-between w-full mb-4">
                     <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                        className="bg-red-600 text-white px-2 rounded-md"
                         onClick={onEdit}
                     >
                         Editar
                     </button>
                     <button
-                        className="bg-red-500 text-white px-4 py-2 rounded-md"
+                        className="bg-red-600 text-white px-2 rounded-md"
                         onClick={onDelete}
                     >
                         Excluir
