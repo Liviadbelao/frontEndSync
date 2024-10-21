@@ -74,6 +74,8 @@ const InputComponent = () => {
         console.log("Face descriptors:", descriptors.join(","));
         const response = await api.post("/usuarios", formData);
         console.log(response);
+    setLoading(false); // Inicia o loader
+
       } else {
         console.log("No face detected");
       }
@@ -209,7 +211,7 @@ const InputComponent = () => {
         </form>
 
       </div>
-           <TelaCarregar />
+      {loading && <TelaCarregar />}
     </div>
   );
 };
