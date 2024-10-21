@@ -66,47 +66,40 @@ const Ambiente = () => {
     const postAmbiente = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        // nome, numero_ambiente, caminho_imagem, chave, capacidadeAlunos, tipodoambiente, ar_condicionado, ventilador, wifi, projetor, chave_eletronica, maquinas, disponivel, categoria
-        formData.append("nome", nome); // tem
-        formData.append("numero_ambiente", numeroAmbiente)//tem
-        formData.append("chave", chave);//tem
-        if (capacidade) {
-            formData.append("capacidadeAlunos", capacidade); // tem
-        } else {
-            formData.append("capacidadeAlunos", 0); // tem
-        }
-        formData.append("tipodoambiente", tipodoambiente); //tem
-        formData.append("ar_condicionado", arcondicionado);//tem
-        formData.append("ventilador", ventilador);//tem
-        formData.append("wifi", wifi);//tem
-        formData.append("projetor", projetor);//tem
-        formData.append("chave_eletronica", chaveeletronica);//tem
-        if (maquinas) {
-            formData.append("maquinas", maquinas); // tem
-        } else {
-            formData.append("maquinas", 0); // tem
-        }
-        formData.append("disponivel", disponivel); // tem
-        formData.append("categoria", categoriaSelecionada); // tem
-        formData.append("image", imagem); // tem
-
+    
+        formData.append("nome", nome);
+        formData.append("numero_ambiente", numeroAmbiente);
+        formData.append("chave", chave);
+        formData.append("capacidadeAlunos", capacidade || 0);
+        formData.append("tipodoambiente", tipodoambiente);
+        formData.append("ar_condicionado", arcondicionado);
+        formData.append("ventilador", ventilador);
+        formData.append("wifi", wifi);
+        formData.append("projetor", projetor);
+        formData.append("chave_eletronica", chaveeletronica);
+        formData.append("maquinas", maquinas || 0);
+        formData.append("disponivel", disponivel);
+        formData.append("categoria", categoriaSelecionada);
+        formData.append("image", imagem);
+    
         for (let pair of formData.entries()) {
             console.log(pair[0] + ', ' + pair[1]);
         }
-
+    
         try {
             const response = await api.post("/ambientes", formData);
-            console.log(response)
+            console.log(response);
             if (chave) {
                 const params = {
                     id: numerochave,
                     disponivel: true,
-                    salas: numeroAmbiente
-                }
-                const response = await api.post("chaves", params)
-                console.log(response)
+                    salas: numeroAmbiente,
+                };
+                const chaveResponse = await api.post("/chaves", params);
+                console.log(chaveResponse);
             }
             limparInputs();
+            window.location.reload(); // Recarrega a página para limpar o cache após o cadastro
         } catch (err) {
             if (err.response) {
                 console.log(err.response);
@@ -115,6 +108,7 @@ const Ambiente = () => {
             }
         }
     };
+    
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
