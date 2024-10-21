@@ -11,6 +11,7 @@ import Input from "@/app/components/input/input";
 import SendButton from "@/app/components/sendButton/SendButton";
 import "ldrs/ring";
 import { hourglass } from "ldrs";
+import TelaCarregar from "@/app/components/telaCarregar/telaCarregar";
 
 //Criando Página
 const InputComponent = () => {
@@ -104,7 +105,7 @@ const InputComponent = () => {
   return (
     /* Div Principal */
 
-    <div className="bg-white min-h-screen flex flex-col overflow-y-auto ">
+    <div className="bg-white flex flex-col">
       <Header />
       <div className="flex flex-col items-center justify-center">
         {/* Formulário de Cadastro de Usuário */}
@@ -204,19 +205,11 @@ const InputComponent = () => {
             nome={"ADM"}
           />
           {/* Loader */}
-{loading && ( 
-  <l-hourglass
-    size="40"
-    bg-opacity="0.3"
-    speed="1.75"
-    color="#9A1915"
-    class ="m-9"
-  ></l-hourglass>
- )}
           <SendButton />
         </form>
 
       </div>
+           <TelaCarregar />
     </div>
   );
 };
