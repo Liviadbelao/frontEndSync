@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Input from '../../components/input/input';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import api from "../../../src/config/configApi";
 import SendButton from '@/app/components/sendButton/SendButton';
 import Header from '@/app/components/header/Header';
@@ -24,43 +24,82 @@ const Ambiente = () => {
     const [chaveeletronica, setChaveeletronica] = useState(false)
     const [maquinas, setMaquinas] = useState(0)
     const [numerochave, setNumerochave] = useState(0)
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const nif = searchParams.get('nif');
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await api.get(`/usuarios/${nif}`);
+                if (response.data.length > 0) {
+                    setUser(response.data[0]);
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar o usuário: ", error);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        if (nif) {
+            fetchUser();
+        } else {
+            setLoading(false);
+        }
+    }, [nif]);
+
+    useEffect(() => {
+        if (!loading) {
+            if (!user || !user.adm) {
+                alert("Nenhum usuário com esse NIF encontrado, redirecionando para login.");
+                router.push('/administracao/login');
+            }
+        }
+    }, [loading, user, router]);
 
     const postAmbiente = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        // nome, numero_ambiente, caminho_imagem, chave, capacidadeAlunos, tipodoambiente, ar_condicionado, ventilador, wifi, projetor, chave_eletronica, maquinas, disponivel, categoria
-        formData.append("nome", nome); // tem
-        formData.append("numero_ambiente", numeroAmbiente)//tem
-        formData.append("chave", chave);//tem
-        formData.append("capacidadeAlunos", capacidade); // tem
-        formData.append("tipodoambiente", tipodoambiente); //tem
-        formData.append("ar_condicionado", arcondicionado);//tem
-        formData.append("ventilador", ventilador);//tem
-        formData.append("wifi", wifi);//tem
-        formData.append("projetor", projetor);//tem
-        formData.append("chave_eletronica", chaveeletronica);//tem
-        formData.append("maquinas", maquinas);//tem
-        formData.append("disponivel", disponivel); // tem
-        formData.append("categoria", categoriaSelecionada); // tem
-        formData.append("image", imagem); // tem
-
+    
+        formData.append("nome", nome);
+        formData.append("numero_ambiente", numeroAmbiente);
+        formData.append("chave", chave);
+        formData.append("capacidadeAlunos", capacidade || 0);
+        formData.append("tipodoambiente", tipodoambiente);
+        formData.append("ar_condicionado", arcondicionado);
+        formData.append("ventilador", ventilador);
+        formData.append("wifi", wifi);
+        formData.append("projetor", projetor);
+        formData.append("chave_eletronica", chaveeletronica);
+        formData.append("maquinas", maquinas || 0);
+        formData.append("disponivel", disponivel);
+        formData.append("categoria", categoriaSelecionada);
+        formData.append("image", imagem);
+    
         for (let pair of formData.entries()) {
             console.log(pair[0] + ', ' + pair[1]);
         }
-
+    
         try {
             const response = await api.post("/ambientes", formData);
-            console.log(response)
+            console.log(response);
             if (chave) {
                 const params = {
                     id: numerochave,
                     disponivel: true,
-                    salas: numeroAmbiente
-                }
-                const response = await api.post("chaves", params)
-                console.log(response)
+                    salas: numeroAmbiente,
+                };
+                const chaveResponse = await api.post("/chaves", params);
+                console.log(chaveResponse);
             }
+            limparInputs();
+            window.location.reload(); // Recarrega a página para limpar o cache após o cadastro
         } catch (err) {
             if (err.response) {
                 console.log(err.response);
@@ -69,10 +108,23 @@ const Ambiente = () => {
             }
         }
     };
+    
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         setImagem(file);
+    };
+
+    const limparInputs = () => {
+        setNome("");
+        setImagem("");
+        setCapacidade(0);
+        setCategoriaSelecionada("");
+        setDisponivel(true);
+        setNumeroAmbiente(1);
+        setTipodoambiente("");
+        setMaquinas(0);
+        setNumerochave(0);
     };
 
     useEffect(() => {
@@ -95,7 +147,7 @@ const Ambiente = () => {
                     src="/images/imgMenuAdm/btvoltar.png"
                     alt="botao voltar"
                     className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
-                    onClick={() => router.push("/administracao/gestaoAmbiente")}
+                    onClick={() => router.push("/administracao/cadastroAmbiente")}
                 />
 
             <div className="flex flex-col items-center justify-center">
