@@ -1,8 +1,9 @@
 "use client"
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
 import Header from "@/app/components/header/Header";
 import GestaoAmbientes from "@/app/components/gestaoAmbientes/GestaoAmbientes";
+import api from '../../../src/config/configApi';
 
 const handleEdit = () => {
     console.log("Editar ambiente");
@@ -19,7 +20,49 @@ const handleDelete = async (id) => {
 }
 
 const GestaoAmbiente = () => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const nif = searchParams.get('nif');
+
+    useEffect(() => {
+        async function fetchUser() {
+            try {
+                const response = await api.get(`/usuarios/${nif}`);
+                if (response.data.length > 0) {
+                    setUser(response.data[0]);
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar o usuário: ", error);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        if (nif) {
+            fetchUser();
+        } else {
+            setLoading(false);
+        }
+    }, [nif]);
+
+    useEffect(() => {
+        if (!loading) {
+            console.log("User:", user);
+            if (!user || !user.adm) {
+                alert("Nenhum usuário com esse NIF encontrado, redirecionando para login.");
+                router.push('/administracao/login');
+            }
+        }
+    }, [loading, user, router]);
+
+    if (loading) {
+        return <div>Carregando...</div>;
+    }
 
     return (
         <div>

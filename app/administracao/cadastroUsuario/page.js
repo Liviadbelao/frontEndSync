@@ -2,7 +2,7 @@
 "use client";
 
 //Importações
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import api from "../../../src/config/configApi";
 import * as faceapi from "face-api.js";
@@ -11,6 +11,7 @@ import Input from "@/app/components/input/input";
 import SendButton from "@/app/components/sendButton/SendButton";
 import "ldrs/ring";
 import { hourglass } from "ldrs";
+import { useRouter, useSearchParams } from 'next/navigation';
 
 //Criando Página
 const InputComponent = () => {
@@ -26,6 +27,48 @@ const InputComponent = () => {
   const [adm, setAdm] = useState(false);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading02, setLoading02] = useState(true);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const nif01 = searchParams.get('nif');
+
+  useEffect(() => {
+      async function fetchUser() {
+          try {
+              const response = await api.get(`/usuarios/${nif01}`);
+              if (response.data.length > 0) {
+                  setUser(response.data[0]);
+              } else {
+                  setUser(null);
+              }
+          } catch (error) {
+              console.error("Erro ao buscar o usuário: ", error);
+              setUser(null);
+          } finally {
+              setLoading02(false);
+          }
+      }
+
+      if (nif01) {
+          fetchUser();
+      } else {
+          setLoading02(false);
+      }
+  }, [nif01]);
+
+  useEffect(() => {
+      if (!loading02) {
+          if (!user || !user.adm) {
+              alert("Nenhum usuário com esse NIF01 encontrado, redirecionando para login.");
+              router.push('/administracao/login');
+          }
+      }
+  }, [loading02, user, router]);
+
+  if (loading02) {
+      return <div>Carregando...</div>;
+  }
 
   //Função de Reconhecimento Facial
   useEffect(() => {

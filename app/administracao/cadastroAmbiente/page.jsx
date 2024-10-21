@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from "react";
 import Input from '../../components/input/input';
 import { useRouter, useSearchParams } from 'next/navigation';
 import api from "../../../src/config/configApi";
