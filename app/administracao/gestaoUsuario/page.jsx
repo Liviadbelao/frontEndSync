@@ -4,7 +4,7 @@ import Header from "@/app/components/header/Header";
 import { useRouter } from "next/navigation";
 import GestaoUsuarios from "@/app/components/gestaoUsuarios/GestaoUsuarios";
 import api from "../../../src/config/configApi"; // Ajuste o caminho conforme necessário
-
+import ConcluirExclusao from "@/app/components/concluirExclusao/concluirExclusao";
 
 
 const gestaoUsuarios = () => {
@@ -94,6 +94,7 @@ const gestaoUsuarios = () => {
           <p className="text-center text-gray-500">Nenhum usuário encontrado</p>
         )}
           </div>
+          <ConcluirExclusao/>
     </div>
   );
 };
