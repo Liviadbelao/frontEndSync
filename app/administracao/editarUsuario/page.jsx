@@ -16,8 +16,11 @@ import { useSearchParams } from 'next/navigation';
 const EditarUsuarioPage = () => {
 
     const searchParams = useSearchParams();
-    const nif = searchParams.get('nif'); // Obtém o 'nif' da URL
+    const nif = searchParams.get('nif'); // 
+    const nifEdit = searchParams.get('nifEdit'); // 
 
+    console.log(nif, nifEdit);
+    
 
   const [image, setImage] = useState(null);
   const [nome, setNome] = useState('');
@@ -30,14 +33,13 @@ const EditarUsuarioPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log('useefect');
     
     const fetchUsuario = async () => {
       try {
-        console.log('resgatando infos');
         
-        const response = await api.get(`/usuarios/${nif}`);
+        const response = await api.get(`/usuarios/${nifEdit}`);
         const usuario = response.data[0];
+        console.log('usuario',usuario);
         
         // Preenche os estados com os dados do usuário
         setNome(usuario.nome);
@@ -51,7 +53,7 @@ const EditarUsuarioPage = () => {
       }
     };
 
-    if (nif) {
+    if (nifEdit) {
       fetchUsuario();
     }
   }, []);
@@ -77,7 +79,6 @@ const EditarUsuarioPage = () => {
     setLoading(true); // Inicia o loader
 
     const formData = new FormData();
-    formData.append("nif", nif);
     formData.append("nome", nome);
     formData.append("email", email);
     formData.append("telefone", telefone);
@@ -108,7 +109,7 @@ const EditarUsuarioPage = () => {
 
         formData.append("descriptor", descriptor);
         console.log("Face descriptors:", descriptors.join(","));
-        const response = await api.put(`/usuarios/${nif}`, usuarioEditado);
+        const response = await api.put(`/usuarios/${nifEdit}`, usuarioEditado);
         console.log(response);
     setLoading(false); // Inicia o loader
 
@@ -197,18 +198,6 @@ const EditarUsuarioPage = () => {
               valor={email}
               onChange={(e) => setEmail(e.target.value)}
               nome={"email"}
-            />
-          </div>
-
-          {/* Campo de Nif */}
-          <div className="w-[70%] m-2">
-            <label>Nif:</label>
-            <Input
-              tipo={"number"}
-              placeholder={"nif"}
-              valor={nif}
-              onChange={(e) => setNif(e.target.value)}
-              nome={"nif"}
             />
           </div>
 
