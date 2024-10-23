@@ -4,8 +4,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from "next/image";
 import api from "../../../src/config/configApi";
 import * as faceapi from "face-api.js";
+import { useRouter } from 'next/navigation';
 
 const faceID = () => {
+
+  const router = useRouter();
+
   const [funcionarios, setFuncionarios] = useState([]);
   const videoRef = useRef(null);
 
@@ -28,14 +32,16 @@ const faceID = () => {
 
   // Função para capturar o vídeo
   useEffect(() => {
+    let stream;
+    
     const startVideo = async () => {
       try {
         const response = await api.get("/usuarios");
         setFuncionarios(response.data);
         console.log("Funcionários carregados", response.data);
-
+  
         // Iniciar captura do vídeo
-        const stream = await navigator.mediaDevices.getUserMedia({
+        stream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false,
         });
@@ -46,26 +52,37 @@ const faceID = () => {
         console.error("Erro ao acessar a câmera: ", err);
       }
     };
-
+  
     startVideo();
+  
+    // Função de limpeza para parar o stream da câmera
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
   }, []);
 
   // Função para processar vídeo e fazer reconhecimento de uma única face
   useEffect(() => {
+    let intervalId;
+    
     const recognizeFace = async () => {
       if (!videoRef.current) return;
-
+  
       const displaySize = { width: videoRef.current.width, height: videoRef.current.height };
-      console.log(displaySize)
-      console.log(videoRef.current)
+      console.log(displaySize);
+      console.log(videoRef.current);
       faceapi.matchDimensions(videoRef.current, displaySize);
-
+  
       // Processar vídeo em intervalos para detectar apenas uma face
-      const intervalId = setInterval(async () => {
+      intervalId = setInterval(async () => {
+        if (!videoRef.current) return;  // Verifique se o vídeo ainda existe
+  
         const detection = await faceapi.detectSingleFace(videoRef.current)
           .withFaceLandmarks()
           .withFaceDescriptor();
-
+  
         if (detection && funcionarios.length > 0) {
           // Converter os descritores de string para array de números
           const faceMatcher = new faceapi.FaceMatcher(
@@ -74,22 +91,28 @@ const faceID = () => {
               [new Float32Array(func.descriptor.split(",").map(Number))]
             ))
           );
-
+  
           const resizedDetection = faceapi.resizeResults(detection, displaySize);
           const result = faceMatcher.findBestMatch(resizedDetection.descriptor);
-
+  
           if (result.label !== "unknown") {
-            console.log(`Bem-vindo, ${result.label}!`);
-            alert(`Bem-vindo, ${result.label}!`);
+            console.log(`Bem-vindo, ${result}!`);
+            // alert(`Bem-vindo, ${result.label}!`);
+            const funcionario = funcionarios.find((f) => f.nome == result.label);
+            
+            router.push(`/totem/paginaModal?nif=${funcionario.nif}`);
           }
         }
-      }, 2000); // Verificação a cada 2 segundos
-
-      return () => clearInterval(intervalId);
+      }, 1000); // Verificação a cada 1 segundo
     };
-
+  
     recognizeFace();
-  }, [funcionarios]);
+  
+    // Limpeza ao desmontar o componente ou ao mudar de página
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [funcionarios]);  
 
   return (
     <div className='bg-[#9A1915] h-screen fixed w-screen'>

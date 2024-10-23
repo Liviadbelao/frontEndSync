@@ -1,6 +1,6 @@
 //Necessários
 "use client";
-import { useRouter } from "next/navigation";  
+import { useRouter } from "next/navigation";
 
 //Importações
 
@@ -12,15 +12,17 @@ const Selection = () => {
 
   //Funções
 
-  const navAdm= async () => {
-    router.push(`/administracao/cadastroUsuario`)
+  const navAdm = async () => {
+    router.push(`/administracao/login`)
   }
 
   const navImg= async () => {
     router.push(`/administracao/cadastroAmbiente`)
   }
-  const navTotem= async () => {
-    router.push(`/totem/ambientes`)
+
+  const navTotem = async () => {
+    router.push(`/totem/telaDescanso`)
+
   }
 
   //Corpo da Página
@@ -39,15 +41,10 @@ const Selection = () => {
         <button onClick={navAdm} className="bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
           ADMINISTRADOR
         </button>
-        <button onClick={navImg} className= "sm:hidden bg-[#D9D9D9] text-[#9A1915] font-extrabold text-base sm:text-xl py-3 px-6 border">
-          AMBIENTE
-        </button>
-
         {/* Botão Rota Totem */}
         <button onClick={navTotem} className="bg-[#D9D9D9] text-[#9A1915] xl:hidden font-extrabold text-base sm:text-xl py-3 px-6 border">
           TOTEM
         </button>
-
       </div>
     </div>
   );

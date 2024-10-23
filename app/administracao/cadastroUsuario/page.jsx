@@ -9,9 +9,13 @@ import * as faceapi from "face-api.js";
 import Header from "@/app/components/header/Header";
 import Input from "@/app/components/input/input";
 import SendButton from "@/app/components/sendButton/SendButton";
+import "ldrs/ring";
+import { hourglass } from "ldrs";
+import TelaCarregar from "@/app/components/telaCarregar/telaCarregar";
 
 //Criando Página
 const InputComponent = () => {
+  hourglass.register();
   //Criando Estados
   const [image, setImage] = useState(null);
   const [nif, setNif] = useState("");
@@ -22,6 +26,7 @@ const InputComponent = () => {
   const [notiwhere, setNotiwhere] = useState(0);
   const [adm, setAdm] = useState(false);
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   //Função de Reconhecimento Facial
   useEffect(() => {
@@ -41,6 +46,8 @@ const InputComponent = () => {
   //Função de Registro de Dados
   const uploadImage = async (e) => {
     e.preventDefault();
+    setLoading(true); // Inicia o loader
+
     const formData = new FormData();
     formData.append("nif", nif);
     formData.append("nome", nome);
@@ -67,6 +74,8 @@ const InputComponent = () => {
         console.log("Face descriptors:", descriptors.join(","));
         const response = await api.post("/usuarios", formData);
         console.log(response);
+    setLoading(false); // Inicia o loader
+
       } else {
         console.log("No face detected");
       }
@@ -76,6 +85,8 @@ const InputComponent = () => {
       } else {
         console.log("Erro, tente novamente mais tarde.");
       }
+    } finally {
+      setLoading(false); // Para o loader após completar o envio
     }
   };
 
@@ -95,8 +106,8 @@ const InputComponent = () => {
   //Corpo da Página
   return (
     /* Div Principal */
-    
-    <div className="bg-white min-h-screen flex flex-col overflow-y-auto ">
+
+    <div className="bg-white flex flex-col">
       <Header />
       <div className="flex flex-col items-center justify-center">
         {/* Formulário de Cadastro de Usuário */}
@@ -136,40 +147,39 @@ const InputComponent = () => {
 
           {/* Campo de Email */}
           <div className="w-[70%] m-2">
-          <label>Email:</label>
-          <Input
-            tipo={"email"}
-            placeholder={"email"}
-            valor={email}
-            onChange={(e) => setEmail(e.target.value)}
-            nome={"email"}
-          />
+            <label>Email:</label>
+            <Input
+              tipo={"email"}
+              placeholder={"email"}
+              valor={email}
+              onChange={(e) => setEmail(e.target.value)}
+              nome={"email"}
+            />
           </div>
-           
 
           {/* Campo de Nif */}
           <div className="w-[70%] m-2">
-          <label>Nif:</label>
-          <Input
-            tipo={"number"}
-            placeholder={"nif"}
-            valor={nif}
-            onChange={(e) => setNif(e.target.value)}
-            nome={"nif"}
-          /></div>
+            <label>Nif:</label>
+            <Input
+              tipo={"number"}
+              placeholder={"nif"}
+              valor={nif}
+              onChange={(e) => setNif(e.target.value)}
+              nome={"nif"}
+            />
+          </div>
 
           {/* Campo de Imagem */}
           <div className="w-[70%] m-2">
-          <label>Imagem:</label>
-          <Input
-            tipo={"file"}
-            placeholder={"image"}
-            onChange={handleImageChange}
-            nome={"imagem"}
-          />
-</div>
+            <label>Imagem:</label>
+            <Input
+              tipo={"file"}
+              placeholder={"image"}
+              onChange={handleImageChange}
+              nome={"imagem"}
+            />
+          </div>
           {/* Botão Para Envio */}
-
 
           {/* Pré-visualização da Imagem */}
           {preview && (
@@ -185,20 +195,23 @@ const InputComponent = () => {
 
           <label>Administrador : </label>
           <Input
-            tipo={'checkbox'}
-            placeholder={'Administrador'}
+            tipo={"checkbox"}
+            placeholder={"Administrador"}
             onChange={(e) => {
               if (adm) {
-                setAdm(false)
+                setAdm(false);
               } else {
-                setAdm(true)
+                setAdm(true);
               }
             }}
-            nome={'ADM'}
+            nome={"ADM"}
           />
+          {/* Loader */}
           <SendButton />
         </form>
+
       </div>
+      {loading && <TelaCarregar />}
     </div>
   );
 };
