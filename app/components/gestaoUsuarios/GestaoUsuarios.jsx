@@ -15,13 +15,13 @@ const GestaoUsuarios = ({ nome, cargo, imgGestor, editar, excluir }) => {
 
         <div className="flex justify-between  ">
           <button
-            className="bg-[#D23333] text-white px-4 py-2 rounded-md"
+            className="bg-[#000000] text-white px-4 py-2 rounded-md"
             onClick={editar}
           >
             Editar
           </button>
           <button
-            className="bg-[#D23333] text-white px-4 py-2 rounded-md"
+            className="bg-[#000000] text-white px-4 py-2 rounded-md"
             onClick={excluir}
           >
             Excluir

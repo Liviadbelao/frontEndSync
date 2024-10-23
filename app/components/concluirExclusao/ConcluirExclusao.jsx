@@ -39,7 +39,7 @@ useEffect(() => {
           onClick={(e) => e.stopPropagation()}
           className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[3%] shadow-lg w-[70%] h-[60%] p-16"
         >
-          <button className="mt-16 rounded-full bg-[#E30613] text-2xl p-4 px-10 text-white" onClick={cliqueDevolver}>Devolver Chave</button>
+          <button className="mt-16 rounded-full bg-[#660b0b] text-2xl p-4 px-10 text-white" onClick={cliqueDevolver}>Devolver Chave</button>
           <button className="mt-16 rounded-full bg-[#E30613] text-2xl p-4 px-10 text-white">Reservar outra sala</button>
         </div>
       </Modal>
