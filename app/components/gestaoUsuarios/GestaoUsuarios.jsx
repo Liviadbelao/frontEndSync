@@ -1,6 +1,7 @@
 import Image from "next/image";
+import ConcluirExclusao from "../concluirExclusao/ConcluirExclusao";
 
-const GestaoUsuarios = ({ nome, cargo, imgGestor, editar, excluir }) => {
+const GestaoUsuarios = ({ nome, cargo, imgGestor, editar, excluir, nif }) => {
   return (
     <div className="w-60 h-80 max-w-sm bg-gray-200 rounded-lg">
       <div className="flex items-center justify-center h-32 " >
@@ -28,6 +29,7 @@ const GestaoUsuarios = ({ nome, cargo, imgGestor, editar, excluir }) => {
           </button>
         </div>
       </div>
+     
     </div>
   );
 };
