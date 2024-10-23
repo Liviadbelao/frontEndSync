@@ -228,7 +228,7 @@ const Ambiente = () => {
                             onChange={(e) => setTipodoambiente(e.target.value)}
                         >
                             <option value="">Selecione o tipo de ambiente</option>
-                            <option value="interno">Interno</option>
+                            <option value="blocooficina">Bloco Oficina</option>
                             <option value="externo">Externo</option>
                         </select>
                     </div>

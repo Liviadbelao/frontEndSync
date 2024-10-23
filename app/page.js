@@ -16,8 +16,13 @@ const Selection = () => {
     router.push(`/administracao/login`)
   }
 
+  const navImg= async () => {
+    router.push(`/administracao/cadastroAmbiente`)
+  }
+
   const navTotem = async () => {
     router.push(`/totem/telaDescanso`)
+
   }
 
   //Corpo da Página

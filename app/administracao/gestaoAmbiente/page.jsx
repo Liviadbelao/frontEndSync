@@ -72,7 +72,7 @@ const GestaoAmbiente = () => {
                 src="/images/imgMenuAdm/btvoltar.png"
                 alt="botao voltar"
                 className="mr-10 cursor-pointer w-10 h-10 mt-2 ml-10"
-                onClick={() => router.push("/administracao/telaMenuAdm")}
+                onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
             />
 
             <h1 className="text-center text-3xl	font-bold mt-2 mb-6">Gestão de Ambientes</h1>
@@ -85,7 +85,7 @@ const GestaoAmbiente = () => {
                         src="/images/imgMenuAdm/botao-adicionar.png"
                         alt="oi"
                         className="mr-10 cursor-pointer"
-                        onClick={() => router.push("/administracao/cadastroAmbiente")}
+                        onClick={() => router.push(`/administracao/cadastroAmbiente?nif=${nif}`)}
                     />
                 </div>
                 {/* componentes */}
