@@ -81,7 +81,9 @@ const GestaoUsuariosPage = () => {
   // Função para redirecionar para a página de cadastro/edição
   const handleEditClick = (usuario) => {
    // router.push(`/administracao/cadastroUsuario?nif=${usuario.nif}&isEdit=true`);
-    router.push(`/administracao/cadastroUsuario/?nif=${usuario.nif}&isEdit=true`);
+    router.push(`/administracao/editarUsuario/?nif=${usuario.nif}`);
+    console.log('nif passado', usuario.nif);
+    
   };
 
   if (loading) {
