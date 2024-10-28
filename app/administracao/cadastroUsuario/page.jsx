@@ -43,6 +43,19 @@ const InputComponent = () => {
       });
   }, []);
 
+
+  const LimparInputs = () => {
+
+   setImage(null);
+ setNif("");
+ setNome("");
+ setEmail("");
+setTelefone("");
+  setAdm(false);
+ setPreview("");
+
+
+  }
   //Função de Registro de Dados
   const uploadImage = async (e) => {
     e.preventDefault();
@@ -86,7 +99,8 @@ const InputComponent = () => {
         console.log("Erro, tente novamente mais tarde.");
       }
     } finally {
-      setLoading(false); // Para o loader após completar o envio
+      setLoading(false);
+      LimparInputs(); // Para o loader após completar o envio
     }
   };
 
