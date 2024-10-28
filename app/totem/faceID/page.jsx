@@ -100,7 +100,7 @@ const faceID = () => {
             // alert(`Bem-vindo, ${result.label}!`);
             const funcionario = funcionarios.find((f) => f.nome == result.label);
             
-            router.push(`/totem/paginaModal?nif=${funcionario.nif}`);
+            router.push(`/totem/ambientes?nif=${funcionario.nif}`);
           }
         }
       }, 1000); // Verificação a cada 1 segundo
