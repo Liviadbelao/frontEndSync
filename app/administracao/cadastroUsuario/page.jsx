@@ -96,7 +96,7 @@ setTelefone("");
       if (err.response) {
         console.log(err.response);
       } else {
-        console.log("Erro, tente novamente mais tarde.");
+        console.log("Erro, tente novamente mais tarde." + err);
       }
     } finally {
       setLoading(false);

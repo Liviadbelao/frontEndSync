@@ -25,6 +25,7 @@ const Selection = () => {
 
   }
 
+
   //Corpo da Página
   return (
     /* Div Principal */
@@ -45,6 +46,7 @@ const Selection = () => {
         <button onClick={navTotem} className="bg-[#D9D9D9] text-[#9A1915] xl:hidden font-extrabold text-base sm:text-xl py-3 px-6 border">
           TOTEM
         </button>
+        
       </div>
     </div>
   );
