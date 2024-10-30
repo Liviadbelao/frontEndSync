@@ -140,7 +140,9 @@ const ConfigInicial = () => {
                   <ToggleButton ativado={emailOn} setAtivado={setEmailOn} />
                 </div>
               </div>
-              <button onClick={testar}><p>teste por aqui</p></button>
+              <button className="bg-red-700 rounded" onClick={testar}> 
+                Salvar 
+              </button>
             </div>
           </div>
         </div>
