@@ -1,12 +1,92 @@
 "use client";
 import Header from "@/app/components/header/Header";
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import ToggleButton from "@/app/components/togglebotao/ToggleBotao";
+import api from "../../src/config/configApi";
 import Popup from "@/app/components/popupinical/PopupInicial";
 
+
 const ConfigInicial = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [whatsappOn, setWhatsappOn] = useState(false)
+  const [emailOn, setEmailOn] = useState(false)
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nif = searchParams.get("nif");
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await api.get(`/usuarios/${nif}`);
+        console.log(response.data[0])
+        if (response.data.length > 0) {
+          setUser(response.data[0]);
+          if (response.data[0].notificacao) {
+            if (response.data[0].notiwhere == 1 || response.data[0].notiwhere == 3) {
+              setWhatsappOn(true)
+            }
+            if (response.data[0].notiwhere == 2 || response.data[0].notiwhere == 3) {
+              setEmailOn(true)
+            }
+          }
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar o usuário: ", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (nif) {
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
+  }, [nif]);
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        alert(
+          "Nenhum usuário com esse NIF encontrado, redirecionando para login."
+        );
+        router.push("/totem/telaDescanso");
+      }
+    }
+  }, [loading, user, router]);
+
+  function testar() {
+    let contador = 0;
+
+    console.log('whatsapp ' + whatsappOn)
+    console.log('email ' + emailOn)
+    if (whatsappOn) {
+      contador++;
+    }
+
+    if (emailOn) {
+      contador++;
+      contador++;
+    }
+
+    console.log(contador)
+
+    if (whatsappOn || emailOn) {
+      console.log('notificacao está agora true')
+    } else {
+      console.log('notificacao está agora false')
+    }
+  }
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
@@ -34,7 +114,7 @@ const ConfigInicial = () => {
 
                 <div>
                   <h2 className="text-xl font-semibold text-white">
-                    Thiago Ferreira
+                    {user.nome}
                   </h2>
                   <p className="text-sm text-gray-300">Professor</p>
                 </div>
@@ -51,15 +131,16 @@ const ConfigInicial = () => {
                   <label htmlFor="whatsapp" className="text-gray-700">
                     Whatsapp
                   </label>
-                  <ToggleButton />
+                  <ToggleButton ativado={whatsappOn} setAtivado={setWhatsappOn} />
                 </div>
                 <div className="flex items-center justify-between border-2 p-1 rounded-md">
                   <label htmlFor="email" className="text-gray-700">
                     Email
                   </label>
-                  <ToggleButton />
+                  <ToggleButton ativado={emailOn} setAtivado={setEmailOn} />
                 </div>
               </div>
+              <button onClick={testar}><p>teste por aqui</p></button>
             </div>
           </div>
         </div>
