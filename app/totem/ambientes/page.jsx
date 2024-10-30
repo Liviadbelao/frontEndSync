@@ -80,7 +80,7 @@ const ambientes = () => {
         fetchAmbientes();
     }, []);
     return (
-        <div className="p-10">
+        <div className="p-10 bg-white min-h-screen ">
             <p>Reserve sua sala:</p>
 
             <div className="grid grid-cols-2 gap-4">
@@ -88,17 +88,17 @@ const ambientes = () => {
                     dados.map((ambiente) => (
 
                         <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
-                            <img src={`http://localhost:3003${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
+                            <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
                             <div className="p-4">
-                                <p className="font-semibold text-xs mb-2">{ambiente.nome}</p>
+                                <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                 <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
                                 {
-                                    ambiente.tipodoambiente == "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto " /> : null
+                                    ambiente.tipodoambiente == "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black " /> : null
                                 }
                                 {
-                                    ambiente.tipodoambiente == "externo" ? <GiTheater className="w-8 h-8 m-auto" /> : null
+                                    ambiente.tipodoambiente == "externo" ? <GiTheater className="w-8 h-8 m-auto  text-black" /> : null
                                 }
-                                <p className="font-semibold text-xs mt-2">Capacidade:{ambiente.capacidadealunos}</p>
+                                <p className="font-semibold text-xs mt-2 text-black">Capacidade:{ambiente.capacidadealunos}</p>
                             </div>
                             <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                 {

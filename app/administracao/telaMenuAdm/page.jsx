@@ -62,7 +62,7 @@ const TelaMenuAdm = () => {
           <TopicosMenu
             topicos="Monitoração de ambientes"
             imgSrc="/images/imgMenuAdm/monitoracao.png"
-            onClick={() => router.push(`/administracao?nif=${nif}`)}
+            onClick={() => router.push(`/administracao/monitoramentoAmbientes?nif=${nif}`)}
           />
           <TopicosMenu
             topicos="Gestão de  ambientes"
