@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect } from "react";
 import Input from '../../components/input/input';
@@ -26,6 +26,8 @@ const Ambiente = () => {
     const [numerochave, setNumerochave] = useState(0)
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [errors, setErrors] = useState({}); // Estado para armazenar mensagens de erro
+
     const router = useRouter();
     const searchParams = useSearchParams();
     const nif = searchParams.get('nif');
@@ -63,8 +65,30 @@ const Ambiente = () => {
         }
     }, [loading, user, router]);
 
+    const validateFields = () => {
+        const newErrors = {};
+        if (!nome) newErrors.nome = "O campo Nome é obrigatório!";
+        if (!imagem) newErrors.imagem = "A imagem é obrigatória!";
+        if (!capacidade) newErrors.capacidade = "A capacidade é obrigatória!";
+        if (!categoriaSelecionada) newErrors.categoriaSelecionada = "A categoria é obrigatória!";
+        if (!numeroAmbiente) newErrors.numeroAmbiente = "O número do ambiente é obrigatório!";
+        if (!tipodoambiente) newErrors.tipodoambiente = "O tipo do ambiente é obrigatório!";
+        if (chave && !numerochave) newErrors.numerochave = "O número da chave é obrigatório!";
+
+        setErrors(newErrors);
+
+        // Retorna true se não houver erros
+        return Object.keys(newErrors).length === 0;
+    };
+
     const postAmbiente = async (e) => {
         e.preventDefault();
+
+        // Verifica se os campos estão válidos antes de prosseguir
+        if (!validateFields()) {
+            return;
+        }
+
         const formData = new FormData();
     
         formData.append("nome", nome);
@@ -82,10 +106,6 @@ const Ambiente = () => {
         formData.append("categoria", categoriaSelecionada);
         formData.append("image", imagem);
     
-        for (let pair of formData.entries()) {
-            console.log(pair[0] + ', ' + pair[1]);
-        }
-    
         try {
             const response = await api.post("/ambientes", formData);
             console.log(response);
@@ -99,7 +119,7 @@ const Ambiente = () => {
                 console.log(chaveResponse);
             }
             limparInputs();
-            window.location.reload(); // Recarrega a página para limpar o cache após o cadastro
+            window.location.reload();
         } catch (err) {
             if (err.response) {
                 console.log(err.response);
@@ -108,7 +128,6 @@ const Ambiente = () => {
             }
         }
     };
-    
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -125,13 +144,14 @@ const Ambiente = () => {
         setTipodoambiente("");
         setMaquinas(0);
         setNumerochave(0);
+        setErrors({});
     };
 
     useEffect(() => {
         async function fetchCategorias() {
             try {
                 const response = await api.get("/categorias");
-                setCategorias(response.data);  // Supondo que a resposta tenha um array de categorias no 'data'
+                setCategorias(response.data);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -144,14 +164,14 @@ const Ambiente = () => {
         <div className="bg-white min-h-screen flex flex-col overflow-y-auto ">
             <Header />
             <img
-                    src="/images/imgMenuAdm/btvoltar.png"
-                    alt="botao voltar"
-                    className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
-                    onClick={() => router.push("/administracao/cadastroAmbiente")}
-                />
+                src="/images/imgMenuAdm/btvoltar.png"
+                alt="botao voltar"
+                className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
+                onClick={() => router.push("/administracao/cadastroAmbiente")}
+            />
 
             <div className="flex flex-col items-center justify-center">
-                <p class="font-normal md:font-bold mt-40 text-2xl">Cadastro de Ambiente</p>
+                <p className="font-normal md:font-bold mt-40 text-2xl">Cadastro de Ambiente</p>
                 <form
                     className="flex flex-col bg-[#D9D9D9] text-black w-[55%] border-2 border-red-500 items-center pt-6 mb-16 rounded-md"
                     onSubmit={postAmbiente}
@@ -165,6 +185,7 @@ const Ambiente = () => {
                             onChange={(e) => setNome(e.target.value)}
                             nome={"nome"}
                         />
+                        {errors.nome && <span className="text-red-500">{errors.nome}</span>}
                     </div>
                     <div className="w-[70%] m-2">
                         <label>Selecione uma imagem do ambiente:</label>
@@ -174,6 +195,7 @@ const Ambiente = () => {
                             onChange={handleImageChange}
                             nome={"imagem"}
                         />
+                        {errors.imagem && <span className="text-red-500">{errors.imagem}</span>}
                     </div>
                     <div className="w-[70%] m-2">
                         <label>Capacidade de alunos no ambiente:</label>
@@ -184,6 +206,7 @@ const Ambiente = () => {
                             onChange={(e) => setCapacidade(e.target.value)}
                             nome={"capacidade"}
                         />
+                        {errors.capacidade && <span className="text-red-500">{errors.capacidade}</span>}
                     </div>
                     <div className="w-[70%] m-2">
                         <label>Quantidade de máquinas:</label>
@@ -204,6 +227,7 @@ const Ambiente = () => {
                             onChange={(e) => setNumeroAmbiente(e.target.value)}
                             nome={"numeroAmbiente"}
                         />
+                        {errors.numeroAmbiente && <span className="text-red-500">{errors.numeroAmbiente}</span>}
                     </div>
                     <div className="w-[70%] m-2">
                         <label>Categoria que o ambiente pertence:</label>
@@ -219,6 +243,7 @@ const Ambiente = () => {
                                 </option>
                             ))}
                         </select>
+                        {errors.categoriaSelecionada && <span className="text-red-500">{errors.categoriaSelecionada}</span>}
                     </div>
                     <div className="w-[70%] m-2">
                         <label>Tipo do Ambiente:</label>
@@ -231,19 +256,14 @@ const Ambiente = () => {
                             <option value="blocooficina">Bloco Oficina</option>
                             <option value="externo">Externo</option>
                         </select>
+                        {errors.tipodoambiente && <span className="text-red-500">{errors.tipodoambiente}</span>}
                     </div>
                     <div className="w-[70%] m-2">
                         <label>Ar condicionado:</label>
                         <Input
                             tipo={"checkbox"}
                             placeholder={"Ar condicionado"}
-                            onChange={(e) => {
-                                if (arcondicionado) {
-                                    setArcondicionado(false)
-                                } else {
-                                    setArcondicionado(true)
-                                }
-                            }}
+                            onChange={(e) => setArcondicionado(!arcondicionado)}
                             nome={"arcondicionado"}
                         />
                     </div>
@@ -252,13 +272,7 @@ const Ambiente = () => {
                         <Input
                             tipo={"checkbox"}
                             placeholder={"Wifi"}
-                            onChange={(e) => {
-                                if (wifi) {
-                                    setWifi(false)
-                                } else {
-                                    setWifi(true)
-                                }
-                            }}
+                            onChange={(e) => setWifi(!wifi)}
                             nome={"wifi"}
                         />
                     </div>
@@ -267,40 +281,29 @@ const Ambiente = () => {
                         <Input
                             tipo={"checkbox"}
                             placeholder={"Chave"}
-                            onChange={(e) => {
-                                if (chave) {
-                                    setChave(false)
-                                } else {
-                                    setChave(true)
-                                }
-                            }}
+                            onChange={(e) => setChave(!chave)}
                             nome={"chave"}
                         />
-                        {chave? (
+                        {chave && (
                             <>
-                             <label>Número da chave:</label>
-                        <Input
-                            tipo={"number"}
-                            placeholder={"N° :"}
-                            valor={numerochave}
-                            onChange={(e) => setNumerochave(e.target.value)}
-                            nome={"Número"}
-                        />   
+                                <label>Número da chave:</label>
+                                <Input
+                                    tipo={"number"}
+                                    placeholder={"N° :"}
+                                    valor={numerochave}
+                                    onChange={(e) => setNumerochave(e.target.value)}
+                                    nome={"Número"}
+                                />
+                                {errors.numerochave && <span className="text-red-500">{errors.numerochave}</span>}
                             </>
-                        ) : null }
+                        )}
                     </div>
                     <div className="w-[70%] m-2">
                         <label>Projetor:</label>
                         <Input
                             tipo={"checkbox"}
                             placeholder={"projetor"}
-                            onChange={(e) => {
-                                if (projetor) {
-                                    setProjetor(false)
-                                } else {
-                                    setProjetor(true)
-                                }
-                            }}
+                            onChange={(e) => setProjetor(!projetor)}
                             nome={"projetor"}
                         />
                     </div>
@@ -309,13 +312,7 @@ const Ambiente = () => {
                         <Input
                             tipo={"checkbox"}
                             placeholder={"chave eletronica"}
-                            onChange={(e) => {
-                                if (chaveeletronica) {
-                                    setChaveeletronica(false)
-                                } else {
-                                    setChaveeletronica(true)
-                                }
-                            }}
+                            onChange={(e) => setChaveeletronica(!chaveeletronica)}
                             nome={"chaveeletronica"}
                         />
                     </div>
@@ -324,13 +321,7 @@ const Ambiente = () => {
                         <Input
                             tipo={"checkbox"}
                             placeholder={"ventilador"}
-                            onChange={(e) => {
-                                if (ventilador) {
-                                    setVentilador(false)
-                                } else {
-                                    setVentilador(true)
-                                }
-                            }}
+                            onChange={(e) => setVentilador(!ventilador)}
                             nome={"ventilador"}
                         />
                     </div>
@@ -340,6 +331,6 @@ const Ambiente = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Ambiente;
