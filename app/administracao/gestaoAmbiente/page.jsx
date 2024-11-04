@@ -65,7 +65,7 @@ const GestaoAmbiente = () => {
     }
 
     return (
-        <div>
+        <div className="bg-white min-h-screen">
             <Header />
             {/* botao para voltar para o menu */}
             <img
@@ -75,7 +75,7 @@ const GestaoAmbiente = () => {
                 onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
             />
 
-            <h1 className="text-center text-3xl	font-bold mt-2 mb-6">Gestão de Ambientes</h1>
+            <h1 className=" text-black text-center text-3xl	font-bold mt-2 mb-6">Gestão de Ambientes</h1>
            
 
 {/* img para add ambiente */}
@@ -95,6 +95,7 @@ const GestaoAmbiente = () => {
                     imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg"
                     onEdit={handleEdit}
                     onDelete={handleDelete}
+                    
                 />
                 <GestaoAmbientes
                     nome="Sala de Reuniões"

@@ -7,7 +7,7 @@ const GestaoAmbientes = ({ nome, imgSrc, imgSrc2, onEdit, onDelete }) => {
                 {imgSrc2 && <img src={imgSrc2} alt={nome} className="w-full h-full" />}
             </div>
             <div className="p-4 flex flex-col items-center">
-                <h2 className="font-bold text-center">{nome}</h2>
+                <h2 className="font-bold text-center text-black">{nome}</h2>
                 <div className="w-8 h-0.5 bg-red-500 mb-2"></div>
                 {imgSrc && <img src={imgSrc} alt={nome} className="w-8 h-8" />}
                 <div className="flex justify-between w-full mb-4">

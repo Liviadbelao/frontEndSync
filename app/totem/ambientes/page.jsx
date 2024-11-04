@@ -81,7 +81,7 @@ const ambientes = () => {
     }, []);
     return (
         <div className="p-10 bg-white min-h-screen ">
-            <p>Reserve sua sala:</p>
+            <p className="text-black">Reserve sua sala:</p>
 
             <div className="grid grid-cols-2 gap-4">
                 {dados && dados.length > 0 ? (
