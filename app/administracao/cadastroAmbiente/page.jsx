@@ -164,11 +164,11 @@ const Ambiente = () => {
         <div className="bg-white min-h-screen flex flex-col overflow-y-auto ">
             <Header />
             <img
-                src="/images/imgMenuAdm/btvoltar.png"
-                alt="botao voltar"
-                className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
-                onClick={() => router.push("/administracao/cadastroAmbiente")}
-            />
+                    src="/images/imgMenuAdm/btvoltar.png"
+                    alt="botao voltar"
+                    className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
+                    onClick={() => router.push(`/administracao/gestaoAmbiente?nif=${nif}`)}
+                />
 
             <div className="flex flex-col items-center justify-center">
                 <p className="font-normal md:font-bold mt-40 text-2xl">Cadastro de Ambiente</p>
