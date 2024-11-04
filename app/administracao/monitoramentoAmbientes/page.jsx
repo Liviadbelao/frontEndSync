@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import router from "next/router";
 import api from '../../../src/config/configApi';
+import MonitorDeInatividade from "@/app/components/timerInatividade/TimerInatividade";
 
 const MonitoramentoAmbientes = () => {
   const [dados, setDados] = useState([]);
@@ -34,6 +35,8 @@ const MonitoramentoAmbientes = () => {
         Gestão de Ambientes
       </h1>
 
+      <MonitorDeInatividade tempoInatividade={6000} />
+
       {dados.length > 0 ? (
         dados.map((dados) => (
           <div key={dados.id} className="text-black p-6 bg-gray-100 rounded-lg shadow-md mx-10 my-5">
@@ -51,7 +54,7 @@ const MonitoramentoAmbientes = () => {
             <p className="text-black"><strong>Ambiente:</strong> {dados.nome_ambiente}</p>
             <p className="text-black"><strong>Data Início:</strong> {new Date(dados.data_inicio).toLocaleDateString()}</p>
             <p className="text-black"><strong>Data Fim:</strong> {dados.data_fim ? new Date(dados.data_fim).toLocaleDateString() : "Em aberto"}</p>
-            
+          
           
           </div>
         ))
