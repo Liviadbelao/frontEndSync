@@ -147,7 +147,7 @@ const Ambiente = () => {
                     src="/images/imgMenuAdm/btvoltar.png"
                     alt="botao voltar"
                     className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
-                    onClick={() => router.push("/administracao/cadastroAmbiente")}
+                    onClick={() => router.push(`/administracao/gestaoAmbiente?nif=${nif}`)}
                 />
 
             <div className="flex flex-col items-center justify-center">

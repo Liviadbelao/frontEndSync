@@ -3,6 +3,7 @@
 
 //Importações
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import api from "../../../src/config/configApi";
 import * as faceapi from "face-api.js";
@@ -18,7 +19,7 @@ const InputComponent = () => {
   hourglass.register();
   //Criando Estados
   const [image, setImage] = useState(null);
-  const [nif, setNif] = useState("");
+  const [nif01, setNif01] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -27,6 +28,10 @@ const InputComponent = () => {
   const [adm, setAdm] = useState(false);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const nif = searchParams.get('nif');
+
 
   //Função de Reconhecimento Facial
   useEffect(() => {
@@ -46,13 +51,13 @@ const InputComponent = () => {
 
   const LimparInputs = () => {
 
-   setImage(null);
- setNif("");
- setNome("");
- setEmail("");
-setTelefone("");
-  setAdm(false);
- setPreview("");
+    setImage(null);
+    setNif01("");
+    setNome("");
+    setEmail("");
+    setTelefone("");
+    setAdm(false);
+    setPreview("");
 
 
   }
@@ -62,7 +67,7 @@ setTelefone("");
     setLoading(true); // Inicia o loader
 
     const formData = new FormData();
-    formData.append("nif", nif);
+    formData.append("nif", nif01);
     formData.append("nome", nome);
     formData.append("email", email);
     formData.append("telefone", telefone);
@@ -87,7 +92,7 @@ setTelefone("");
         console.log("Face descriptors:", descriptors.join(","));
         const response = await api.post("/usuarios", formData);
         console.log(response);
-    setLoading(false); // Inicia o loader
+        setLoading(false); // Inicia o loader
 
       } else {
         console.log("No face detected");
@@ -123,6 +128,13 @@ setTelefone("");
 
     <div className="bg-white flex flex-col">
       <Header />
+      <img
+        src="/images/imgMenuAdm/btvoltar.png"
+        alt="botao voltar"
+        className="mr-10 cursor-pointer w-10 h-10 mt-2 ml-10"
+        onClick={() => router.push(`/administracao/gestaoUsuario?nif=${nif}`)}
+      />
+
       <div className="flex flex-col items-center justify-center">
         {/* Formulário de Cadastro de Usuário */}
         <div className="mb-24 mt-10">
@@ -177,8 +189,8 @@ setTelefone("");
             <Input
               tipo={"number"}
               placeholder={"nif"}
-              valor={nif}
-              onChange={(e) => setNif(e.target.value)}
+              valor={nif01}
+              onChange={(e) => setNif01(e.target.value)}
               nome={"nif"}
             />
           </div>

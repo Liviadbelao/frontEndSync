@@ -80,10 +80,10 @@ const GestaoUsuariosPage = () => {
 
   // Função para redirecionar para a página de cadastro/edição
   const handleEditClick = (usuario) => {
-   // router.push(`/administracao/cadastroUsuario?nif=${usuario.nif}&isEdit=true`);
-   router.push(`/administracao/editarUsuario/?nif=${nif}&nifEdit=${usuario.nif}`);
-   console.log('nif passado', usuario.nif);
-   
+    // router.push(`/administracao/cadastroUsuario?nif=${usuario.nif}&isEdit=true`);
+    router.push(`/administracao/editarUsuario/?nif=${nif}&nifEdit=${usuario.nif}`);
+    console.log('nif passado', usuario.nif);
+
   };
 
   if (loading) {
@@ -95,10 +95,10 @@ const GestaoUsuariosPage = () => {
       <Header />
 
       <img
-        src="/images/modal/fechar.png"
+        src="/images/imgMenuAdm/btvoltar.png"
         alt="botao voltar"
         className="mr-10 cursor-pointer w-10 h-10 mt-2 ml-10"
-        onClick={() => router.push("/administracao/telaMenuAdm")}
+        onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
       />
 
       <h1 className="text-center text-3xl text-black font-bold mt-2 mb-8">
@@ -111,7 +111,7 @@ const GestaoUsuariosPage = () => {
             src="/images/imgGestores/pessoa.png"
             alt="oi"
             className="mr-10 h-42 cursor-pointer"
-            onClick={() => router.push("/administracao/cadastroUsuario?isEdit=false")}
+            onClick={() => router.push(`/administracao/cadastroUsuario?nif=${nif}`)}
           />
         </div>
 
