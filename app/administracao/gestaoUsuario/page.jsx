@@ -22,7 +22,7 @@ const GestaoUsuariosPage = () => {
       try {
         const response = await api.get(`/usuarios/${nif}`);
         if (response.data) {
-          setUser(response.data[0]);
+          setUser(response.data);
         } else {
           setUser(null);
         }

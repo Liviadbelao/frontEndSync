@@ -39,7 +39,7 @@ const EditarUsuarioPage = () => {
       try {
 
         const response = await api.get(`/usuarios/${nifEdit}`);
-        const usuario = response.data[0];
+        const usuario = response.data;
         console.log('usuario', usuario);
 
         // Preenche os estados com os dados do usuário
@@ -140,6 +140,7 @@ const EditarUsuarioPage = () => {
       setLoading(false);
       LimparInputs() // Para o loader após completar o envio
     }
+    router.push(`/administracao/gestaoUsuario/?nif=${nif} `);
   };
 
   //Função de Pré-visualização de imagem
