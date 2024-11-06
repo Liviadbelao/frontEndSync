@@ -1,30 +1,31 @@
 "use client";
 
-//Importações
+// Importações
 import { useState } from "react";
 import api from "../../../src/config/configApi"; // Ajuste o caminho conforme necessário
 import Header from "@/app/components/header/Header";
 import Input from "@/app/components/input/input";
 import SendButton from "@/app/components/sendButton/SendButton";
 import { useRouter } from "next/navigation";
+import TelaCertinho from "@/app/components/telaCertinho/TelaCertinho";
 
-//Criando Página
+// Criando Página
 const LoginComponent = () => {
 
   const router = useRouter();
-  //Criando Estados
+  // Criando Estados
   const [nif, setNif] = useState("");
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [successImg, setSuccessImg] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false); // Estado para exibir TelaCertinho
 
   function clearFields() {
     setNif("");
     setEmail("");
   }
 
-  //Função de Login
+  // Função de Login
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -37,10 +38,12 @@ const LoginComponent = () => {
       if (response.data[0].adm) {
         console.log("Login bem-sucedido:", response.data);
         clearFields();
+        setShowSuccess(true); // Exibe o modal TelaCertinho
 
         // Atrasar redirecionamento por 2 segundos
         setTimeout(() => {
-          router.push(`/administracao/telaMenuAdm?nif=${response.data[0].nif}`)
+          setShowSuccess(false); // Oculta TelaCertinho
+          router.push(`/administracao/telaMenuAdm?nif=${response.data[0].nif}`);
         }, 2000); // 2 segundos de atraso
       } else {
         setErrorMessage("Acesso negado. O usuário não possui privilégios administrativos.");
@@ -63,16 +66,14 @@ const LoginComponent = () => {
     }
   };
 
-  //Corpo da Página
+  // Corpo da Página
   return (
     <div className="bg-white min-h-screen flex flex-col overflow-y-auto">
       <Header />
-      {successImg ? <Image
-        src="/images/success.svg"
-        alt="Sucesso"
-        width={400}
-        height={400}>
-      </Image> : null}
+      
+      {/* Exibe TelaCertinho se showSuccess for true */}
+      {showSuccess && <TelaCertinho onClose={() => setShowSuccess(false)} />}
+
       <div className="flex flex-col items-center justify-center">
         <div className="mb-24 mt-10">
           <text className="text-black text-3xl font-black">Login</text>
