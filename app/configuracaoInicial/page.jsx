@@ -99,6 +99,7 @@ const ConfigInicial = () => {
           {/* Faixa vermelha cobrindo a parte do professor */}
           <div className="relative">
             <div className="bg-red-700 h-24"></div> {/* Faixa vermelha */}
+            // Dentro da sua declaração de retorno
             <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4">
               <div className="flex items-center space-x-4">
                 <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center">
@@ -113,10 +114,18 @@ const ConfigInicial = () => {
                 </div>
 
                 <div>
-                  <h2 className="text-xl font-semibold text-white">
-                    {user.nome}
-                  </h2>
-                  <p className="text-sm text-gray-300">Professor</p>
+                  {user ? (
+                    <>
+                      <h2 className="text-xl font-semibold text-white">
+                        {user.nome}
+                      </h2>
+                      <p className="text-sm text-gray-300">Professor</p>
+                    </>
+                  ) : (
+                    <h2 className="text-xl font-semibold text-white">
+                      Usuário não encontrado
+                    </h2>
+                  )}
                 </div>
               </div>
             </div>
@@ -140,8 +149,8 @@ const ConfigInicial = () => {
                   <ToggleButton ativado={emailOn} setAtivado={setEmailOn} />
                 </div>
               </div>
-              <button className="bg-red-700 rounded" onClick={testar}> 
-                Salvar 
+              <button className="bg-red-700 rounded" onClick={testar}>
+                Salvar
               </button>
             </div>
           </div>
