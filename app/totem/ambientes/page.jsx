@@ -9,6 +9,7 @@ import { AiOutlineWifi } from "react-icons/ai";
 import { LuProjector } from "react-icons/lu";
 import { GiStaplerPneumatic } from "react-icons/gi";
 import { GiTheater } from "react-icons/gi";
+import Header from "@/app/components/header/Header";
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
@@ -87,6 +88,11 @@ const ambientes = () => {
     );
     return (
 
+        <div className=" bg-white min-h-screen ">
+          <Header/>
+            <p>Reserve sua sala:</p>
+
+
         <div className="p-10 bg-white min-h-screen">
             <p className="text-black">Reserve sua sala:</p>
             <input
@@ -99,8 +105,10 @@ const ambientes = () => {
             <div className="grid grid-cols-2 gap-4">
                 {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                     ambientesFiltrados.map((ambiente) => (
+
+                      
                         <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
-                            <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
+                            <img src={`http://localhost:3003${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
                             <div className="p-4">
                                 <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                 <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
