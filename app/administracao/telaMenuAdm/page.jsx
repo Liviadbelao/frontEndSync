@@ -17,7 +17,7 @@ const TelaMenuAdm = () => {
       try {
         const response = await api.get(`/usuarios/${nif}`);
         if (response.data) {
-          setUser(response.data);
+          setUser(response.data[0]);
         } else {
           setUser(null);
         }
