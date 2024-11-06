@@ -81,6 +81,10 @@ const GestaoAmbiente = () => {
     }
 
     const handleDeleteClick = (ambientes) => {
+        if (ambientes.disponivel == false) {
+            alert("O ambiente não está disponível para exclusão.");
+            return;
+        }
         setAmbienteParaExcluir(ambientes);
         setExcluirClicado(true);
     };
@@ -134,42 +138,6 @@ const GestaoAmbiente = () => {
                     />
                 </div>
                 {/* componentes */}
-                <GestaoAmbientes
-                    nome="Sala de Reuniões"
-                    imgSrc="/images/imgMenuAdm/gestaof.png"
-                    imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg"
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    
-                />
-                <GestaoAmbientes
-                    nome="Sala de Reuniões"
-                    imgSrc="/images/imgMenuAdm/gestaof.png"
-                    imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg"
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                />
-                <GestaoAmbientes
-                    nome="Sala de Reuniões"
-                    imgSrc="/images/imgMenuAdm/gestaof.png"
-                    imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg"
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                />
-                <GestaoAmbientes
-                    nome="Sala de Reuniões"
-                    imgSrc="/images/imgMenuAdm/gestaof.png"
-                    imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg"
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                />
-                <GestaoAmbientes
-                    nome="Sala de Reuniões"
-                    imgSrc="/images/imgMenuAdm/gestaof.png"
-                    imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg"
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                />
 
                 {dados && dados.length > 0 ? (
                     dados.map((ambiente) => (

@@ -33,7 +33,7 @@ const MonitoramentoAmbientes = () => {
                 src="/images/imgMenuAdm/btvoltar.png"
                 alt="botao voltar"
                 className="w-10 h-10 mb-5 cursor-pointer"
-                onClick={() => router.push(`/administracao/telaMenuAdm`)}
+                onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
             />
             <h1 className="text-center text-3xl font-bold text-black mb-10">Monitoramento de Ambientes</h1>
 
