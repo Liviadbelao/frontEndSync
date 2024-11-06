@@ -9,6 +9,7 @@ import { GiComputerFan } from "react-icons/gi";
 import { AiOutlineWifi } from "react-icons/ai";
 import { LuProjector } from "react-icons/lu";
 import MonitorDeInatividade from "@/app/components/timerInatividade/TimerInatividade";
+import ContagemRegressiva from "@/app/components/contagemRegressiva/ContagemRegressiva";
 
 const MonitoramentoAmbientes = () => {
     const [dados, setDados] = useState([]);

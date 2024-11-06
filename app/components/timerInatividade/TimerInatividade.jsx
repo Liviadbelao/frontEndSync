@@ -1,38 +1,39 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 function MonitorDeInatividade({ tempoInatividade = 10000 }) {
   const timerRef = useRef(null);
+  const [inativo, setInativo] = useState(false);
 
-  //Reseta o contador quando tem interatividade com a tela
   useEffect(() => {
     const resetTimer = () => {
       clearTimeout(timerRef.current);
+      setInativo(false); // Esconde a mensagem quando o usuário interage
       startTimer();
     };
 
-    //Alerta de inatividade
     const startTimer = () => {
       timerRef.current = setTimeout(() => {
-        alert('Você ainda está na páginsa deste componente?');
+        setInativo(true); // Mostra a mensagem quando o usuário está inativo
       }, tempoInatividade);
     };
 
-    // Ouvintes de eventos para detectar atividade dentro do componente
     const events = ['mousemove', 'keydown', 'click'];
-
     events.forEach((event) => window.addEventListener(event, resetTimer));
 
-    // Inicia o temporizador
     startTimer();
 
-    // Limpeza ao desmontar o componente
     return () => {
       clearTimeout(timerRef.current);
       events.forEach((event) => window.removeEventListener(event, resetTimer));
     };
   }, [tempoInatividade]);
 
-  return null; // Componente não precisa renderizar nada
+  return (
+    <div>
+      <h1>Monitor de Inatividade</h1>
+      {inativo && <p>Você ainda está na página deste componente?</p>}
+    </div>
+  );
 }
 
 export default MonitorDeInatividade;
