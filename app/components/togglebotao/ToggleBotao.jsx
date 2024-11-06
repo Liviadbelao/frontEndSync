@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const ToggleButton = () => {
-    const [isOn, setIsOn] = useState(false);
+const ToggleButton = ({ ativado, setAtivado }) => { // Desestruturando as props
 
     const handleClick = () => {
-        setIsOn(!isOn);
+        setAtivado(!ativado);
     };
 
     return (
-        <button 
-            className={`relative w-12 h-6 rounded-full flex items-center ${isOn ? 'bg-gray-500' : 'bg-green-500'}`} 
+        <button
+            className={`relative w-12 h-6 rounded-full flex items-center ${!ativado ? 'bg-gray-500' : 'bg-green-500'}`}
             onClick={handleClick}
         >
-            <div 
-                className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${isOn ? 'translate-x-1' : 'translate-x-8'}`}
+            <div
+                className={`absolute w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${!ativado ? 'translate-x-1' : 'translate-x-8'}`}
             ></div>
         </button>
     );
