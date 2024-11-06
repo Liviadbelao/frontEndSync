@@ -1,11 +1,16 @@
 "use client";
+
+//Importações
 import React, { useState, useEffect } from "react";
 import Header from "@/app/components/header/Header";
 import { useRouter, useSearchParams } from 'next/navigation';
 import GestaoUsuarios from "@/app/components/gestaoUsuarios/GestaoUsuarios";
 import api from "../../../src/config/configApi"; // Ajuste o caminho conforme necessário
 import ConcluirExclusao from "@/app/components/concluirExclusao/concluirExclusao";
+import { IoMdSearch } from "react-icons/io";
 
+
+//Iniciando página
 const GestaoUsuariosPage = () => {
   const [dados, setDados] = useState([]);
   const [user, setUser] = useState(null);
@@ -17,6 +22,7 @@ const GestaoUsuariosPage = () => {
   const searchParams = useSearchParams();
   const nif = searchParams.get('nif');
 
+  //Resgatando dados API
   useEffect(() => {
     async function fetchUser() {
       try {
@@ -41,6 +47,7 @@ const GestaoUsuariosPage = () => {
     }
   }, [nif]);
 
+  //Verificando se o nif é ADM
   useEffect(() => {
     if (!loading) {
       if (!user || !user.adm) {
@@ -50,6 +57,7 @@ const GestaoUsuariosPage = () => {
     }
   }, [loading, user, router]);
 
+  //Resgatando dados API
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
@@ -63,11 +71,13 @@ const GestaoUsuariosPage = () => {
     fetchUsuarios();
   }, []);
 
+  //Função de deletar usuário
   const handleDeleteClick = (usuario) => {
     setUsuarioParaExcluir(usuario);
     setExcluirClicado(true);
   };
 
+  //Confirmação de deletar usuário
   const handleConfirmDelete = async () => {
     try {
       await api.delete(`/usuarios/${usuarioParaExcluir.nif}`);
@@ -87,11 +97,11 @@ const GestaoUsuariosPage = () => {
 
   };
 
+  //Esperando dados
   if (loading) {
     return <div>Carregando...</div>;
   }
 
- 
    // Filtrar usuarios com base no texto do filtro
    const usuariosFiltrados = dados.filter(usuario =>
     usuario.nome.toLowerCase().includes(filtro.toLowerCase())
@@ -101,23 +111,29 @@ const GestaoUsuariosPage = () => {
   return (
     <div className="bg-white min-h-screen flex flex-col overflow-y-auto">
       <Header />
-      <input
-                type="text"
-                placeholder="Filtrar por nome do usuario"
-                value={filtro}
-                onChange={(e) => setFiltro(e.target.value)}
-                className="border p-2 mb-4"
-            />
       <img
         src="/images/imgMenuAdm/btvoltar.png"
         alt="botao voltar"
-        className="mr-10 cursor-pointer w-10 h-10 mt-2 ml-10"
+        className="mr-10 cursor-pointer w-10 h-10 mt-8 ml-10"
         onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
       />
 
       <h1 className="text-center text-3xl text-black font-bold mt-2 mb-8">
         Gestão de Usuarios
       </h1>
+
+      {/* Pesquisar */}
+      <div className=" flex border p-2 mx-28 mb-10 rounded-full">
+      <IoMdSearch className="text-black text-3xl m-1 " />
+
+      <input
+                type="text"
+                placeholder="Filtrar por nome do usuario"
+                value={filtro}
+                onChange={(e) => setFiltro(e.target.value)}
+                className="focus:outline-none w-full text-black"
+                />
+                </div>
 
       <div className="grid lg:grid-cols-4 gap-10 ml-16">
         <div className="flex items-center ml-10 mb-4">
