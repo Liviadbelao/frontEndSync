@@ -9,7 +9,6 @@ import { GiComputerFan } from "react-icons/gi";
 import { AiOutlineWifi } from "react-icons/ai";
 import { LuProjector } from "react-icons/lu";
 import MonitorDeInatividade from "@/app/components/timerInatividade/TimerInatividade";
-import ContagemRegressiva from "@/app/components/contagemRegressiva/ContagemRegressiva";
 
 const MonitoramentoAmbientes = () => {
     const [dados, setDados] = useState([]);
@@ -18,7 +17,7 @@ const MonitoramentoAmbientes = () => {
     useEffect(() => {
         async function fetchInfosAmbientes() {
             try {
-                const response = await api.get(`/historico`);
+                const response = await api.get(`/historico/infos`);
                 setDados(response.data);
                 console.log(response.data);
             } catch (error) {
@@ -45,14 +44,14 @@ const MonitoramentoAmbientes = () => {
                     dados.map((item) => (
                         <div key={item.id} className="bg-gray-100 w-64 shadow-md rounded-lg p-5 flex flex-col">
                             <img
-                                src={`http://localhost:3003${item.ambiente_imagem}`}
+                                src={`http://localhost:3033${item.imagem_ambiente}`}
                                 alt={item.nome_ambiente}
                                 className="h-40 w-22 rounded-lg object-cover mb-4"
                             />
                             <div className=" flex-col items-center">
-                                <p className="text-lg font-semibold text-black mb-2">{item.ambiente_nome}</p>
+                                <p className="text-lg font-semibold text-black mb-2">{item.nome_ambiente}</p>
                                 <div className="bg-red-700 w-15 h-1 mb-2"></div>
-                                <p className="text-sm font-semibold text-black mt-2">Usuário: {item.funcionario_nome}</p>
+                                <p className="text-sm font-semibold text-black mt-2">Usuário: {item.nome_usuario}</p>
                                 <p className="text-sm font-semibold text-black mt-2">
                                     Data Início: {new Date(item.data_inicio).toLocaleDateString()}
                                 </p>
