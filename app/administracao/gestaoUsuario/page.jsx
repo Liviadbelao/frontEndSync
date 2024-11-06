@@ -13,6 +13,7 @@ const GestaoUsuariosPage = () => {
   const [excluirClicado, setExcluirClicado] = useState(false);
   const [usuarioParaExcluir, setUsuarioParaExcluir] = useState(null); // Usuário selecionado para exclusão
   const router = useRouter();
+  const [filtro, setFiltro] = useState('');
   const searchParams = useSearchParams();
   const nif = searchParams.get('nif');
 
@@ -20,7 +21,7 @@ const GestaoUsuariosPage = () => {
     async function fetchUser() {
       try {
         const response = await api.get(`/usuarios/${nif}`);
-        if (response.data.length > 0) {
+        if (response.data) {
           setUser(response.data[0]);
         } else {
           setUser(null);
@@ -44,7 +45,7 @@ const GestaoUsuariosPage = () => {
     if (!loading) {
       if (!user || !user.adm) {
         alert("Nenhum usuário com esse NIF encontrado, redirecionando para login.");
-        router.push('/administracao/login');
+        
       }
     }
   }, [loading, user, router]);
@@ -90,10 +91,23 @@ const GestaoUsuariosPage = () => {
     return <div>Carregando...</div>;
   }
 
+ 
+   // Filtrar usuarios com base no texto do filtro
+   const usuariosFiltrados = dados.filter(usuario =>
+    usuario.nome.toLowerCase().includes(filtro.toLowerCase())
+    
+);
+
   return (
     <div className="bg-white min-h-screen flex flex-col overflow-y-auto">
       <Header />
-
+      <input
+                type="text"
+                placeholder="Filtrar por nome do usuario"
+                value={filtro}
+                onChange={(e) => setFiltro(e.target.value)}
+                className="border p-2 mb-4"
+            />
       <img
         src="/images/imgMenuAdm/btvoltar.png"
         alt="botao voltar"
@@ -115,8 +129,8 @@ const GestaoUsuariosPage = () => {
           />
         </div>
 
-        {dados && dados.length > 0 ? (
-          dados.map((usuario) => (
+        {usuariosFiltrados && usuariosFiltrados.length > 0 ? (
+          usuariosFiltrados.map((usuario) => (
             <GestaoUsuarios
               key={usuario.id}
               nome={usuario.nome}
