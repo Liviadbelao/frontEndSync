@@ -155,6 +155,7 @@ const ambientes = () => {
                 )}
             </div>
         </div>
+        </div>
     );
 };
 
