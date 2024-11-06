@@ -1,17 +1,30 @@
 "use client";
+
+//Importação
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import TopicosMenu from "@/app/components/topicosMenu/TopicosMenu";
 import Header from "@/app/components/header/Header";
 import api from "../../../src/config/configApi";
+import TelaCarregar from "@/app/components/telaCarregar/TelaCarregar";
 
+//Iniciando página
 const TelaMenuAdm = () => {
+
+  //criando estados
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [carregando, setCarregando] = useState(false)
   const router = useRouter();
   const searchParams = useSearchParams();
   const nif = searchParams.get("nif");
 
+  const redirecionar = (caminhoTela) => {
+    setCarregando(true)
+     router.push(`${caminhoTela}?nif=${nif}`)
+  }
+
+  //Importando dados API
   useEffect(() => {
     async function fetchUser() {
       try {
@@ -36,6 +49,7 @@ const TelaMenuAdm = () => {
     }
   }, [nif]);
 
+  //Caso nif nn seja de um usuário ADM
   useEffect(() => {
     if (!loading) {
       if (!user || !user.adm) {
@@ -47,6 +61,7 @@ const TelaMenuAdm = () => {
     }
   }, [loading, user, router]);
 
+  //Esperando página carregar
   if (loading) {
     return <div>Carregando...</div>;
   }
@@ -59,35 +74,36 @@ const TelaMenuAdm = () => {
       </h1>
       <div className="flex justify-center ml-40 mr-40 mt-4 mb-4 p-10 rounded-md bg-zinc-300 border-4 border-red-500">
         <div className="grid grid-cols-2 gap-10">
+
+        {/* Monitoramento Ambiente */}
           <TopicosMenu
             topicos="Monitoração de ambientes"
             imgSrc="/images/imgMenuAdm/monitoracao.png"
-            onClick={() => router.push(`/administracao/monitoramentoAmbientes?nif=${nif}`)}
+            onClick={() => redirecionar('/administracao/monitoramentoAmbientes')}
           />
+
+        {/* Gestão Ambiente */}
           <TopicosMenu
             topicos="Gestão de  ambientes"
             imgSrc="/images/imgMenuAdm/gestaol.png"
-            onClick={() =>
-              router.push(`/administracao/gestaoAmbiente?nif=${nif}`)
-            }
+            onClick={() => redirecionar('/administracao/gestaoAmbiente')}
           />
+
+        {/* Gestão Usuário */}
           <TopicosMenu
             topicos="Gestão de funcionários"
             imgSrc="/images/imgMenuAdm/gestaof.png"
-            onClick={() =>
-              router.push(`/administracao/gestaoUsuario?nif=${nif}`)
-            }
+            onClick={() => redirecionar('/administracao/gestaoUsuario')}
           />
+
+        {/* Reserva Ambiente */}
           <TopicosMenu
             topicos="Reserva de ambientes"
             imgSrc="/images/imgMenuAdm/reservaicon.png"
-            onClick={() => router.push(`/totem/ambientes?nif=${nif}`)}
+            onClick={() => redirecionar('/totem/ambientes')}
           />
-          <TopicosMenu
-            topicos="Controle de informações"
-            imgSrc="/images/imgMenuAdm/painel.png"
-            onClick={() => router.push("/administracao/")}
-          />
+
+        {/* Controle de Informações*/}
           <TopicosMenu
             topicos="Configuracaoes inicial"
             imgSrc="/images/imgMenuAdm/painel.png"
@@ -95,6 +111,7 @@ const TelaMenuAdm = () => {
           />
         </div>
       </div>
+      {carregando && <TelaCarregar />}
     </div>
   ) : null;
 };
