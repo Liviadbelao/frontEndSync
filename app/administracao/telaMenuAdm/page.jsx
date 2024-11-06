@@ -52,9 +52,9 @@ const TelaMenuAdm = () => {
   }
 
   return user && user.adm ? (
-    <div className="items-center justify-center min-h-screen">
+    <div className="bg-white items-center justify-center min-h-screen">
       <Header />
-      <h1 className="font-extrabold text-2xl text-center mt-4">
+      <h1 className=" text-black font-extrabold text-2xl text-center mt-4">
         O que deseja fazer?
       </h1>
       <div className="flex justify-center ml-40 mr-40 mt-4 mb-4 p-10 rounded-md bg-zinc-300 border-4 border-red-500">
@@ -81,7 +81,7 @@ const TelaMenuAdm = () => {
           <TopicosMenu
             topicos="Reserva de ambientes"
             imgSrc="/images/imgMenuAdm/reservaicon.png"
-            onClick={() => router.push("/administracao/")}
+            onClick={() => router.push(`/totem/ambientes?nif=${nif}`)}
           />
           <TopicosMenu
             topicos="Controle de informações"
