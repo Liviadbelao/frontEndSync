@@ -5,6 +5,7 @@ import Image from "next/image";
 import router from "next/router";
 import api from '../../../src/config/configApi';
 import MonitorDeInatividade from "@/app/components/timerInatividade/TimerInatividade";
+import ContagemRegressiva from "@/app/components/contagemRegressiva/ContagemRegressiva";
 
 const MonitoramentoAmbientes = () => {
   const [dados, setDados] = useState([]);
@@ -35,7 +36,8 @@ const MonitoramentoAmbientes = () => {
         Gestão de Ambientes
       </h1>
 
-      <MonitorDeInatividade tempoInatividade={6000} />
+      {/* <MonitorDeInatividade tempoInatividade={6000} /> */}
+      <ContagemRegressiva  tempoInicial = {3} />
 
       {dados.length > 0 ? (
         dados.map((dados) => (
