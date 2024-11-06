@@ -18,21 +18,21 @@ const ConcluirExclusao = ({ onClose, onConfirm, img, name }) => {
           onClick={(e) => e.stopPropagation()}
           className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[3%] shadow-lg w-[25%] h-[65%] p-16"
         >
-          <p className="text-black text-2xl mb-16">Deseja excluir {name}?</p>
+          <p className="text-black text-base ">Deseja excluir {name}?</p>
 
           <div classname={"flex items-center justify-center h-32"}>
-            <Image src={img} width={480} height={480} className="w-48 h-48 object-cover mt-24"/>
+            <Image src={img} width={480} height={480} className="w-48 h-48 object-cover rounded mt-7 "/>
           </div>
 
-          <div className="flex flex-row space-x-4 mt-24">
+          <div className="flex flex-row space-x-4 mt-10 ">
             <button
-              className="rounded-full bg-[#660b0b] text-2xl p-4 px-10 text-white"
+              className="rounded-full bg-[#b42424] text-2xl p-4 px-10 text-white"
               onClick={onConfirm}
             >
               Sim
             </button>
             <button
-              className="rounded-full bg-[#660b0b] text-2xl p-4 px-10 text-white"
+              className="rounded-full bg-[#b42424] text-2xl p-4 px-10 text-white"
               onClick={onClose}
             >
               Cancelar
