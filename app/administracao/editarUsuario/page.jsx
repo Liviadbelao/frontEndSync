@@ -2,7 +2,8 @@
 "use client";
 
 //Importações
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import api from "../../../src/config/configApi";
 import * as faceapi from "face-api.js";
@@ -11,16 +12,16 @@ import Input from "@/app/components/input/input";
 import SendButton from "@/app/components/sendButton/SendButton";
 import TelaCarregar from "@/app/components/telaCarregar/telaCarregar";
 
-import { useSearchParams } from 'next/navigation';
 //Criando Página
 const EditarUsuarioPage = () => {
 
-    const searchParams = useSearchParams();
-    const nif = searchParams.get('nif'); // 
-    const nifEdit = searchParams.get('nifEdit'); // 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const nif = searchParams.get('nif'); // 
+  const nifEdit = searchParams.get('nifEdit'); // 
 
-    console.log(nif, nifEdit);
-    
+  console.log(nif, nifEdit);
+
 
   const [image, setImage] = useState(null);
   const [nome, setNome] = useState('');
@@ -33,21 +34,21 @@ const EditarUsuarioPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    
+
     const fetchUsuario = async () => {
       try {
-        
+
         const response = await api.get(`/usuarios/${nifEdit}`);
         const usuario = response.data[0];
-        console.log('usuario',usuario);
-        
+        console.log('usuario', usuario);
+
         // Preenche os estados com os dados do usuário
         setNome(usuario.nome);
         setEmail(usuario.email);
         setTelefone(usuario.telefone);
         setAdm(usuario.adm);
         setPreview(usuario.caminho_imagem ? `http://localhost:3033${usuario.caminho_imagem}` : null);
-        
+
       } catch (error) {
         console.error("Erro ao buscar o usuário:", error);
       }
@@ -77,14 +78,14 @@ const EditarUsuarioPage = () => {
   const LimparInputs = () => {
 
     setImage(null);
-  setNome("");
-  setEmail("");
- setTelefone("");
-   setAdm(false);
-  setPreview("");
- 
- 
-   }
+    setNome("");
+    setEmail("");
+    setTelefone("");
+    setAdm(false);
+    setPreview("");
+
+
+  }
 
   //Função de Registro de Dados
   const uploadImage = async (e) => {
@@ -101,11 +102,11 @@ const EditarUsuarioPage = () => {
     formData.append("image", image);
 
     const usuarioEditado = {
-        nome,
-        email,
-        telefone,
-        adm,
-        image
+      nome,
+      email,
+      telefone,
+      adm,
+      image
     }
 
     try {
@@ -124,7 +125,7 @@ const EditarUsuarioPage = () => {
         console.log("Face descriptors:", descriptors.join(","));
         const response = await api.put(`/usuarios/${nifEdit}`, usuarioEditado);
         console.log(response);
-    setLoading(false); // Inicia o loader
+        setLoading(false); // Inicia o loader
 
       } else {
         console.log("No face detected");
@@ -159,7 +160,7 @@ const EditarUsuarioPage = () => {
     if (condicaoParaMarcar) {
       setAdm(true); // Marca a checkbox se a condição for atendida
     }
-  }, []); 
+  }, []);
 
   //Corpo da Página
   return (
@@ -167,11 +168,18 @@ const EditarUsuarioPage = () => {
 
     <div className="bg-white flex flex-col">
       <Header />
+      <img
+                src="/images/imgMenuAdm/btvoltar.png"
+                alt="botao voltar"
+                className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
+                onClick={() => router.push(`/administracao/gestaoUsuario?nif=${nif}`)}
+            />
+
       <div className="flex flex-col items-center justify-center">
         {/* Formulário de Cadastro de Usuário */}
         <div className="mb-24 mt-10">
           <text className="text-black text-3xl font-black">
-            Cadastrar usuário
+            Editar usuário
           </text>
         </div>
         <form
@@ -240,12 +248,12 @@ const EditarUsuarioPage = () => {
           )}
 
           <label>Administrador:</label>
-      <input
-        type="checkbox"
-        checked={adm} // Controla se o checkbox está marcado ou não
-        onChange={() => setAdm(!adm)} // Alterna o estado entre true/false
-      />
-          
+          <input
+            type="checkbox"
+            checked={adm} // Controla se o checkbox está marcado ou não
+            onChange={() => setAdm(!adm)} // Alterna o estado entre true/false
+          />
+
           {/* Loader */}
           <SendButton />
         </form>

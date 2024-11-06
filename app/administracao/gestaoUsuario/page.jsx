@@ -13,6 +13,7 @@ const GestaoUsuariosPage = () => {
   const [excluirClicado, setExcluirClicado] = useState(false);
   const [usuarioParaExcluir, setUsuarioParaExcluir] = useState(null); // Usuário selecionado para exclusão
   const router = useRouter();
+  const [filtro, setFiltro] = useState('');
   const searchParams = useSearchParams();
   const nif = searchParams.get('nif');
 
@@ -20,7 +21,7 @@ const GestaoUsuariosPage = () => {
     async function fetchUser() {
       try {
         const response = await api.get(`/usuarios/${nif}`);
-        if (response.data.length > 0) {
+        if (response.data) {
           setUser(response.data[0]);
         } else {
           setUser(null);
@@ -44,7 +45,7 @@ const GestaoUsuariosPage = () => {
     if (!loading) {
       if (!user || !user.adm) {
         alert("Nenhum usuário com esse NIF encontrado, redirecionando para login.");
-        router.push('/administracao/login');
+        
       }
     }
   }, [loading, user, router]);
@@ -80,25 +81,38 @@ const GestaoUsuariosPage = () => {
 
   // Função para redirecionar para a página de cadastro/edição
   const handleEditClick = (usuario) => {
-   // router.push(`/administracao/cadastroUsuario?nif=${usuario.nif}&isEdit=true`);
-   router.push(`/administracao/editarUsuario/?nif=${nif}&nifEdit=${usuario.nif}`);
-   console.log('nif passado', usuario.nif);
-   
+    // router.push(`/administracao/cadastroUsuario?nif=${usuario.nif}&isEdit=true`);
+    router.push(`/administracao/editarUsuario/?nif=${nif}&nifEdit=${usuario.nif}`);
+    console.log('nif passado', usuario.nif);
+
   };
 
   if (loading) {
     return <div>Carregando...</div>;
   }
 
+ 
+   // Filtrar usuarios com base no texto do filtro
+   const usuariosFiltrados = dados.filter(usuario =>
+    usuario.nome.toLowerCase().includes(filtro.toLowerCase())
+    
+);
+
   return (
     <div className="bg-white min-h-screen flex flex-col overflow-y-auto">
       <Header />
-
+      <input
+                type="text"
+                placeholder="Filtrar por nome do usuario"
+                value={filtro}
+                onChange={(e) => setFiltro(e.target.value)}
+                className="border p-2 mb-4"
+            />
       <img
-        src="/images/modal/fechar.png"
+        src="/images/imgMenuAdm/btvoltar.png"
         alt="botao voltar"
         className="mr-10 cursor-pointer w-10 h-10 mt-2 ml-10"
-        onClick={() => router.push("/administracao/telaMenuAdm")}
+        onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
       />
 
       <h1 className="text-center text-3xl text-black font-bold mt-2 mb-8">
@@ -111,12 +125,12 @@ const GestaoUsuariosPage = () => {
             src="/images/imgGestores/pessoa.png"
             alt="oi"
             className="mr-10 h-42 cursor-pointer"
-            onClick={() => router.push("/administracao/cadastroUsuario?isEdit=false")}
+            onClick={() => router.push(`/administracao/cadastroUsuario?nif=${nif}`)}
           />
         </div>
 
-        {dados && dados.length > 0 ? (
-          dados.map((usuario) => (
+        {usuariosFiltrados && usuariosFiltrados.length > 0 ? (
+          usuariosFiltrados.map((usuario) => (
             <GestaoUsuarios
               key={usuario.id}
               nome={usuario.nome}

@@ -27,6 +27,7 @@ const InputComponent = () => {
   const [adm, setAdm] = useState(false);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({}); // Estado para armazenar mensagens de erro
 
   //Função de Reconhecimento Facial
   useEffect(() => {
@@ -43,22 +44,44 @@ const InputComponent = () => {
       });
   }, []);
 
-
   const LimparInputs = () => {
+    setImage(null);
+    setNif("");
+    setNome("");
+    setEmail("");
+    setTelefone("");
+    setAdm(false);
+    setPreview("");
+    setErrors({});
+  };
 
-   setImage(null);
- setNif("");
- setNome("");
- setEmail("");
-setTelefone("");
-  setAdm(false);
- setPreview("");
+  // Função para validar os campos antes de enviar
+  const validateFields = () => {
+    const newErrors = {};
+    if (!nif) newErrors.nif = "O campo NIF é obrigatório!";
+    if (!nome) newErrors.nome = "O campo Nome é obrigatório!";
+    if (!email) newErrors.email = "O campo Email é obrigatório!";
+    if (!telefone) {
+      newErrors.telefone = "O campo Telefone é obrigatório!";
+    } else if (telefone.length !== 11) {
+      newErrors.telefone = "O telefone deve conter 11 números!";
+    }
+    if (!image) newErrors.image = "A imagem é obrigatória!";
+    setErrors(newErrors);
 
+    // Retorna true se não houver erros
+    return Object.keys(newErrors).length === 0;
+  };
 
-  }
-  //Função de Registro de Dados
+  // Função de Registro de Dados
   const uploadImage = async (e) => {
     e.preventDefault();
+
+    // Verifica se os campos estão válidos antes de prosseguir
+    if (!validateFields()) {
+      return;
+    }
+
     setLoading(true); // Inicia o loader
 
     const formData = new FormData();
@@ -87,8 +110,7 @@ setTelefone("");
         console.log("Face descriptors:", descriptors.join(","));
         const response = await api.post("/usuarios", formData);
         console.log(response);
-    setLoading(false); // Inicia o loader
-
+        setLoading(false);
       } else {
         console.log("No face detected");
       }
@@ -100,11 +122,11 @@ setTelefone("");
       }
     } finally {
       setLoading(false);
-      LimparInputs(); // Para o loader após completar o envio
+      LimparInputs(); // Limpa os campos após o envio
     }
   };
 
-  //Função de Pré-visualização de imagem
+  // Função de Pré-visualização de imagem
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
@@ -117,14 +139,19 @@ setTelefone("");
     }
   };
 
-  //Corpo da Página
-  return (
-    /* Div Principal */
+  // Limitar o campo de telefone a 11 dígitos
+  const handleTelefoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, ""); // Remove qualquer caractere não numérico
+    if (value.length <= 11) {
+      setTelefone(value);
+    }
+  };
 
+  // Corpo da Página
+  return (
     <div className="bg-white flex flex-col">
       <Header />
       <div className="flex flex-col items-center justify-center">
-        {/* Formulário de Cadastro de Usuário */}
         <div className="mb-24 mt-10">
           <text className="text-black text-3xl font-black">
             Cadastrar usuário
@@ -137,7 +164,6 @@ setTelefone("");
           {/* Campo de Nome */}
           <div className="w-[70%] m-2">
             <label>Nome:</label>
-
             <Input
               tipo={"text"}
               placeholder={"Nome"}
@@ -145,6 +171,7 @@ setTelefone("");
               onChange={(e) => setNome(e.target.value)}
               nome={"nome"}
             />
+            {errors.nome && <span className="text-red-500">{errors.nome}</span>}
           </div>
 
           {/* Campo de Telefone */}
@@ -154,9 +181,10 @@ setTelefone("");
               tipo={"number"}
               placeholder={"telefone"}
               valor={telefone}
-              onChange={(e) => setTelefone(e.target.value)}
+              onChange={handleTelefoneChange} // Usa a função para limitar os dígitos
               nome={"telefone"}
             />
+            {errors.telefone && <span className="text-red-500">{errors.telefone}</span>}
           </div>
 
           {/* Campo de Email */}
@@ -169,6 +197,7 @@ setTelefone("");
               onChange={(e) => setEmail(e.target.value)}
               nome={"email"}
             />
+            {errors.email && <span className="text-red-500">{errors.email}</span>}
           </div>
 
           {/* Campo de Nif */}
@@ -181,6 +210,7 @@ setTelefone("");
               onChange={(e) => setNif(e.target.value)}
               nome={"nif"}
             />
+            {errors.nif && <span className="text-red-500">{errors.nif}</span>}
           </div>
 
           {/* Campo de Imagem */}
@@ -192,8 +222,8 @@ setTelefone("");
               onChange={handleImageChange}
               nome={"imagem"}
             />
+            {errors.image && <span className="text-red-500">{errors.image}</span>}
           </div>
-          {/* Botão Para Envio */}
 
           {/* Pré-visualização da Imagem */}
           {preview && (
@@ -207,23 +237,18 @@ setTelefone("");
             </div>
           )}
 
+          {/* Campo de Administrador */}
           <label>Administrador : </label>
           <Input
             tipo={"checkbox"}
             placeholder={"Administrador"}
-            onChange={(e) => {
-              if (adm) {
-                setAdm(false);
-              } else {
-                setAdm(true);
-              }
-            }}
+            onChange={(e) => setAdm(!adm)}
             nome={"ADM"}
           />
+
           {/* Loader */}
           <SendButton />
         </form>
-
       </div>
       {loading && <TelaCarregar />}
     </div>
