@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import api from '../../../src/config/configApi';
 import { IoKeyOutline } from "react-icons/io5";
 import { TbAirConditioning } from "react-icons/tb";
@@ -13,6 +13,8 @@ import MonitorDeInatividade from "@/app/components/timerInatividade/TimerInativi
 const MonitoramentoAmbientes = () => {
     const [dados, setDados] = useState([]);
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const nif = searchParams.get("nif");
 
     useEffect(() => {
         async function fetchInfosAmbientes() {
@@ -33,11 +35,11 @@ const MonitoramentoAmbientes = () => {
                 src="/images/imgMenuAdm/btvoltar.png"
                 alt="botao voltar"
                 className="w-10 h-10 mb-5 cursor-pointer"
-                onClick={() => router.push(`/administracao/telaMenuAdm`)}
+                onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
             />
             <h1 className="text-center text-3xl font-bold text-black mb-10">Monitoramento de Ambientes</h1>
 
-           {/* <MonitorDeInatividade tempoInatividade={6000} /> */}
+            {/* <MonitorDeInatividade tempoInatividade={6000} /> */}
 
             <div className="grid  md:grid-cols-4 gap-8">
                 {dados.length > 0 ? (
