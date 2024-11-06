@@ -252,12 +252,6 @@ const EditAmbiente = () => {
                         <label>Ventilador:</label>
                         <input type="checkbox" checked={ventilador} onChange={() => setVentilador(!ventilador)} />
                     </div>
-
-                    <div className="w-[70%] m-2">
-                        <label>Disponível:</label>
-                        <input type="checkbox" checked={disponivel} onChange={() => setDisponivel(!disponivel)} />
-                    </div>
-
                     <button type="submit" className="mt-4 p-2 bg-blue-500 text-white rounded-md">Salvar Alterações</button>
                 </form>
 
