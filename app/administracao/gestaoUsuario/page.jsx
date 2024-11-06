@@ -149,6 +149,8 @@ const GestaoUsuariosPage = () => {
         <ConcluirExclusao
           onClose={() => setExcluirClicado(false)}
           onConfirm={handleConfirmDelete}
+          img={`http://localhost:3033${usuarioParaExcluir.caminho_imagem}`}
+          name={usuarioParaExcluir.nome}
         />
       )}
     </div>
