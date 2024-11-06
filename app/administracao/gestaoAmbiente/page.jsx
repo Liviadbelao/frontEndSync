@@ -134,7 +134,7 @@ const GestaoAmbiente = () => {
                     />
                 </div>
                 {/* componentes */}
-                <GestaoAmbientes
+                {/* <GestaoAmbientes
                     nome="Sala de Reuniões"
                     imgSrc="/images/imgMenuAdm/gestaof.png"
                     imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg"
@@ -169,7 +169,7 @@ const GestaoAmbiente = () => {
                     imgSrc2="/images/imgMenuAdm/senaimaquina2.jpg"
                     onEdit={handleEdit}
                     onDelete={handleDelete}
-                />
+                /> */}
 
                 {dados && dados.length > 0 ? (
                     dados.map((ambiente) => (
