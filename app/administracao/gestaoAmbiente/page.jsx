@@ -91,22 +91,22 @@ const GestaoAmbiente = () => {
 
     const handleConfirmDelete = async () => {
         try {
-          await api.delete(`/ambientes/${ambienteParaExcluir.numero_ambiente}`);
-          setDados(dados.filter((u) => u.numero_ambiente !== ambienteParaExcluir.numero_ambiente));
+            await api.delete(`/ambientes/${ambienteParaExcluir.numero_ambiente}`);
+            setDados(dados.filter((u) => u.numero_ambiente !== ambienteParaExcluir.numero_ambiente));
         } catch (error) {
-          console.error("Erro ao excluir o ambiete: ", error);
+            console.error("Erro ao excluir o ambiete: ", error);
         } finally {
-          setExcluirClicado(false);
+            setExcluirClicado(false);
         }
-      };
-    
-      // Função para redirecionar para a página de cadastro/edição
-      const handleEditClick = (ambiente) => {
+    };
+
+    // Função para redirecionar para a página de cadastro/edição
+    const handleEditClick = (ambiente) => {
         // Substitui duplicação de `id` e utiliza um único identificador
         router.push(`/administracao/editarAmbiente/?nif=${nif}&id=${ambiente.numero_ambiente}`);
         console.log('ID do ambiente passado:', ambiente.id);
     };
-    
+
 
     if (loading) {
         return <div>Carregando...</div>;
@@ -124,7 +124,7 @@ const GestaoAmbiente = () => {
             />
 
             <h1 className=" text-black text-center text-3xl	font-bold mt-2 mb-6">Gestão de Ambientes</h1>
-           
+
 
 
             {/* img para add ambiente */}
@@ -158,6 +158,8 @@ const GestaoAmbiente = () => {
                 <ConcluirExclusao
                     onClose={() => setExcluirClicado(false)}
                     onConfirm={handleConfirmDelete}
+                    img={`http://localhost:3033${ambienteParaExcluir.caminho_imagem}`}
+                    name={ambienteParaExcluir.nome}
                 />
             )}
 

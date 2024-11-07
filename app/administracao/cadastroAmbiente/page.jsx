@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import api from "../../../src/config/configApi";
 import SendButton from '@/app/components/sendButton/SendButton';
 import Header from '@/app/components/header/Header';
+import TelaCertinho from "@/app/components/telaCertinho/TelaCertinho"; // Importe a TelaCertinho
 
 const Ambiente = () => {
     const [nome, setNome] = useState("");
@@ -13,20 +14,21 @@ const Ambiente = () => {
     const [capacidade, setCapacidade] = useState(0);
     const [categorias, setCategorias] = useState([]);
     const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
-    const [disponivel, setDisponivel] = useState(true)
-    const [numeroAmbiente, setNumeroAmbiente] = useState(1)
-    const [chave, setChave] = useState(false)
+    const [disponivel, setDisponivel] = useState(true);
+    const [numeroAmbiente, setNumeroAmbiente] = useState(1);
+    const [chave, setChave] = useState(false);
     const [tipodoambiente, setTipodoambiente] = useState("");
-    const [arcondicionado, setArcondicionado] = useState(false)
-    const [ventilador, setVentilador] = useState(false)
-    const [wifi, setWifi] = useState(false)
-    const [projetor, setProjetor] = useState(false)
-    const [chaveeletronica, setChaveeletronica] = useState(false)
-    const [maquinas, setMaquinas] = useState(0)
-    const [numerochave, setNumerochave] = useState(0)
+    const [arcondicionado, setArcondicionado] = useState(false);
+    const [ventilador, setVentilador] = useState(false);
+    const [wifi, setWifi] = useState(false);
+    const [projetor, setProjetor] = useState(false);
+    const [chaveeletronica, setChaveeletronica] = useState(false);
+    const [maquinas, setMaquinas] = useState(0);
+    const [numerochave, setNumerochave] = useState(0);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [errors, setErrors] = useState({}); // Estado para armazenar mensagens de erro
+    const [errors, setErrors] = useState({});
+    const [showSuccess, setShowSuccess] = useState(false); // Estado para controlar a TelaCertinho
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -76,21 +78,17 @@ const Ambiente = () => {
         if (chave && !numerochave) newErrors.numerochave = "O número da chave é obrigatório!";
 
         setErrors(newErrors);
-
-        // Retorna true se não houver erros
         return Object.keys(newErrors).length === 0;
     };
 
     const postAmbiente = async (e) => {
         e.preventDefault();
 
-        // Verifica se os campos estão válidos antes de prosseguir
         if (!validateFields()) {
             return;
         }
 
         const formData = new FormData();
-    
         formData.append("nome", nome);
         formData.append("numero_ambiente", numeroAmbiente);
         formData.append("chave", chave);
@@ -105,7 +103,7 @@ const Ambiente = () => {
         formData.append("disponivel", disponivel);
         formData.append("categoria", categoriaSelecionada);
         formData.append("image", imagem);
-    
+
         try {
             const response = await api.post("/ambientes", formData);
             console.log(response);
@@ -119,7 +117,9 @@ const Ambiente = () => {
                 console.log(chaveResponse);
             }
             limparInputs();
-            window.location.reload();
+            setShowSuccess(true); // Exibe a TelaCertinho
+            setTimeout(() => setShowSuccess(false), 2000); // Oculta após 2 segundos
+            router.push(`/administracao/gestaoAmbiente?nif=${nif}`); // Redireciona após a exibição da TelaCertinho
         } catch (err) {
             if (err.response) {
                 console.log(err.response);
@@ -163,12 +163,13 @@ const Ambiente = () => {
     return (
         <div className="bg-white min-h-screen flex flex-col overflow-y-auto ">
             <Header />
+            {showSuccess && <TelaCertinho onClose={() => setShowSuccess(false)} />} {/* Exibe TelaCertinho */}
             <img
-                    src="/images/imgMenuAdm/btvoltar.png"
-                    alt="botao voltar"
-                    className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
-                    onClick={() => router.push(`/administracao/gestaoAmbiente?nif=${nif}`)}
-                />
+                src="/images/imgMenuAdm/btvoltar.png"
+                alt="botao voltar"
+                className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
+                onClick={() => router.push(`/administracao/gestaoAmbiente?nif=${nif}`)}
+            />
 
             <div className="flex flex-col items-center justify-center">
                 <p className="font-normal md:font-bold mt-40 text-2xl">Cadastro de Ambiente</p>
