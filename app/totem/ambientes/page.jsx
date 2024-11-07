@@ -108,7 +108,7 @@ const ambientes = () => {
 
                       
                         <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
-                            <img src={`http://localhost:3003${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
+                            <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
                             <div className="p-4">
                                 <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                 <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
