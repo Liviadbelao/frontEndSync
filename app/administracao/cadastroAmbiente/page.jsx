@@ -36,8 +36,8 @@ const Ambiente = () => {
         async function fetchUser() {
             try {
                 const response = await api.get(`/usuarios/${nif}`);
-                if (response.data.length > 0) {
-                    setUser(response.data[0]);
+                if (response.data) {
+                    setUser(response.data);
                 } else {
                     setUser(null);
                 }
