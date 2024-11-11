@@ -113,7 +113,14 @@ const ambientes = () => {
         <div className=" bg-white min-h-screen ">
             <Header />
 
-            <p>teste</p>
+            <img
+        src="/images/imgMenuAdm/btvoltar.png"
+        alt="botao voltar"
+        className="mr-10 cursor-pointer w-10 h-10 mt-8 ml-10"
+        onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
+      />
+
+           
 
         {
             ambientesReservados && ambientesReservados.length > 0 ? (
@@ -131,7 +138,6 @@ const ambientes = () => {
         }
 
 
-            <p>Reserve sua sala:</p>
 
 
             <div className="p-10 bg-white min-h-screen">
