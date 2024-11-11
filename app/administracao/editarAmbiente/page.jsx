@@ -323,7 +323,7 @@ const EditAmbiente = () => {
                                 className="w-full pl-3 pr-10 py-2 mt-1 border rounded-lg appearance-none bg-white text-gray-700 focus:outline-none focus:border-blue-500"
                             >
                                 <option value="">Selecione o tipo de ambiente</option>
-                                <option value="blocooficina">Bloco Oficina</option>
+                                <option value="interno">Interno</option>
                                 <option value="externo">Externo</option>
                             </select>
                             <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
