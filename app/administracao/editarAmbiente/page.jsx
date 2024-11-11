@@ -6,8 +6,9 @@ import api from "../../../src/config/configApi";
 import Header from '@/app/components/header/Header';
 import Input from "@/app/components/input/input";
 import Image from "next/image";
-import SendButton from "@/app/components/sendButton/SendButton";
 import TelaCarregar from "@/app/components/telaCarregar/telaCarregar";
+import TelaCertinho from "@/app/components/telaCertinho/TelaCertinho";
+
 
 const EditAmbiente = () => {
     const [nome, setNome] = useState("");
@@ -28,6 +29,7 @@ const EditAmbiente = () => {
     const [numerochave, setNumerochave] = useState(0);
     const [loading, setLoading] = useState(true);
     const [preview, setPreview] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false); // Estado para exibir TelaCertinho
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -93,6 +95,12 @@ const EditAmbiente = () => {
         } finally {
             setLoading(false);
             limparInputs();
+            setShowSuccess(true); // Exibe a TelaCertinho
+
+            setTimeout(() => {
+                setShowSuccess(false); // Oculta a TelaCertinho
+                router.push(`/administracao/gestaoAmbiente?nif=${nif}`);
+            }, 2000); // 2 segundos de atraso
         }
     };
 
@@ -103,6 +111,10 @@ const EditAmbiente = () => {
             setPreview(URL.createObjectURL(file));
         }
     };
+
+    function cancelar() {
+        router.push(`/administracao/gestaoAmbiente?nif=${nif}`);
+    }
 
     const limparInputs = () => {
         setNome("");
@@ -134,6 +146,7 @@ const EditAmbiente = () => {
     return (
         <div className="bg-white min-h-screen flex flex-col overflow-y-auto">
             <Header />
+            {showSuccess && <TelaCertinho onClose={() => setShowSuccess(false)} />} {/* Exibe TelaCertinho */}
             <img
                 src="/images/imgMenuAdm/btvoltar.png"
                 alt="botao voltar"
@@ -252,7 +265,10 @@ const EditAmbiente = () => {
                         <label>Ventilador:</label>
                         <input type="checkbox" checked={ventilador} onChange={() => setVentilador(!ventilador)} />
                     </div>
-                    <button type="submit" className="mt-4 p-2 bg-blue-500 text-white rounded-md">Salvar Alterações</button>
+                    <div className="flex justify-between w-96 mb-4">
+                    <button type="submit" className="mt-4 w-36 p-2 bg-red-600 text-lg text-white rounded-full">Salvar</button>
+                    <button type="button" onClick={cancelar} className="mt-4 w-36 p-2 bg-red-600 text-lg text-white rounded-full">Cancelar </button>
+                    </div>
                 </form>
 
             </div>
