@@ -100,7 +100,7 @@ const TelaMenuAdm = () => {
           <TopicosMenu
             topicos="Reserva de ambientes"
             imgSrc="/images/imgMenuAdm/reservaicon.png"
-            onClick={() => redirecionar('/totem/ambientes')}
+            onClick={() => redirecionar('/administracao/ambientes')}
           />
 
         {/* Controle de Informações*/}
