@@ -37,8 +37,44 @@ const EditAmbiente = () => {
     const [preview, setPreview] = useState(null);
     const router = useRouter();
     const searchParams = useSearchParams();
+    const nif = searchParams.get("nif");
     const ambienteId = searchParams.get('id');
-    const nif = searchParams.get('nif');
+
+    useEffect(() => {
+        async function fetchUser() {
+          try {
+            const response = await api.get(`/usuarios/${nif}`);
+            if (response.data) {
+              setUser(response.data);
+            } else {
+              setUser(null);
+            }
+          } catch (error) {
+            console.error("Erro ao buscar o usuário: ", error);
+            setUser(null);
+          } finally {
+            setLoading(false);
+          }
+        }
+    
+        if (nif) {
+          fetchUser();
+        } else {
+          setLoading(false);
+        }
+      }, [nif]);
+    
+      //Caso nif nn seja de um usuário ADM
+      useEffect(() => {
+        if (!loading) {
+          if (!user || !user.adm) {
+            alert(
+              "Nenhum usuário com esse NIF encontrado, redirecionando para login."
+            );
+            router.push("/administracao/login");
+          }
+        }
+      }, [loading, user, router]);
 
     useEffect(() => {
         async function fetchAmbiente() {
