@@ -155,7 +155,8 @@ const ambientes = () => {
                 )}
             </div>
         </div>
+        </div>
     );
-};
+}
 
 export default ambientes;
