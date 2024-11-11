@@ -49,7 +49,7 @@ export default function BasicModal({ nomeSala, imgSala, nif }) {
             onClick={fecharModal}
             src="/images/modal/fechar.png"
             alt="Fechar modal"
-            className="absolute -top-6 -left-8 w-14 "
+            className="absolute -top-6 -left-8 w-14 h-14 "
           />
 
           {devolver ? (
