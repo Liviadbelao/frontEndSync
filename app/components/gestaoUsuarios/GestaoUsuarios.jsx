@@ -1,7 +1,7 @@
 import Image from "next/image";
 import ConcluirExclusao from "../concluirExclusao/ConcluirExclusao";
 
-const GestaoUsuarios = ({ nome, cargo, imgGestor, editar, excluir, nif }) => {
+const GestaoUsuarios = ({ nome, cargo, imgGestor, editar, excluir, nif, vermais }) => {
   return (
     <div className="w-60 h-80 max-w-sm bg-gray-200 rounded-lg mb-4 ">
       <div className="flex items-center justify-center h-32  " >
@@ -26,6 +26,12 @@ const GestaoUsuarios = ({ nome, cargo, imgGestor, editar, excluir, nif }) => {
             onClick={excluir}
           >
             Excluir
+          </button>
+          <button
+            className="bg-[#b42424]  text-white px-4 py-2 rounded-md"
+            onClick={vermais}
+          >
+            Ver mais
           </button>
         </div>
       </div>
