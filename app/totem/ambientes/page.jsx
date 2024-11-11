@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import api from "../../../src/config/configApi";
+import BasicModal from "@/app/components/modal/modal";
+import Header from "@/app/components/header/Header";
 import { IoKeyOutline } from "react-icons/io5";
 import { TbAirConditioning } from "react-icons/tb";
 import { GiComputerFan } from "react-icons/gi";
@@ -9,9 +11,7 @@ import { AiOutlineWifi } from "react-icons/ai";
 import { LuProjector } from "react-icons/lu";
 import { GiStaplerPneumatic } from "react-icons/gi";
 import { GiTheater } from "react-icons/gi";
-import BasicModal from "@/app/components/modal/modal";
 
-import Header from "@/app/components/header/Header";
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
@@ -22,6 +22,7 @@ const ambientes = () => {
     const searchParams = useSearchParams();
     const nif = searchParams.get('nif');
     const [ambientesReservados, setAmbientesReservados] = useState([]);
+    const [modaisAbertos, setModaisAbertos] = useState([]);  // Controle do estado dos modais
 
     useEffect(() => {
         async function fetchUser() {
@@ -69,7 +70,6 @@ const ambientes = () => {
                 console.error("Error fetching data:", error);
             }
         }
-
     }
 
     useEffect(() => {
@@ -78,6 +78,8 @@ const ambientes = () => {
                 const response = await api.get(`/historico/${nif}`);
                 setAmbientesReservados(response.data);
                 console.log(response.data);
+                // Abrir automaticamente os modais para os ambientes reservados
+                setModaisAbertos(response.data.map(item => item.ambiente)); // Armazena quais modais devem ser abertos
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -87,7 +89,6 @@ const ambientes = () => {
             fetchHistoricoFromUser();
         }
     }, [nif]);
-
 
     useEffect(() => {
         const fetchAmbientes = async () => {
@@ -101,34 +102,32 @@ const ambientes = () => {
 
         fetchAmbientes();
     }, []);
+
     // Filtrar ambientes com base no texto do filtro
     const ambientesFiltrados = dados.filter(ambiente =>
         ambiente.nome.toLowerCase().includes(filtro.toLowerCase())
     );
 
     return (
-
         <div className=" bg-white min-h-screen ">
             <Header />
 
-        {
-            ambientesReservados && ambientesReservados.length > 0 ? (
-                <>
-                    {ambientesReservados.map((ambiente) => (
-                        <BasicModal
-                            key={ambiente.ambiente_nome}
-                            nomeSala={ambiente.ambiente_nome}
-                            imgSala={`http://localhost:3033${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
-                            nif={nif} // Passe o nif do usuário
-                        />
-                    ))}
-                </>
-            ) : null
-        }
-
-
-            <p>Reserve sua sala:</p>
-
+            {
+                ambientesReservados && ambientesReservados.length > 0 ? (
+                    <>
+                        {ambientesReservados.map((ambiente) => (
+                            <BasicModal
+                                key={ambiente.ambiente_nome}
+                                nomeSala={ambiente.ambiente_nome}
+                                imgSala={`http://localhost:3033${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
+                                nif={nif} // Passe o nif do usuário
+                                open={modaisAbertos.includes(ambiente.ambiente)}  // Verifica se o modal está aberto para este ambiente
+                                handleClose={() => setModaisAbertos(modaisAbertos.filter(id => id !== ambiente.ambiente))}  // Fecha o modal quando necessário
+                            />
+                        ))}
+                    </>
+                ) : null
+            }
 
             <div className="p-10 bg-white min-h-screen">
                 <p className="text-black">Reserve sua sala:</p>
@@ -142,19 +141,11 @@ const ambientes = () => {
                 <div className="grid grid-cols-2 gap-4">
                     {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                         ambientesFiltrados.map((ambiente) => (
-
-
                             <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
                                 <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
                                 <div className="p-4">
                                     <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                     <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                                    {
-                                        ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black " /> : null
-                                    }
-                                    {
-                                        ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null
-                                    }
                                     <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
                                 </div>
                                 <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">

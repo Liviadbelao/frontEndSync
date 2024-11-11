@@ -1,94 +1,42 @@
-''
 import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import { useRouter } from "next/navigation";
 
-export default function BasicModal({ nomeSala, imgSala, nif }) {
-  const router = useRouter();
-  const [open, setOpen] = React.useState(false); // Controle do estado do modal
-  const [devolver, setDevolver] = React.useState(false);
-
-  // UseEffect para abrir o modal assim que o componente for montado
-  React.useEffect(() => {
-    setOpen(true); // Esse código irá abrir o modal ao carregar o componente
-  }, []);
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const fecharModal = () => {
-    handleClose();
-    router.push(`/totem/ambientes?nif=${nif}`);
-  };
-
-  const cliqueDevolver = () => {
-    setDevolver(true);
-  };
-
-  const reservarOutraSala = () => {
-    handleClose();
-    router.push(`/totem/ambientes?nif=${nif}`);
-  };
+export default function BasicModal({ nomeSala, imgSala, nif, open, handleClose }) {
+  const router = useRouter();  // Hook do Next.js para navegar entre rotas
 
   return (
     <div>
+      {/* Componente Modal do Material UI, aberto se open=true */}
       <Modal
-        open={open} // Certifique-se de que `open` está sendo passado corretamente
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+        open={open}  // Controla se o modal está visível
+        onClose={handleClose}  // Função para fechar o modal ao clicar fora
+        aria-labelledby="modal-modal-title"  // Acessibilidade: título do modal
+        aria-describedby="modal-modal-description"  // Acessibilidade: descrição do modal
         BackdropProps={{
-          style: { pointerEvents: 'none' }
+          style: { backgroundColor: 'transparent' } // Define o fundo do modal como transparente
         }}
       >
         <div
-          onClick={(e) => e.stopPropagation()}
-          className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[3%] shadow-lg w-[70%] h-[60%] p-16"
+          onClick={(e) => e.stopPropagation()}  // Evita fechar o modal ao clicar na div
+          className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg w-full max-w-md p-8"
         >
+          {/* Imagem de fechar modal */}
           <img
-            onClick={fecharModal}
-            src="/images/modal/fechar.png"
-            alt="Fechar modal"
-            className="absolute -top-6 -left-8 w-14 h-14 "
+            onClick={handleClose}  // Fecha o modal ao clicar na imagem
+            src="/images/modal/fechar.png"  // Ícone de fechar modal
+            className="absolute top-4 right-4 w-8 h-8 cursor-pointer"
+            alt="Fechar"
           />
-
-          {devolver ? (
-            <>
-              <p className="text-black font-bold text-center text-4xl mb-8">
-                Deseja reservar sala pré-definida?
-              </p>
-              <button
-                className="mt-16 rounded-full bg-[#E30613] text-2xl p-4 px-10 text-white"
-                onClick={reservarOutraSala}
-              >
-                Reservar outra sala
-              </button>
-            </>
-          ) : (
-            <>
-              <p className="text-black font-bold text-center text-4xl mb-8">
-                Você tem chaves pendentes!
-              </p>
-              <div className="flex items-center justify-between">
-                <div className="overflow-x-auto whitespace-nowrap w-full no-scrollbar mx-2">
-                  <div className="inline-block mr-6 text-center">
-                    <img
-                      src={imgSala}
-                      alt="Imagem da sala"
-                      className="object-cover rounded-2xl h-100 w-100" 
-                    />
-                    <p className="text-black mt-2 text-2xl">{nomeSala}</p>
-                  </div>
-                </div>
-              </div>
-              <button
-                className="mt-16 rounded-full bg-[#E30613] text-2xl p-3 px-10 text-white"
-                onClick={cliqueDevolver}
-              >
-                Devolver Chave
-              </button>
-            </>
-          )}
+          <div>
+            <img src={imgSala} alt="Imagem do ambiente" className="h-[150px] w-[500px] rounded-lg" />
+            <div className="p-4">
+              <p className="font-semibold text-xl">{nomeSala}</p>
+            </div>
+            <button onClick={handleClose} className="bg-[#9A1915] text-white p-2 rounded-full">
+              Fechar Modal
+            </button>
+          </div>
         </div>
       </Modal>
     </div>
