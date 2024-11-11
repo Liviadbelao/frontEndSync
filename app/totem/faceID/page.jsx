@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 const faceID = () => {
 
   const router = useRouter();
-
+  const [loading, setLoading] = useState(true);
   const [funcionarios, setFuncionarios] = useState([]);
   const videoRef = useRef(null);
 
@@ -115,25 +115,43 @@ const faceID = () => {
   }, [funcionarios]);  
 
   return (
-    <div className='bg-[#9A1915] h-screen fixed w-screen'>
-      <div className='mt-20 '>
-        <img src={"/images/logoSenai/logo.png"} width={200} height={300} className='m-auto'/>
-        <p className='text-white text-4xl text-center mt-10'>Seja Bem Vindo!</p>
-      </div>
-      <div className="flex justify-center items-center mt-[20%]">
-        <div className="w-[500px] h-[500px] overflow-hidden rounded-full border-4 border-white flex items-center justify-center">
-          <video 
-            className="w-full h-full object-cover" 
-            ref={videoRef} 
-            autoPlay 
-            muted
-            width={200}
-            height={200}
-          />
-        </div>
-      </div>
-      <p className='text-white text-4xl text-center mt-20'>Aguarde alguns instantes...</p>
+    <div className="bg-[#9A1915] h-screen fixed w-screen">
+    <div className="mt-20">
+      <img src={"/images/logoSenai/logo.png"} width={200} height={300} className="m-auto" />
+      <p className="text-white text-4xl text-center mt-10">Seja Bem Vindo!</p>
     </div>
+
+    <div className="flex justify-center items-center mt-[20%] relative">
+      {/* Loader sobre o vídeo */}
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center z-10">
+          <div className="relative w-[540px] h-[540px] flex justify-center items-center">
+            {/* Loader Circular com rotação */}
+            <div className="relative w-[540px] h-[540px] border-4 border-[#3c3c3c] border-t-4 border-t-[#fff] border-solid rounded-full animate-spin">
+              {/* Ponto no centro */}
+              <span className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-[#fff] rounded-full shadow-lg"></span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Câmera visível o tempo todo, com z-index maior que o loader */}
+      <div className="relative w-[500px] h-[500px] overflow-hidden rounded-full flex items-center justify-center z-20">
+        <video
+          className="relative z-30 w-full h-full object-cover rounded-full"
+          ref={videoRef}
+          autoPlay
+          muted
+          width={500}
+          height={500}
+        />
+      </div>
+    </div>
+
+    <p className="text-white text-4xl text-center mt-20">
+      {loading ? 'Aguarde alguns instantes...' : 'Reconhecimento em andamento...'}
+    </p>
+  </div>
   );
 };
 
