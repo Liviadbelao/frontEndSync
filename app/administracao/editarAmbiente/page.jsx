@@ -89,12 +89,15 @@ const EditAmbiente = () => {
                 setTipodoambiente(ambiente.tipodoambiente);
                 setMaquinas(ambiente.maquinas);
                 setChave(ambiente.chave);
-                setNumerochave(ambiente.numero_ambiente);
                 setArcondicionado(ambiente.ar_condicionado);
                 setVentilador(ambiente.ventilador);
                 setWifi(ambiente.wifi);
                 setProjetor(ambiente.projetor);
                 setChaveeletronica(ambiente.chave_eletronica);
+                if (ambiente.chave) {
+                    const chave = await api.get(`/chaves/${ambiente.numero_ambiente}`);
+                    setNumerochave(chave.data[0].id);
+                }
             } catch (error) {
                 console.error("Erro ao buscar o ambiente: ", error);
             } finally {
