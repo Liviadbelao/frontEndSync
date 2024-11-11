@@ -126,11 +126,11 @@ const EditAmbiente = () => {
         formData.append("disponivel", disponivel);
         formData.append("categoria", categoriaSelecionada);
         formData.append("image", imagem);
+        formData.append("chaveNumero", numerochave);
 
         try {
             const response = await api.put(`/ambientes/${ambienteId}`, formData);
             console.log(response);
-            router.push(`/administracao/gestaoAmbiente?nif=${nif}`);
         } catch (err) {
             console.error("Erro ao atualizar o ambiente:", err);
         } finally {
