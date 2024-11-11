@@ -52,7 +52,7 @@ const GestaoUsuariosPage = () => {
     if (!loading) {
       if (!user || !user.adm) {
         alert("Nenhum usuário com esse NIF encontrado, redirecionando para login.");
-        
+        router.push('/administracao/login');
       }
     }
   }, [loading, user, router]);
