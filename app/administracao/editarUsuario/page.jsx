@@ -97,17 +97,10 @@ const EditarUsuarioPage = () => {
     formData.append("email", email);
     formData.append("telefone", telefone);
     formData.append("adm", adm);
-    formData.append("notification", notification);
+    formData.append("notificacao", notification);
     formData.append("notiwhere", notiwhere);
     formData.append("image", image);
-
-    const usuarioEditado = {
-      nome,
-      email,
-      telefone,
-      adm,
-      image
-    }
+    console.log(image)
 
     try {
       const img = await faceapi.fetchImage(preview);
@@ -123,7 +116,7 @@ const EditarUsuarioPage = () => {
 
         formData.append("descriptor", descriptor);
         console.log("Face descriptors:", descriptors.join(","));
-        const response = await api.put(`/usuarios/${nifEdit}`, usuarioEditado);
+        const response = await api.put(`/usuarios/${nifEdit}`, formData);
         console.log(response);
         setLoading(false); // Inicia o loader
 
