@@ -1,44 +1,102 @@
-import * as React from 'react';
+import React from 'react';
 import Modal from '@mui/material/Modal';
-import { useRouter } from "next/navigation";
+import { IoClose } from 'react-icons/io5';
+import api from '../../../src/config/configApi';
 
-export default function BasicModal({ nomeSala, imgSala, nif, open, handleClose }) {
-  const router = useRouter();  // Hook do Next.js para navegar entre rotas
+export default function BasicModal({
+  nomeSala,
+  imgSala,
+  nif,
+  open,
+  handleClose,
+  atualizarChavesPendentes
+}) {
+  
+  // Função para devolver todas as chaves
+  const devolverTodasAsChaves = async () => {
+    try {
+      // Chama a API para devolver todas as chaves do usuário
+      const response = await api.delete(`/historico/${nif}`);  // Chama o endpoint correto para remover todas as chaves
+
+      // Verificar se a requisição foi bem-sucedida
+      if (response.status === 200) {
+        // Atualiza o estado para refletir que não há mais chaves pendentes
+        if (atualizarChavesPendentes && typeof atualizarChavesPendentes === 'function') {
+          atualizarChavesPendentes();  // Atualiza o estado no componente pai
+        }
+
+        // Fecha o modal após a ação
+        handleClose();
+      } else {
+        console.error("Erro ao devolver as chaves");
+      }
+    } catch (error) {
+      console.error("Erro ao devolver todas as chaves:", error);
+      alert("Erro ao tentar devolver as chaves. Tente novamente.");
+    }
+  };
 
   return (
-    <div>
-      {/* Componente Modal do Material UI, aberto se open=true */}
-      <Modal
-        open={open}  // Controla se o modal está visível
-        onClose={handleClose}  // Função para fechar o modal ao clicar fora
-        aria-labelledby="modal-modal-title"  // Acessibilidade: título do modal
-        aria-describedby="modal-modal-description"  // Acessibilidade: descrição do modal
-        BackdropProps={{
-          style: { backgroundColor: 'transparent' } // Define o fundo do modal como transparente
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+      BackdropProps={{
+        style: { backgroundColor: 'transparent' } // Desfoque de fundo
+      }}
+      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} // Centraliza o modal
+    >
+      <div
+        onClick={(e) => e.stopPropagation()} // Impede o fechamento ao clicar dentro do modal
+        className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative transition-transform transform"
+        style={{
+          animation: 'fadeIn 0.3s ease-in-out' // Transição suave para abrir
         }}
       >
-        <div
-          onClick={(e) => e.stopPropagation()}  // Evita fechar o modal ao clicar na div
-          className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-lg w-full max-w-md p-8"
-        >
-          {/* Imagem de fechar modal */}
-          <img
-            onClick={handleClose}  // Fecha o modal ao clicar na imagem
-            src="/images/modal/fechar.png"  // Ícone de fechar modal
-            className="absolute top-4 right-4 w-8 h-8 cursor-pointer"
-            alt="Fechar"
-          />
-          <div>
-            <img src={imgSala} alt="Imagem do ambiente" className="h-[150px] w-[500px] rounded-lg" />
-            <div className="p-4">
-              <p className="font-semibold text-xl">{nomeSala}</p>
-            </div>
-            <button onClick={handleClose} className="bg-[#9A1915] text-white p-2 rounded-full">
-              Fechar Modal
-            </button>
-          </div>
+        {/* Ícone de fechar */}
+        <IoClose
+          onClick={handleClose}
+          className="absolute top-4 right-4 w-6 h-6 cursor-pointer text-gray-600 hover:text-red-600 transition-colors duration-200"
+        />
+
+        {/* Imagem do ambiente */}
+        <img
+          src={imgSala}
+          alt={nomeSala}
+          className="w-full h-40 object-cover rounded-md mb-4" // Imagem mais estilizada
+        />
+
+        {/* Título do ambiente */}
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
+          {nomeSala}
+        </h2>
+
+        {/* Descrição e detalhes do ambiente */}
+        <p className="text-sm text-gray-600 mb-6 text-center">
+          Ambiente reservado com sucesso! Aproveite sua reserva e tenha uma ótima experiência.
+        </p>
+
+        {/* Botões de ação */}
+        <div className="flex justify-center gap-4">
+          {/* Botão para devolver uma chave */}
+          <button
+            onClick={handleClose}
+            className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
+          >
+            Devolver chave
+          </button>
+
+          {/* Botão para devolver todas as chaves */}
+          <button
+            onClick={devolverTodasAsChaves}
+            className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
+          >
+            Devolver todas as chaves
+          </button>
         </div>
-      </Modal>
-    </div>
+      </div>
+    </Modal>
   );
 }
+  
