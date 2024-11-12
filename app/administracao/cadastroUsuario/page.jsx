@@ -12,6 +12,7 @@ import SendButton from "@/app/components/sendButton/SendButton";
 import "ldrs/ring";
 import { hourglass } from "ldrs";
 import TelaCarregar from "@/app/components/telaCarregar/telaCarregar";
+import { useRouter, useSearchParams } from "next/navigation";
 
 //Criando Página
 const InputComponent = () => {
@@ -26,8 +27,50 @@ const InputComponent = () => {
   const [notiwhere, setNotiwhere] = useState(0);
   const [adm, setAdm] = useState(false);
   const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({}); // Estado para armazenar mensagens de erro
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [carregando, setCarregando] = useState(false)
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const nif2 = searchParams.get("nif");
+
+  //Importando dados API
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await api.get(`/usuarios/${nif2}`);
+        if (response.data) {
+          setUser(response.data);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar o usuário: ", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (nif2) {
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
+  }, [nif]);
+
+  //Caso nif nn seja de um usuário ADM
+  useEffect(() => {
+    if (!loading) {
+      if (!user || !user.adm) {
+        alert(
+          "Nenhum usuário com esse NIF encontrado, redirecionando para login."
+        );
+        router.push("/administracao/login");
+      }
+    }
+  }, [loading, user, router]);
 
   //Função de Reconhecimento Facial
   useEffect(() => {
