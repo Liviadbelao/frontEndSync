@@ -135,7 +135,7 @@ export default function BasicModal({
             onClick={devolverUmaChave}
             className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
           >
-            Devolver apenas essa chave
+            Devolver apenas este ambiente
           </button>
         </div>
       </div>
