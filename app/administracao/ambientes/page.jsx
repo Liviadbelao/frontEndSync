@@ -123,7 +123,7 @@ const ambientes = () => {
 
            
 
-        {
+        {/* {
             ambientesReservados && ambientesReservados.length > 0 ? (
                 <>
                     {ambientesReservados.map((ambiente) => (
@@ -136,7 +136,7 @@ const ambientes = () => {
                     ))}
                 </>
             ) : null
-        }
+        } */}
 
 <p className="text-black text-center text-4xl font-bold">Reserve sua sala :</p>
 
