@@ -78,13 +78,23 @@ export default function BasicModal({
     }
   };
   return (
+  
     <Modal
       open={open}
       onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       BackdropProps={{
-        style: { backgroundColor: 'transparent' } // Desfoque de fundo
+        style: {  
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.3)', } // Desfoque de fundo
       }}
       style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} // Centraliza o modal
     >
