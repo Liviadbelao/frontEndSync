@@ -12,6 +12,7 @@ import { LuProjector } from "react-icons/lu";
 import { GiStaplerPneumatic } from "react-icons/gi";
 import { FaSearch } from "react-icons/fa";
 import { GiTheater } from "react-icons/gi";
+import ReservaSala from "@/app/components/reservaSala/ReservarSala";
 
 
 const ambientes = () => {
@@ -19,6 +20,7 @@ const ambientes = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [filtro, setFiltro] = useState('');
+    const [ambienteParaReserva, setAmbienteParaReserva] = useState(false); 
     const router = useRouter();
     const searchParams = useSearchParams();
     const nif = searchParams.get('nif');
@@ -49,29 +51,38 @@ const ambientes = () => {
         }
     }, [nif]);
 
-    const reservarAmbiente = async (id) => {
+    const reservarAmbiente = async (ambiente) => {
+setAmbienteParaReserva(ambiente)
+    };   
+    
+    const confirmarReservarAmbiente = async (ambiente) => {
         const date = new Date();
     
+        // Formata o payload conforme esperado pelo servidor
         const data = {
             data_inicio: date.toISOString(),  // Inclui data e hora completos
-            funcionario: nif,  // Atribui null se user.nif for inválido
-            ambiente: id,
+            funcionario: nif,  // Verifica se `nif` é um valor válido
+            ambiente: ambiente.numero_ambiente,  // Usa uma propriedade única para identificar o ambiente
         };
     
+        console.log("Dados a serem enviados:", data); // Log para verificar o conteúdo de `data`
+    
         try {
-            const response = await api.post(`/historico`, data);
-            console.log(response);
+            const response = await api.post(`/historico`, data);  // Faz a requisição de reserva
+            console.log("Reserva realizada com sucesso:", response);
+            setAmbienteParaReserva(false);
         } catch (error) {
-            console.error("Erro ao reservar o ambiente:", error);
+            console.error("Erro ao reservar o ambiente:", error);  // Log de erro detalhado
         } finally {
             try {
+                // Atualiza os dados dos ambientes após a tentativa de reserva
                 const response = await api.get(`/ambientes`);
                 setDados(response.data);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Erro ao buscar dados dos ambientes:", error);
             }
         }
-    };    
+    };      
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {
@@ -156,17 +167,23 @@ const ambientes = () => {
 
 
             <div className="p-10 bg-white min-h-screen">
-                <p className="text-black">Reserve sua sala:</p>
+                <p className="text-black text-center font-bold text-2xl">Reserve sua sala:</p>
 
 
+<div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 mb-8 border border-[#808080]-600 p-2 rounded-full">
+
+<FaSearch className="text-[#9A1915] m-auto ml-2" />
 
                 <input
                     type="text"
                     placeholder="Filtrar por nome do ambiente"
                     value={filtro}
                     onChange={(e) => setFiltro(e.target.value)}
-                    className="border p-2 mb-4"
+                    className="focus:outline-none w-full text-black4"
                 />
+
+
+</div>
                 <div className="grid grid-cols-2 gap-4">
                     {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                         ambientesFiltrados.map((ambiente) => (
@@ -189,7 +206,7 @@ const ambientes = () => {
                                 <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                     {
                                         ambiente.disponivel ? (
-                                            <button className="bg-[#9A1915] text-white p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente.numero_ambiente)}>
+                                            <button className="bg-[#9A1915] text-white p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente)}>
                                                 Reservar
                                             </button>
                                         ) : (
@@ -221,6 +238,16 @@ const ambientes = () => {
                     )}
                 </div>
             </div>
+
+            {ambienteParaReserva && (
+                <ReservaSala
+                onClose={() => setAmbienteParaReserva(false)}
+                onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
+              img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
+                name={ambienteParaReserva.nome}
+                />
+                
+            )}
         </div>
     );
 };
