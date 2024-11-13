@@ -13,14 +13,16 @@ import { GiStaplerPneumatic } from "react-icons/gi";
 import { FaSearch } from "react-icons/fa";
 import { GiTheater } from "react-icons/gi";
 import ReservaSala from "@/app/components/reservaSala/ReservarSala";
+import TelaCarregar from "@/app/components/telaCarregar/TelaCarregar";
 
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [carregando, setCarregando] = useState(false)
     const [filtro, setFiltro] = useState('');
-    const [ambienteParaReserva, setAmbienteParaReserva] = useState(false); 
+    const [ambienteParaReserva, setAmbienteParaReserva] = useState(false);
     const router = useRouter();
     const searchParams = useSearchParams();
     const nif = searchParams.get('nif');
@@ -52,25 +54,28 @@ const ambientes = () => {
     }, [nif]);
 
     const reservarAmbiente = async (ambiente) => {
-setAmbienteParaReserva(ambiente)
-    };   
-    
+        setAmbienteParaReserva(ambiente)
+    };
+
     const confirmarReservarAmbiente = async (ambiente) => {
         const date = new Date();
-    
+        setCarregando(true)
+
         // Formata o payload conforme esperado pelo servidor
         const data = {
             data_inicio: date.toISOString(),  // Inclui data e hora completos
             funcionario: nif,  // Verifica se `nif` é um valor válido
             ambiente: ambiente.numero_ambiente,  // Usa uma propriedade única para identificar o ambiente
         };
-    
+
         console.log("Dados a serem enviados:", data); // Log para verificar o conteúdo de `data`
-    
+
         try {
             const response = await api.post(`/historico`, data);  // Faz a requisição de reserva
             console.log("Reserva realizada com sucesso:", response);
             setAmbienteParaReserva(false);
+            router.push(`/totem/contagemRegressivaTela`)
+            setCarregando(false)
         } catch (error) {
             console.error("Erro ao reservar o ambiente:", error);  // Log de erro detalhado
         } finally {
@@ -82,7 +87,7 @@ setAmbienteParaReserva(ambiente)
                 console.error("Erro ao buscar dados dos ambientes:", error);
             }
         }
-    };      
+    };
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {
@@ -170,20 +175,20 @@ setAmbienteParaReserva(ambiente)
                 <p className="text-black text-center font-bold text-2xl">Reserve sua sala:</p>
 
 
-<div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 mb-8 border border-[#808080]-600 p-2 rounded-full">
+                <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 mb-8 border border-[#808080]-600 p-2 rounded-full">
 
-<FaSearch className="text-[#9A1915] m-auto ml-2" />
+                    <FaSearch className="text-[#9A1915] m-auto ml-2" />
 
-                <input
-                    type="text"
-                    placeholder="Filtrar por nome do ambiente"
-                    value={filtro}
-                    onChange={(e) => setFiltro(e.target.value)}
-                    className="focus:outline-none w-full text-black4"
-                />
+                    <input
+                        type="text"
+                        placeholder="Filtrar por nome do ambiente"
+                        value={filtro}
+                        onChange={(e) => setFiltro(e.target.value)}
+                        className="focus:outline-none w-full text-black4"
+                    />
 
 
-</div>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                     {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                         ambientesFiltrados.map((ambiente) => (
@@ -241,13 +246,14 @@ setAmbienteParaReserva(ambiente)
 
             {ambienteParaReserva && (
                 <ReservaSala
-                onClose={() => setAmbienteParaReserva(false)}
-                onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
-              img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
-                name={ambienteParaReserva.nome}
+                    onClose={() => setAmbienteParaReserva(false)}
+                    onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
+                    img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
+                    name={ambienteParaReserva.nome}
                 />
-                
+
             )}
+            {carregando && <TelaCarregar />}
         </div>
     );
 };
