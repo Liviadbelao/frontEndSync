@@ -10,14 +10,15 @@ import { LuProjector } from "react-icons/lu";
 import { GiStaplerPneumatic } from "react-icons/gi";
 import { GiTheater } from "react-icons/gi";
 import { FaSearch } from "react-icons/fa";
-import BasicModal from "@/app/components/modal/modal"; 
+// import BasicModal from "@/app/components/modal/modal"; 
 
 import Header from "@/app/components/header/Header";
+import ReservaSala from "@/app/components/reservaSala/ReservarSala";
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
     const [user, setUser] = useState(null);
-    const [ambienteParaReserva, setAmbienteParaReserva] = useState(null); 
+    const [ambienteParaReserva, setAmbienteParaReserva] = useState(false); 
     const [carregar, setCarregar] = useState(true);
     const [filtro, setFiltro] = useState('');
     const router = useRouter();
@@ -51,30 +52,40 @@ const ambientes = () => {
         }
     }, [nif]);
 
-    const reservarAmbiente = async (id) => {
+    const reservarAmbiente = async (ambiente) => {
+        setAmbienteParaReserva(ambiente); // Armazena o ID do ambiente para a reserva
+        
+    };
+
+  
+    const confirmarReservarAmbiente = async (ambiente) => {
         const date = new Date();
-
+    
+        // Formata o payload conforme esperado pelo servidor
         const data = {
-            data_inicio: date.toISOString().slice(0, 10),
-            funcionario: nif,  // Atribui null se user.nif for inválido
-            ambiente: id,
+            data_inicio: date.toISOString().slice(0, 10),  // Formato 'YYYY-MM-DD'
+            funcionario: nif,  // Verifica se `nif` é um valor válido
+            ambiente: ambiente.numero_ambiente, // Use uma propriedade única para identificar o ambiente
         };
-
+    
+        console.log("Dados a serem enviados:", data); // Log para verificar o conteúdo de `data`
+    
         try {
-            const response = await api.post(`/historico`, data);
-            console.log(response);
+            const response = await api.post(`/historico`, data);  // Faz a requisição de reserva
+            console.log("Reserva realizada com sucesso:", response);
+            setAmbienteParaReserva(false);
         } catch (error) {
-            console.error("Erro ao reservar o ambiente:", error);
+            console.error("Erro ao reservar o ambiente:", error);  // Log de erro detalhado
         } finally {
             try {
+                // Atualiza os dados dos ambientes após a tentativa de reserva
                 const response = await api.get(`/ambientes`);
                 setDados(response.data);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Erro ao buscar dados dos ambientes:", error);
             }
         }
-
-    }
+    };
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {
@@ -166,7 +177,7 @@ const ambientes = () => {
                                 <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                     {
                                         ambiente.disponivel ? (
-                                            <button className="bg-[#9A1915] text-white mb-6 p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente.numero_ambiente)}>
+                                            <button className="bg-[#9A1915] text-white mb-6 p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente)}>
                                                 Reservar
                                             </button>
                                         ) : (
@@ -198,6 +209,16 @@ const ambientes = () => {
                     )}
                 </div>
             </div>
+            
+            {ambienteParaReserva && (
+                <ReservaSala
+                onClose={() => setAmbienteParaReserva(false)}
+                onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
+                img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
+                name={ambienteParaReserva.nome}
+                />
+                
+            )}
         </div>
     );
 };
