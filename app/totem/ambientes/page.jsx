@@ -29,6 +29,8 @@ const ambientes = () => {
     const nif = searchParams.get('nif');
     const [ambientesReservados, setAmbientesReservados] = useState([]);
     const [modaisAbertos, setModaisAbertos] = useState([]);  // Controle do estado dos modais
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
 
     useEffect(() => {
         async function fetchUser() {
@@ -60,25 +62,43 @@ const ambientes = () => {
 
     const confirmarReservarAmbiente = async (ambiente) => {
         const date = new Date();
-
-        setCarregando(true)
-
-
+        
+        if (startTime) {
+            date.setHours(startTime.split(":")[0] - 3);
+            date.setMinutes(startTime.split(":")[1]);
+        }
+    
+        console.log(date);
         // Formata o payload conforme esperado pelo servidor
         const data = {
             data_inicio: date.toISOString(),  // Inclui data e hora completos
             funcionario: nif,  // Verifica se `nif` é um valor válido
             ambiente: ambiente.numero_ambiente,  // Usa uma propriedade única para identificar o ambiente
         };
-
+    
         console.log("Dados a serem enviados:", data); // Log para verificar o conteúdo de `data`
-
+    
         try {
             const response = await api.post(`/historico`, data);  // Faz a requisição de reserva
             console.log("Reserva realizada com sucesso:", response);
             setAmbienteParaReserva(false);
-            router.push(`/totem/contagemRegressivaTela`)
-            setCarregando(false)
+    
+            // Se o tipo do ambiente for "externo", faz a devolução automática
+            if (ambiente.tipodoambiente === "externo") {
+                const date = new Date();
+                
+                if (endTime) {
+                    date.setHours(endTime.split(":")[0]- 3);
+                    date.setMinutes(endTime.split(":")[1]);
+                }
+
+                const dataDevolucao = {
+                    data_fim: date,  // Usa o endTime para a devolução
+                };
+                console.log(ambiente)
+                await api.post(`/historico/devolver/${response.data.id}`, dataDevolucao);
+                console.log("Devolução realizada com sucesso");
+            }
         } catch (error) {
             console.error("Erro ao reservar o ambiente:", error);  // Log de erro detalhado
         } finally {
@@ -274,6 +294,11 @@ const ambientes = () => {
                     onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
                     img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
                     name={ambienteParaReserva.nome}
+                    typeAmb={ambienteParaReserva.tipodoambiente}
+                    startTime={startTime}
+                    endTime={endTime}
+                    setStartTime={setStartTime}
+                    setEndTime={setEndTime}
                 />
 
             )}
