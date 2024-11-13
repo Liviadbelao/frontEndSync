@@ -63,9 +63,9 @@ const ambientes = () => {
     
         // Formata o payload conforme esperado pelo servidor
         const data = {
-            data_inicio: date.toISOString().slice(0, 10),  // Formato 'YYYY-MM-DD'
+            data_inicio: date.toISOString(),  // Inclui data e hora completos
             funcionario: nif,  // Verifica se `nif` é um valor válido
-            ambiente: ambiente.numero_ambiente, // Use uma propriedade única para identificar o ambiente
+            ambiente: ambiente.numero_ambiente,  // Usa uma propriedade única para identificar o ambiente
         };
     
         console.log("Dados a serem enviados:", data); // Log para verificar o conteúdo de `data`
@@ -85,7 +85,7 @@ const ambientes = () => {
                 console.error("Erro ao buscar dados dos ambientes:", error);
             }
         }
-    };
+    };    
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {

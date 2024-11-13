@@ -51,13 +51,13 @@ const ambientes = () => {
 
     const reservarAmbiente = async (id) => {
         const date = new Date();
-
+    
         const data = {
-            data_inicio: date.toISOString().slice(0, 10),
+            data_inicio: date.toISOString(),  // Inclui data e hora completos
             funcionario: nif,  // Atribui null se user.nif for inválido
             ambiente: id,
         };
-
+    
         try {
             const response = await api.post(`/historico`, data);
             console.log(response);
@@ -71,7 +71,7 @@ const ambientes = () => {
                 console.error("Error fetching data:", error);
             }
         }
-    }
+    };    
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {
