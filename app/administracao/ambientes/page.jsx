@@ -61,6 +61,7 @@ const ambientes = () => {
     const confirmarReservarAmbiente = async (ambiente) => {
         const date = new Date();
     
+        console.log(date)
         // Formata o payload conforme esperado pelo servidor
         const data = {
             data_inicio: date.toISOString(),  // Inclui data e hora completos
@@ -226,6 +227,7 @@ const ambientes = () => {
                 onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
                 img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
                 name={ambienteParaReserva.nome}
+                typeAmb={ambienteParaReserva.tipodoambiente}
                 />
                 
             )}

@@ -433,7 +433,7 @@ const EditAmbiente = () => {
                             )}
 
                             {/* Ícone para Adicionar Atributo */}
-                            <div className="flex items-center m-6 border-0 rounded-full border-black shadow-lg w-16">
+                            <div className="flex items-center m-6 border-0 rounded-full border-black">
                                 <Image
                                     src="/images/imgMenuAdm/botao-adicionar.png"
                                     alt="Configurar Atributos"

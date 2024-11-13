@@ -161,7 +161,7 @@ const GestaoAmbiente = () => {
                     <img
                         src="/images/imgMenuAdm/botao-adicionar.png"
                         alt="oi"
-                        className="mr-10 cursor-pointer"
+                        className="mr-10 w-40 cursor-pointer"
                         onClick={() => router.push(`/administracao/cadastroAmbiente?nif=${nif}`)}
                     />
                 </div>

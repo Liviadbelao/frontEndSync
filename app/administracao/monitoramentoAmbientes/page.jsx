@@ -70,13 +70,18 @@ const MonitoramentoAmbientes = () => {
 
     const handleDevolver = async (id) => {
         try {
-            const data = { data_fim: new Date().toISOString().slice(0, 10) };
+            const data = { data_fim: new Date().toISOString() };
             await api.post(`/historico/devolver/${id}`, data);
             const response = await api.get(`/historico/infos/filtered`);
             setDados(response.data);
         } catch (error) {
             console.error("Erro ao devolver o ambiente: ", error);
         }
+    };
+
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return new Date(dateString).toLocaleString('pt-BR', options);
     };
     
 
@@ -117,7 +122,7 @@ const MonitoramentoAmbientes = () => {
                             <div className="bg-red-700 w-15 h-1 mb-2"></div>
                             <p className="text-sm font-semibold text-black mt-2">Usuário: {item.nome_usuario}</p>
                             <p className="text-sm font-semibold text-black mt-2">
-                                Data Início: {new Date(item.data_inicio).toLocaleDateString()}
+                                Data Início: {formatDate(item.data_inicio)}
                             </p>
                             <p className="text-sm font-semibold text-black">Data Fim: Em aberto</p>
                         </div>
@@ -150,10 +155,10 @@ const MonitoramentoAmbientes = () => {
                             <div className="bg-red-700 w-15 h-1 mb-2"></div>
                             <p className="text-sm font-semibold text-black mt-2">Usuário: {item.nome_usuario}</p>
                             <p className="text-sm font-semibold text-black mt-2">
-                                Data Início: {new Date(item.data_inicio).toLocaleDateString()}
+                                Data Início: {formatDate(item.data_inicio)}
                             </p>
                             <p className="text-sm font-semibold text-black">
-                                Data Fim: {new Date(item.data_fim).toLocaleDateString()}
+                                Data Fim: {formatDate(item.data_fim)}
                             </p>
                         </div>
                         <div className="flex gap-3 text-white p-2 rounded-full bg-red-700 absolute bottom-4 right-4">
