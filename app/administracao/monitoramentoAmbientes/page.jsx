@@ -71,6 +71,8 @@ const MonitoramentoAmbientes = () => {
         try {
             const data = { data_fim: new Date().toISOString().slice(0, 10) };
             await api.post(`/historico/devolver/${id}`, data);
+            const response = await api.get(`/historico/infos/filtered`);
+            setDados(response.data);
         } catch (error) {
             console.error("Erro ao devolver o ambiente: ", error);
         }
