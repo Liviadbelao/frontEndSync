@@ -124,20 +124,7 @@ const ambientes = () => {
 
            
 
-        {
-            ambientesReservados && ambientesReservados.length > 0 ? (
-                <>
-                    {ambientesReservados.map((ambiente) => (
-                        <BasicModal
-                            key={ambiente.ambiente_nome}
-                            nomeSala={ambiente.ambiente_nome}
-                            imgSala={`http://localhost:3033${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
-                            nif={nif} // Passe o nif do usuário
-                        />
-                    ))}
-                </>
-            ) : null
-        }
+      
 
 <p className="text-black text-center text-4xl font-bold">Reserve sua sala :</p>
 
