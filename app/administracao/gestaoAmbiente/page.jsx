@@ -131,18 +131,6 @@ const GestaoAmbiente = () => {
     return (
         <div className="bg-white min-h-screen">
             <Header />
-            {/* filtro por nome de ambiente */}
-            <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 border border-[#808080]-600 p-2 rounded-full">
-
-            <FaSearch className="text-[#9A1915] m-auto ml-2" />
-            <input
-                type="text"
-                placeholder="Filtrar por nome do ambiente"
-                value={filtro}
-                onChange={(e) => setFiltro(e.target.value)}
-               className="focus:outline-none w-full text-black"
-            />
-            </div>
             {/* botao para voltar para o menu */}
             <img
                 src="/images/imgMenuAdm/btvoltar.png"
@@ -153,6 +141,18 @@ const GestaoAmbiente = () => {
 
             <h1 className=" text-black text-center text-3xl	font-bold mt-2 mb-6">Gestão de Ambientes</h1>
 
+            {/* filtro por nome de ambiente */}
+            <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 mb-8 border border-[#808080]-600 p-2 rounded-full">
+
+            <FaSearch className="text-[#9A1915] m-auto ml-2" />
+            <input
+                type="text"
+                placeholder="Filtrar por nome do ambiente"
+                value={filtro}
+                onChange={(e) => setFiltro(e.target.value)}
+               className="focus:outline-none w-full text-black"
+            />
+            </div>
 
 
             {/* img para add ambiente */}
