@@ -4,23 +4,65 @@ import { IoClose } from 'react-icons/io5';
 import api from '../../../src/config/configApi';
 
 export default function BasicModal({
+  id,
   nomeSala,
   imgSala,
-  nif,
+  ambienteId,
+  usuarioid,
   open,
   handleClose,
+  variavel,
   atualizarChavesPendentes
 }) {
-  
-  // Função para devolver todas as chaves
-  const devolverTodasAsChaves = async () => {
+
+  const devolverTodasReservas = async () => {
     try {
-      // Chama a API para devolver todas as chaves do usuário
-      const response = await api.delete(`/historico/${nif}`);  // Chama o endpoint correto para remover todas as chaves
+      const date = new Date();
+
+      const usuarioEditado = {
+        data_fim: date,
+        usuario: usuarioid
+      };
+
+
+      const response = await api.put(`/historico/todos`, usuarioEditado); // Endpoint ajustado
+      console.log(response);
+
+      if (response.status === 200) {
+        console.log("Chaves devolvidas com sucesso");
+        if (atualizarChavesPendentes && typeof atualizarChavesPendentes === 'function') {
+          atualizarChavesPendentes();  // Atualiza o estado no componente pai
+        }
+
+        // Fecha o modal após a ação
+        variavel([]);
+        handleClose();
+      } else {
+        console.error("Erro ao devolver as chaves");
+      }
+    } catch (error) {
+      console.error("Erro ao devolver as chaves:", error);
+      alert("Erro ao tentar devolver as chaves. Tente novamente.");
+    }
+  };
+
+
+  // Função para devolver 1 ambiente
+  const devolverUmaChave = async () => {
+    try {
+      const date = new Date();
+
+      const usuarioEditado = {
+        id: id,
+        data_fim: date,
+        ambiente: ambienteId,
+      }
+      // Chama a API para devolver a chave de um ambiente específico
+      const response = await api.put(`/historico`, usuarioEditado); // Chama o endpoint correto para devolver a chave
 
       // Verificar se a requisição foi bem-sucedida
-      if (response.status === 200) {
-        // Atualiza o estado para refletir que não há mais chaves pendentes
+      if (response.status == 200) {
+        // Atualiza o estado para refletir que a chave foi devolvida
         if (atualizarChavesPendentes && typeof atualizarChavesPendentes === 'function') {
           atualizarChavesPendentes();  // Atualiza o estado no componente pai
         }
@@ -28,14 +70,13 @@ export default function BasicModal({
         // Fecha o modal após a ação
         handleClose();
       } else {
-        console.error("Erro ao devolver as chaves");
+        console.error("Erro ao devolver a chave");
       }
     } catch (error) {
-      console.error("Erro ao devolver todas as chaves:", error);
-      alert("Erro ao tentar devolver as chaves. Tente novamente.");
+      console.error("Erro ao devolver a chave:", error);
+      alert("Erro ao tentar devolver a chave. Tente novamente.");
     }
   };
-
   return (
     <Modal
       open={open}
@@ -74,29 +115,28 @@ export default function BasicModal({
 
         {/* Descrição e detalhes do ambiente */}
         <p className="text-sm text-gray-600 mb-6 text-center">
-          Ambiente reservado com sucesso! Aproveite sua reserva e tenha uma ótima experiência.
+          Ambiente reservado com sucesso! Aproveite sua reserva.
         </p>
 
         {/* Botões de ação */}
         <div className="flex justify-center gap-4">
           {/* Botão para devolver uma chave */}
           <button
-            onClick={handleClose}
+            onClick={devolverTodasReservas}
             className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
           >
-            Devolver chave
+            Devolver todas reservas
           </button>
 
           {/* Botão para devolver todas as chaves */}
           <button
-            onClick={devolverTodasAsChaves}
+            onClick={devolverUmaChave}
             className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
           >
-            Devolver todas as chaves
+            Devolver apenas essa chave
           </button>
         </div>
       </div>
     </Modal>
   );
 }
-  

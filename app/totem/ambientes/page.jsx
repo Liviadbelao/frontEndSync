@@ -103,6 +103,20 @@ const ambientes = () => {
         fetchAmbientes();
     }, []);
 
+    const handleCloseAndUpdateAmbientes = async (ambienteId) => {
+        try {
+            // Fecha o modal
+            setModaisAbertos(modaisAbertos.filter(id => id !== ambienteId));
+
+            // Atualiza os ambientes
+            const response = await api.get(`/ambientes`);
+            setDados(response.data);
+        } catch (error) {
+            console.error("Erro ao atualizar ambientes:", error);
+        }
+    };
+
+
     // Filtrar ambientes com base no texto do filtro
     const ambientesFiltrados = dados.filter(ambiente =>
         ambiente.nome.toLowerCase().includes(filtro.toLowerCase())
@@ -116,18 +130,27 @@ const ambientes = () => {
                 ambientesReservados && ambientesReservados.length > 0 ? (
                     <>
                         {ambientesReservados.map((ambiente) => (
-                            <BasicModal
-                                key={ambiente.ambiente_nome}
-                                nomeSala={ambiente.ambiente_nome}
-                                imgSala={`http://localhost:3033${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
-                                nif={nif} // Passe o nif do usuário
-                                open={modaisAbertos.includes(ambiente.ambiente)}  // Verifica se o modal está aberto para este ambiente
-                                handleClose={() => setModaisAbertos(modaisAbertos.filter(id => id !== ambiente.ambiente))}  // Fecha o modal quando necessário
-                            />
+                            // Verifica se a data_fim está definida para o ambiente
+                            !ambiente.data_fim ? (
+                                <BasicModal
+                                    id={ambiente.id}
+                                    key={ambiente.ambiente_nome}
+                                    nomeSala={ambiente.ambiente_nome}
+                                    ambienteId={ambiente.ambiente}
+                                    usuarioid={nif}
+                                    variavel={setAmbientesReservados}
+                                    imgSala={`http://localhost:3033${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
+                                    nif={nif} // Passe o nif do usuário
+                                    open={modaisAbertos.includes(ambiente.ambiente)}  // Verifica se o modal está aberto para este ambiente
+                                    handleClose={() => handleCloseAndUpdateAmbientes(ambiente.ambiente)}  // Chama a função para fechar o modal e atualizar ambientes
+                                />
+
+                            ) : null // Se a data_fim não estiver definida, o modal não será renderizado
                         ))}
                     </>
                 ) : null
             }
+
 
             <div className="p-10 bg-white min-h-screen">
                 <p className="text-black">Reserve sua sala:</p>
