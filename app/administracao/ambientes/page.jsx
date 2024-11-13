@@ -58,32 +58,34 @@ const ambientes = () => {
     };
 
   
-    const confirmarReservarAmbiente = async (id) => {
-        const date = new Date()
-
+    const confirmarReservarAmbiente = async (ambiente) => {
+        const date = new Date();
+    
+        // Formata o payload conforme esperado pelo servidor
         const data = {
-            data_inicio: date.toISOString().slice(0, 10),
-            funcionario: nif,  // Atribui null se user.nif for inválido
-            ambiente: id,
+            data_inicio: date.toISOString().slice(0, 10),  // Formato 'YYYY-MM-DD'
+            funcionario: nif,  // Verifica se `nif` é um valor válido
+            ambiente: ambiente.numero_ambiente, // Use uma propriedade única para identificar o ambiente
         };
-
+    
+        console.log("Dados a serem enviados:", data); // Log para verificar o conteúdo de `data`
+    
         try {
-            const response = await api.post(`/historico`, data);
-            console.log(response);
-            setAmbienteParaReserva(false)
+            const response = await api.post(`/historico`, data);  // Faz a requisição de reserva
+            console.log("Reserva realizada com sucesso:", response);
+            setAmbienteParaReserva(false);
         } catch (error) {
-            console.error("Erro ao reservar o ambiente:", error);
+            console.error("Erro ao reservar o ambiente:", error);  // Log de erro detalhado
         } finally {
             try {
+                // Atualiza os dados dos ambientes após a tentativa de reserva
                 const response = await api.get(`/ambientes`);
                 setDados(response.data);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Erro ao buscar dados dos ambientes:", error);
             }
         }
-
-
-    }
+    };
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {
