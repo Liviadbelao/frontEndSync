@@ -10,7 +10,7 @@ import { LuProjector } from "react-icons/lu";
 import { GiStaplerPneumatic } from "react-icons/gi";
 import { GiTheater } from "react-icons/gi";
 import { FaSearch } from "react-icons/fa";
-import BasicModal from "@/app/components/modal/modal"; 
+// import BasicModal from "@/app/components/modal/modal"; 
 
 import Header from "@/app/components/header/Header";
 import ReservaSala from "@/app/components/reservaSala/ReservarSala";
@@ -52,9 +52,12 @@ const ambientes = () => {
         }
     }, [nif]);
 
-    const reservarAmbiente = async (id) => {
-        setAmbienteParaReserva(id); // Armazena o ID do ambiente para a reserva
+    const reservarAmbiente = async (ambiente) => {
+        setAmbienteParaReserva(ambiente); // Armazena o ID do ambiente para a reserva
+        
     };
+
+  
     const confirmarReservarAmbiente = async (id) => {
         const date = new Date()
 
@@ -172,7 +175,7 @@ const ambientes = () => {
                                 <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                     {
                                         ambiente.disponivel ? (
-                                            <button className="bg-[#9A1915] text-white mb-6 p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente.numero_ambiente)}>
+                                            <button className="bg-[#9A1915] text-white mb-6 p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente)}>
                                                 Reservar
                                             </button>
                                         ) : (
@@ -204,12 +207,16 @@ const ambientes = () => {
                     )}
                 </div>
             </div>
+            
             {ambienteParaReserva && (
-    <ReservaSala
-        onClose={() => setAmbienteParaReserva(false)}
-        onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
-    />
-)}
+                <ReservaSala
+                onClose={() => setAmbienteParaReserva(false)}
+                onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
+                img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
+                name={ambienteParaReserva.nome}
+                />
+                
+            )}
         </div>
     );
 };
