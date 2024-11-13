@@ -13,6 +13,8 @@ import "ldrs/ring";
 import { hourglass } from "ldrs";
 import TelaCarregar from "@/app/components/telaCarregar/telaCarregar";
 import { useRouter, useSearchParams } from "next/navigation";
+import TelaCertinho from "@/app/components/telaCertinho/TelaCertinho";
+
 
 //Criando Página
 const InputComponent = () => {
@@ -23,6 +25,8 @@ const InputComponent = () => {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const [notification, setNotification] = useState(false);
   const [notiwhere, setNotiwhere] = useState(0);
   const [adm, setAdm] = useState(false);
@@ -164,8 +168,13 @@ const InputComponent = () => {
         console.log("Erro, tente novamente mais tarde." + err);
       }
     } finally {
-      setLoading(false);
       LimparInputs(); // Limpa os campos após o envio
+      setShowSuccess(true);
+
+      setTimeout(() => {
+        setShowSuccess(false);
+        router.push(`/administracao/gestaoUsuario?nif=${nif2}`);
+      }, 2000);
     }
   };
 
@@ -194,6 +203,14 @@ const InputComponent = () => {
   return (
     <div className="bg-white flex flex-col">
       <Header />
+      {showSuccess && <TelaCertinho onClose={() => setShowSuccess(false)} />}
+      <img
+        src="/images/imgMenuAdm/btvoltar.png"
+        alt="botao voltar"
+        className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
+        onClick={() => router.push(`/administracao/gestaoUsuario?nif=${nif2}`)}
+      />
+
       <div className="flex flex-col items-center justify-center">
         <div className="mb-24 mt-10">
           <text className="text-black text-3xl font-black">
@@ -205,7 +222,7 @@ const InputComponent = () => {
           onSubmit={uploadImage}
         >
           {/* Campo de Nome */}
-          <div className="w-[70%] m-2">
+          <div className="w-[70%] m-2 text-black">
             <label>Nome:</label>
             <Input
               tipo={"text"}
@@ -218,7 +235,7 @@ const InputComponent = () => {
           </div>
 
           {/* Campo de Telefone */}
-          <div className="w-[70%] m-2">
+          <div className="w-[70%] m-2 font-black">
             <label>Telefone:</label>
             <Input
               tipo={"number"}
@@ -231,7 +248,7 @@ const InputComponent = () => {
           </div>
 
           {/* Campo de Email */}
-          <div className="w-[70%] m-2">
+          <div className="w-[70%] m-2 font-black">
             <label>Email:</label>
             <Input
               tipo={"email"}
@@ -244,7 +261,7 @@ const InputComponent = () => {
           </div>
 
           {/* Campo de Nif */}
-          <div className="w-[70%] m-2">
+          <div className="w-[70%] m-2 font-black">
             <label>Nif:</label>
             <Input
               tipo={"number"}
@@ -256,38 +273,78 @@ const InputComponent = () => {
             {errors.nif && <span className="text-red-500">{errors.nif}</span>}
           </div>
 
-          {/* Campo de Imagem */}
-          <div className="w-[70%] m-2">
-            <label>Imagem:</label>
-            <Input
-              tipo={"file"}
-              placeholder={"image"}
+          <div className="w-[70%] m-4 p-4 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition relative">
+            <label className="font-semibold  text-gray-600 text-center mb-2">
+              Selecione uma imagem do ambiente:
+            </label>
+            {/* Elemento invisível de input de arquivo */}
+            <input
+              type="file"
               onChange={handleImageChange}
-              nome={"imagem"}
+              name="imagem"
+              className="opacity-0 absolute inset-0 cursor-pointer"
             />
-            {errors.image && <span className="text-red-500">{errors.image}</span>}
+            <div className="text-gray-400 flex items-center space-x-2">
+              {/* Ícone da imagem */}
+              {
+                preview ? (
+                  null
+                ) : (
+                  <svg className="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                )
+              }
+              {/* Texto e seta à direita */}
+              {preview ? null : <span className="text-gray-500">Clique para selecionar uma imagem</span>}
+              <div className="border-r border-gray-300 h-8 mx-2"></div>
+              {
+                preview ? (
+                  null
+                ) : (
+                  <svg className="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                )
+              }
+              {preview && (
+                <div className="m-8 flex justify-center">
+                  <Image
+                    src={preview}
+                    alt="Imagem pré-visualizada"
+                    width={300}
+                    height={300}
+                    className="rounded-lg shadow-lg"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+          {/* Campo de Administrador */}
+          <div className="w-[70%] m-2">
+            <label className="flex items-center cursor-pointer">
+              <span className="text-gray-700 font-medium mr-3">Administrador:</span>
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={adm}
+                  onChange={(e) => setAdm(e.target.checked)}
+                  className="sr-only" // Esconde o checkbox padrão
+                />
+                {/* Toggle Background */}
+                <div
+                  className={`w-10 h-5 bg-gray-300 rounded-full  shadow-inner 
+          ${adm ? "bg-green-500" : "bg-gray-300"} transition-colors`}
+                ></div>
+                {/* Toggle Circle */}
+                <div
+                  className={` -mt-[18px] w-4 h-4 bg-white rounded-full shadow  left-1
+          ${adm ? "transform translate-x-5" : ""} transition-transform`}
+                ></div>
+              </div>
+            </label>
           </div>
 
-          {/* Pré-visualização da Imagem */}
-          {preview && (
-            <div className="m-8">
-              <Image
-                src={preview}
-                alt="Imagem pré-visualizada"
-                width={300}
-                height={300}
-              />
-            </div>
-          )}
-
-          {/* Campo de Administrador */}
-          <label>Administrador : </label>
-          <Input
-            tipo={"checkbox"}
-            placeholder={"Administrador"}
-            onChange={(e) => setAdm(!adm)}
-            nome={"ADM"}
-          />
 
           {/* Loader */}
           <SendButton />

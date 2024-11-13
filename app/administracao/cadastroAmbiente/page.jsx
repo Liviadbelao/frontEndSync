@@ -169,7 +169,7 @@ const Ambiente = () => {
     }, []);
 
     return (
-        <div className="bg-white min-h-screen flex flex-col overflow-y-auto ">
+        <div className="bg-white flex flex-col">
             <Header />
             {showSuccess && <TelaCertinho onClose={() => setShowSuccess(false)} />}
             <img
@@ -179,10 +179,14 @@ const Ambiente = () => {
                 onClick={() => router.push(`/administracao/gestaoAmbiente?nif=${nif}`)}
             />
 
-            <div className="flex flex-col items-center justify-center">
-                <p className="font-normal md:font-bold mt-40 text-2xl">Cadastro de Ambiente</p>
+            <div className="flex flex-col items-center justify-center ">
+                <div className="mb-24 mt-10">
+                    <text className="text-black text-3xl font-black">
+                        Cadastro de Ambiente
+                    </text>
+                </div>
                 <form
-                    className="flex flex-col bg-[#D9D9D9] text-black w-[55%] border-2 border-red-500 items-center pt-6 mb-16 "
+                    className="flex flex-col bg-[#D9D9D9] text-black w-[55%] border-2 border-red-500 items-center pt-6 mb-16   "
                     onSubmit={postAmbiente}
                 >
                     <div className="w-[70%] m-2">
@@ -193,11 +197,12 @@ const Ambiente = () => {
                             valor={nome}
                             onChange={(e) => setNome(e.target.value)}
                             nome={"nome"}
+                           
                         />
                         {errors.nome && <span className="text-red-500">{errors.nome}</span>}
                     </div>
                     <div className="w-[70%] m-4 p-4 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition relative">
-                        <label className="font-semibold text-gray-600 text-center mb-2">
+                        <label className="font-semibold  text-gray-600 text-center mb-2">
                             Selecione uma imagem do ambiente:
                         </label>
                         {/* Elemento invisível de input de arquivo */}
@@ -320,7 +325,7 @@ const Ambiente = () => {
                         <div className="flex flex-col items-start">
                             <div
                                 onClick={() => setChave(!chave)}
-                                className={`p-2 rounded-lg font-semibold transition-colors cursor-pointer ${chave ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-red-500 text-gray-700 hover:bg-red-600'
+                                className={`p-2 rounded-lg font-semibold transition-colors cursor-pointer ${chave ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-red-500 text-white hover:bg-red-600'
                                     }`}
                             >
                                 {chave ? 'Sim' : 'Não'}

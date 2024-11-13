@@ -63,9 +63,9 @@ const ambientes = () => {
     
         // Formata o payload conforme esperado pelo servidor
         const data = {
-            data_inicio: date.toISOString().slice(0, 10),  // Formato 'YYYY-MM-DD'
+            data_inicio: date.toISOString(),  // Inclui data e hora completos
             funcionario: nif,  // Verifica se `nif` é um valor válido
-            ambiente: ambiente.numero_ambiente, // Use uma propriedade única para identificar o ambiente
+            ambiente: ambiente.numero_ambiente,  // Usa uma propriedade única para identificar o ambiente
         };
     
         console.log("Dados a serem enviados:", data); // Log para verificar o conteúdo de `data`
@@ -85,7 +85,7 @@ const ambientes = () => {
                 console.error("Erro ao buscar dados dos ambientes:", error);
             }
         }
-    };
+    };    
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {
@@ -132,10 +132,20 @@ const ambientes = () => {
         className="mr-10 cursor-pointer w-10 h-10 mt-8 ml-10"
         onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
       />
-
-           
-
-      
+        {/* {
+            ambientesReservados && ambientesReservados.length > 0 ? (
+                <>
+                    {ambientesReservados.map((ambiente) => (
+                        <BasicModal
+                            key={ambiente.ambiente_nome}
+                            nomeSala={ambiente.ambiente_nome}
+                            imgSala={`http://localhost:3033${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
+                            nif={nif} // Passe o nif do usuário
+                        />
+                    ))}
+                </>
+            ) : null
+        } */}
 
 <p className="text-black text-center text-4xl font-bold">Reserve sua sala :</p>
 
