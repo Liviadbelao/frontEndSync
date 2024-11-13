@@ -20,17 +20,8 @@ const ConfigInicial = () => {
     async function fetchUser() {
       try {
         const response = await api.get(`/usuarios/${nif}`);
-        console.log(response.data[0])
-        if (response.data.length > 0) {
-          setUser(response.data[0]);
-          if (response.data[0].notificacao) {
-            if (response.data[0].notiwhere == 1 || response.data[0].notiwhere == 3) {
-              setWhatsappOn(true)
-            }
-            if (response.data[0].notiwhere == 2 || response.data[0].notiwhere == 3) {
-              setEmailOn(true)
-            }
-          }
+        if (response.data) {
+          setUser(response.data);
         } else {
           setUser(null);
         }
@@ -49,6 +40,7 @@ const ConfigInicial = () => {
     }
   }, [nif]);
 
+
   useEffect(() => {
     if (!loading) {
       if (!user) {
@@ -59,6 +51,7 @@ const ConfigInicial = () => {
       }
     }
   }, [loading, user, router]);
+
 
   function testar() {
     let contador = 0;
@@ -90,7 +83,7 @@ const ConfigInicial = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
-      <Popup />
+      <Popup nome={user.nome} />
       <div className="max-w-3xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
           Configurações
@@ -99,36 +92,39 @@ const ConfigInicial = () => {
           {/* Faixa vermelha cobrindo a parte do professor */}
           <div className="relative">
             <div className="bg-red-700 h-24"></div> {/* Faixa vermelha */}
-            // Dentro da sua declaração de retorno
+
             <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4">
               <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center">
-                  <img
-                    src="/images/editar.png"
-                    alt="botao editar"
-                    className="mr-10 cursor-pointer w-6 h-6 mt-10"
-                    onClick={() =>
-                      router.push(`/administracao/telaMenuAdm?nif=${nif}`)
-                    }
-                  />
-                </div>
+                {user && (
+                  <>
+                    <img
+                      src={`http://localhost:3033${user.caminho_imagem}`}
+                      alt={`imagem do usuario ${user.nome}`}
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
 
-                <div>
-                  {user ? (
-                    <>
+                    <div>
                       <h2 className="text-xl font-semibold text-white">
                         {user.nome}
                       </h2>
-                      <p className="text-sm text-gray-300">Professor</p>
-                    </>
-                  ) : (
-                    <h2 className="text-xl font-semibold text-white">
-                      Usuário não encontrado
-                    </h2>
-                  )}
-                </div>
+                      <p className="text-sm text-gray-300">
+                        {user.adm ? "Administrador" : "Usuário"}
+                      </p>
+                    </div>
+                  </>
+                )}
+                <img
+                  src="/images/editar.png"
+                  alt="botao editar"
+                  className="mr-10 cursor-pointer w-6 h-6 mt-10"
+                  onClick={() =>
+                    router.push(`/administracao/telaMenuAdm?nif=${nif}`)
+                  }
+                />
               </div>
             </div>
+
+
           </div>
           <div className="p-6">
             <div className="mb-4">
@@ -149,9 +145,13 @@ const ConfigInicial = () => {
                   <ToggleButton ativado={emailOn} setAtivado={setEmailOn} />
                 </div>
               </div>
-              <button className="bg-red-700 rounded" onClick={testar}>
+              <button
+                className="bg-red-700 mt-10 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200"
+                onClick={testar}
+              >
                 Salvar
               </button>
+
             </div>
           </div>
         </div>
@@ -165,7 +165,7 @@ const ConfigInicial = () => {
           }
         />
       </div>
-    </div>
+    </div >
   );
 };
 
