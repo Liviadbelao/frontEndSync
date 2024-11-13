@@ -26,7 +26,7 @@ const ReservaSala = ({ onClose, onConfirm, img, name }) => {
           <p className='mt-16 text-black text-xl font-bold'>{name}</p>
           <div className="flex flex-row space-x-4 mt-5 ">
             <button className="rounded-full bg-[#b42424]  p-4 px-10 text-white" onClick={onConfirm}>
-              Reservar
+              Sim
             </button>
             <button className=" rounded-full bg-[#b42424]     p-4 px-10 text-white" onClick={onClose}>
               Cancelar
