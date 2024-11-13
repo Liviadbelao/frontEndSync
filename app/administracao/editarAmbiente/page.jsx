@@ -6,8 +6,8 @@ import api from "../../../src/config/configApi";
 import Header from '@/app/components/header/Header';
 import Input from "@/app/components/input/input";
 import Image from "next/image";
-import SendButton from "@/app/components/sendButton/SendButton";
 import TelaCarregar from "@/app/components/telaCarregar/telaCarregar";
+import TelaCertinho from "@/app/components/telaCertinho/TelaCertinho";
 
 const EditAmbiente = () => {
     const [nome, setNome] = useState("");
@@ -16,23 +16,65 @@ const EditAmbiente = () => {
     const [categorias, setCategorias] = useState([]);
     const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
     const [disponivel, setDisponivel] = useState(true);
-    const [numeroAmbiente, setNumeroAmbiente] = useState(1);
     const [chave, setChave] = useState(false);
     const [tipodoambiente, setTipodoambiente] = useState("");
+    const [maquinas, setMaquinas] = useState(0);
+    const [numerochave, setNumerochave] = useState(0);
+
+    // Estados dos atributos
     const [arcondicionado, setArcondicionado] = useState(false);
     const [ventilador, setVentilador] = useState(false);
     const [wifi, setWifi] = useState(false);
     const [projetor, setProjetor] = useState(false);
     const [chaveeletronica, setChaveeletronica] = useState(false);
-    const [maquinas, setMaquinas] = useState(0);
-    const [numerochave, setNumerochave] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [preview, setPreview] = useState(null);
 
+    const [atributePopUp, setAtributePopUp] = useState(false);
+
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [errors, setErrors] = useState({});
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [preview, setPreview] = useState(null);
     const router = useRouter();
     const searchParams = useSearchParams();
+    const nif = searchParams.get("nif");
     const ambienteId = searchParams.get('id');
-    const nif = searchParams.get('nif');
+
+    useEffect(() => {
+        async function fetchUser() {
+          try {
+            const response = await api.get(`/usuarios/${nif}`);
+            if (response.data) {
+              setUser(response.data);
+            } else {
+              setUser(null);
+            }
+          } catch (error) {
+            console.error("Erro ao buscar o usuário: ", error);
+            setUser(null);
+          } finally {
+            setLoading(false);
+          }
+        }
+    
+        if (nif) {
+          fetchUser();
+        } else {
+          setLoading(false);
+        }
+      }, [nif]);
+    
+      //Caso nif nn seja de um usuário ADM
+      useEffect(() => {
+        if (!loading) {
+          if (!user || !user.adm) {
+            alert(
+              "Nenhum usuário com esse NIF encontrado, redirecionando para login."
+            );
+            router.push("/administracao/login");
+          }
+        }
+      }, [loading, user, router]);
 
     useEffect(() => {
         async function fetchAmbiente() {
@@ -44,16 +86,18 @@ const EditAmbiente = () => {
                 setCapacidade(ambiente.capacidadealunos);
                 setCategoriaSelecionada(ambiente.categoria);
                 setDisponivel(ambiente.disponivel);
-                setNumeroAmbiente(ambiente.numero_ambiente);
                 setTipodoambiente(ambiente.tipodoambiente);
                 setMaquinas(ambiente.maquinas);
                 setChave(ambiente.chave);
-                setNumerochave(ambiente.numero_ambiente);
                 setArcondicionado(ambiente.ar_condicionado);
                 setVentilador(ambiente.ventilador);
                 setWifi(ambiente.wifi);
                 setProjetor(ambiente.projetor);
                 setChaveeletronica(ambiente.chave_eletronica);
+                if (ambiente.chave) {
+                    const chave = await api.get(`/chaves/${ambiente.numero_ambiente}`);
+                    setNumerochave(chave.data[0].id);
+                }
             } catch (error) {
                 console.error("Erro ao buscar o ambiente: ", error);
             } finally {
@@ -70,7 +114,6 @@ const EditAmbiente = () => {
 
         const formData = new FormData();
         formData.append("nome", nome);
-        formData.append("numero_ambiente", numeroAmbiente);
         formData.append("chave", chave);
         formData.append("capacidadeAlunos", capacidade || 0);
         formData.append("tipodoambiente", tipodoambiente);
@@ -83,16 +126,22 @@ const EditAmbiente = () => {
         formData.append("disponivel", disponivel);
         formData.append("categoria", categoriaSelecionada);
         formData.append("image", imagem);
+        formData.append("chaveNumero", numerochave);
 
         try {
             const response = await api.put(`/ambientes/${ambienteId}`, formData);
             console.log(response);
-            router.push(`/administracao/gestaoAmbiente?nif=${nif}`);
         } catch (err) {
             console.error("Erro ao atualizar o ambiente:", err);
         } finally {
             setLoading(false);
             limparInputs();
+            setShowSuccess(true); // Exibe a TelaCertinho
+
+            setTimeout(() => {
+                setShowSuccess(false); // Oculta a TelaCertinho
+                router.push(`/administracao/gestaoAmbiente?nif=${nif}`);
+            }, 2000); // 2 segundos de atraso
         }
     };
 
@@ -104,13 +153,16 @@ const EditAmbiente = () => {
         }
     };
 
+    function cancelar() {
+        router.push(`/administracao/gestaoAmbiente?nif=${nif}`);
+    }
+
     const limparInputs = () => {
         setNome("");
         setImagem("");
         setCapacidade(0);
         setCategoriaSelecionada("");
         setDisponivel(true);
-        setNumeroAmbiente(0);
         setTipodoambiente("");
         setMaquinas(0);
         setNumerochave(0);
@@ -134,6 +186,7 @@ const EditAmbiente = () => {
     return (
         <div className="bg-white min-h-screen flex flex-col overflow-y-auto">
             <Header />
+            {showSuccess && <TelaCertinho onClose={() => setShowSuccess(false)} />} {/* Exibe TelaCertinho */}
             <img
                 src="/images/imgMenuAdm/btvoltar.png"
                 alt="botao voltar"
@@ -147,115 +200,314 @@ const EditAmbiente = () => {
                     className="flex flex-col bg-[#D9D9D9] text-black w-[55%] border-2 border-red-500 items-center pt-6 mb-16 rounded-md"
                     onSubmit={handleUpdateAmbiente}
                 >
+                    {/* Nome do Ambiente */}
                     <div className="w-[70%] m-2">
-                        <label>Nome do ambiente:</label>
-                        <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} />
-                    </div>
-
-                    <div className="w-[70%] m-2">
-                        <label>Imagem:</label>
-                        <Input
-                            tipo={"file"}
-                            placeholder={"image"}
-                            onChange={handleImageChange}
-                            nome={"imagem"}
+                        <label className="font-semibold">Nome do ambiente:</label>
+                        <input
+                            type="text"
+                            value={nome}
+                            onChange={(e) => setNome(e.target.value)}
+                            className="w-full p-2 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                         />
                     </div>
-                    {/* Botão Para Envio */}
 
-                    {/* Pré-visualização da Imagem */}
-                    {preview && (
-                        <div className="m-8">
-                            <Image
-                                src={preview}
-                                alt="Imagem pré-visualizada"
-                                width={300}
-                                height={300}
-                            />
+                    {/* Imagem do Ambiente */}
+                    <div className="w-[70%] m-4 p-4 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition relative">
+                        <label className="font-semibold text-gray-600 text-center mb-2">
+                            Selecione uma imagem do ambiente:
+                        </label>
+                        {/* Elemento invisível de input de arquivo */}
+                        <input
+                            type="file"
+                            onChange={handleImageChange}
+                            name="imagem"
+                            className="opacity-0 absolute inset-0 cursor-pointer"
+                        />
+                        <div className="text-gray-400 flex items-center space-x-2">
+                            {/* Ícone da imagem */}
+                            {
+                                preview ? (
+                                    null
+                                ) : (
+                                    <svg className="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                )
+                            }
+                            {/* Texto e seta à direita */}
+                            {preview ? null : <span className="text-gray-500">Clique para selecionar uma imagem</span>}
+                            <div className="border-r border-gray-300 h-8 mx-2"></div>
+                            {
+                                preview ? (
+                                    null
+                                ) : (
+                                    <svg className="w-6 h-6 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                )
+                            }
                         </div>
-                    )}
-
-                    <div className="w-[70%] m-2">
-                        <label>Capacidade de alunos no ambiente:</label>
-                        <input type="number" value={capacidade} onChange={(e) => setCapacidade(e.target.value)} />
-                    </div>
-
-                    <div className="w-[70%] m-2">
-                        <label>Quantidade de máquinas:</label>
-                        <input type="number" value={maquinas} onChange={(e) => setMaquinas(e.target.value)} />
-                    </div>
-
-                    <div className="w-[70%] m-2">
-                        <label>Número do ambiente:</label>
-                        <input type="number" value={numeroAmbiente} onChange={(e) => setNumeroAmbiente(e.target.value)} />
-                    </div>
-
-                    <div className="w-[70%] m-2">
-                        <label>Categoria que o ambiente pertence:</label>
-                        <select
-                            value={categoriaSelecionada}
-                            onChange={(e) => setCategoriaSelecionada(e.target.value)}
-                        >
-                            <option value="">Selecione uma categoria</option>
-                            {categorias.map((categoria) => (
-                                <option key={categoria.id} value={categoria.id}>
-                                    {categoria.nome}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="w-[70%] m-2">
-                        <label>Tipo do Ambiente:</label>
-                        <select
-                            value={tipodoambiente}
-                            onChange={(e) => setTipodoambiente(e.target.value)}
-                        >
-                            <option value="">Selecione o tipo de ambiente</option>
-                            <option value="blocooficina">Bloco Oficina</option>
-                            <option value="externo">Externo</option>
-                        </select>
-                    </div>
-
-                    <div className="w-[70%] m-2">
-                        <label>Ar condicionado:</label>
-                        <input type="checkbox" checked={arcondicionado} onChange={() => setArcondicionado(!arcondicionado)} />
-                    </div>
-
-                    <div className="w-[70%] m-2">
-                        <label>Wi-fi:</label>
-                        <input type="checkbox" checked={wifi} onChange={() => setWifi(!wifi)} />
-                    </div>
-
-                    <div className="w-[70%] m-2">
-                        <label>Chave:</label>
-                        <input type="checkbox" checked={chave} onChange={() => setChave(!chave)} />
-                        {chave && (
-                            <div>
-                                <label>Número da chave:</label>
-                                <input type="number" value={numerochave} onChange={(e) => setNumerochave(e.target.value)} />
+                        {/* Pré-visualização da imagem */}
+                        {preview && (
+                            <div className="m-8 flex justify-center">
+                                <Image
+                                    src={preview}
+                                    alt="Imagem pré-visualizada"
+                                    width={300}
+                                    height={300}
+                                    className="rounded-lg shadow-lg"
+                                />
                             </div>
+                        )}
+                        {errors.imagem && <span className="text-red-500 mt-2">{errors.imagem}</span>}
+                    </div>
+
+
+                    {/* Capacidade de Alunos */}
+                    <div className="w-[70%] m-2">
+                        <label className="font-semibold">Capacidade de alunos no ambiente:</label>
+                        <input
+                            type="number"
+                            value={capacidade}
+                            onChange={(e) => setCapacidade(e.target.value)}
+                            className="w-full p-2 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
+
+                    {/* Quantidade de Máquinas */}
+                    <div className="w-[70%] m-2">
+                        <label className="font-semibold">Quantidade de máquinas:</label>
+                        <input
+                            type="number"
+                            value={maquinas}
+                            onChange={(e) => setMaquinas(e.target.value)}
+                            className="w-full p-2 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
+
+                    {/* Categoria do Ambiente */}
+                    <div className="w-[70%] m-2">
+                        <label className="font-semibold">Categoria que o ambiente pertence:</label>
+                        <div className="relative">
+                            <select
+                                value={categoriaSelecionada}
+                                onChange={(e) => setCategoriaSelecionada(e.target.value)}
+                                className="w-full pl-3 pr-10 py-2 mt-1 border rounded-lg appearance-none bg-white text-gray-700 focus:outline-none focus:border-blue-500"
+                            >
+                                <option value="">Selecione uma categoria</option>
+                                {categorias.map((categoria) => (
+                                    <option key={categoria.id} value={categoria.id}>
+                                        {categoria.nome}
+                                    </option>
+                                ))}
+                            </select>
+                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <div className="border-r border-gray-300 h-5 mr-2"></div>
+                                <svg className="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </div>
+                        {errors.categoriaSelecionada && (
+                            <span className="text-red-500">{errors.categoriaSelecionada}</span>
                         )}
                     </div>
 
+                    {/* Tipo do Ambiente */}
                     <div className="w-[70%] m-2">
-                        <label>Projetor:</label>
-                        <input type="checkbox" checked={projetor} onChange={() => setProjetor(!projetor)} />
+                        <label className="font-semibold">Tipo do Ambiente:</label>
+                        <div className="relative">
+                            <select
+                                value={tipodoambiente}
+                                onChange={(e) => setTipodoambiente(e.target.value)}
+                                className="w-full pl-3 pr-10 py-2 mt-1 border rounded-lg appearance-none bg-white text-gray-700 focus:outline-none focus:border-blue-500"
+                            >
+                                <option value="">Selecione o tipo de ambiente</option>
+                                <option value="interno">Interno</option>
+                                <option value="externo">Externo</option>
+                            </select>
+                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <div className="border-r border-gray-300 h-5 mr-2"></div>
+                                <svg className="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </div>
+                        {errors.tipodoambiente && (
+                            <span className="text-red-500">{errors.tipodoambiente}</span>
+                        )}
                     </div>
 
-                    <div className="w-[70%] m-2">
-                        <label>Chave eletrônica:</label>
-                        <input type="checkbox" checked={chaveeletronica} onChange={() => setChaveeletronica(!chaveeletronica)} />
-                    </div>
 
                     <div className="w-[70%] m-2">
-                        <label>Ventilador:</label>
-                        <input type="checkbox" checked={ventilador} onChange={() => setVentilador(!ventilador)} />
+                        <label className="font-semibold">Chave:</label>
+                        <div className="flex flex-col items-start">
+                            <div
+                                onClick={() => setChave(!chave)}
+                                className={`p-2 rounded-lg font-semibold transition-colors cursor-pointer ${chave ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-red-500 text-gray-700 hover:bg-red-600'}`}
+                            >
+                                {chave ? 'Sim' : 'Não'}
+                            </div>
+                            {chave && (
+                                <div className="mt-3 w-full">
+                                    <label className="font-semibold">Número da chave:</label>
+                                    <input
+                                        type="number"
+                                        placeholder="Número da chave"
+                                        value={numerochave}
+                                        onChange={(e) => setNumerochave(e.target.value)}
+                                        name="numerochave"
+                                        className="w-full p-2 mt-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                        {errors.numerochave && (
+                            <span className="text-red-500 mt-2">{errors.numerochave}</span>
+                        )}
                     </div>
-                    <button type="submit" className="mt-4 p-2 bg-blue-500 text-white rounded-md">Salvar Alterações</button>
+
+
+                    <div className="w-[70%] m-2">
+                        <label className="font-semibold">Atributos:</label>
+                        <hr className="border-0 border-t-2 border-red-500 w-full" />
+                        <div className="flex flex-wrap">
+                            {arcondicionado && (
+                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                    <Image
+                                        src="/icones/ar-condicionado.png"
+                                        alt="Ar condicionado"
+                                        width={64}
+                                        height={64}
+                                        className="p-2"
+                                    />
+                                </div>
+                            )}
+
+                            {ventilador && (
+                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                    <Image
+                                        src="/icones/ventilador.png"
+                                        alt="Ventilador"
+                                        width={64}
+                                        height={64}
+                                        className="p-2"
+                                    />
+                                </div>
+                            )}
+
+                            {wifi && (
+                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                    <Image
+                                        src="/icones/internet.png"
+                                        alt="Wi-Fi"
+                                        width={64}
+                                        height={64}
+                                        className="p-2"
+                                    />
+                                </div>
+                            )}
+
+                            {projetor && (
+                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                    <Image
+                                        src="/icones/projetor.png"
+                                        alt="Projetor"
+                                        width={64}
+                                        height={64}
+                                        className="p-2"
+                                    />
+                                </div>
+                            )}
+
+                            {chaveeletronica && (
+                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                    <Image
+                                        src="/icones/chave-do-cartao.png"
+                                        alt="Chave eletrônica"
+                                        width={64}
+                                        height={64}
+                                        className="p-2"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Ícone para Adicionar Atributo */}
+                            <div className="flex items-center m-6 border-0 rounded-full border-black shadow-lg w-16">
+                                <Image
+                                    src="/images/imgMenuAdm/botao-adicionar.png"
+                                    alt="Configurar Atributos"
+                                    onClick={() => setAtributePopUp(true)}
+                                    width={64}
+                                    height={64}
+                                    className="cursor-pointer"
+                                />
+                            </div>
+                        </div>
+                        <hr className="border-0 border-t-2 border-red-500 w-full" />
+                    </div>
+
+                    {/* Botões de Ação */}
+                    <div className="flex justify-between w-96 mb-4">
+                        <button type="submit" className="mt-4 w-36 p-2 bg-red-600 text-lg text-white rounded-full">
+                            Salvar
+                        </button>
+                        <button
+                            type="button"
+                            onClick={cancelar}
+                            className="mt-4 w-36 p-2 bg-red-600 text-lg text-white rounded-full"
+                        >
+                            Cancelar
+                        </button>
+                    </div>
                 </form>
-
             </div>
+            {atributePopUp && (
+                <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-75">
+                    <div className="bg-white p-6 rounded shadow-md">
+                        <p className="font-bold mb-4">Configurar Atributos</p>
+                        <div className="grid grid-cols-2 gap-4">
+                            <button
+                                onClick={() => setArcondicionado(!arcondicionado)}
+                                className={`p-2 rounded ${arcondicionado ? 'bg-green-500' : 'bg-gray-300'}`}
+                            >
+                                {arcondicionado ? 'Ar Condicionado: Sim' : 'Ar Condicionado: Não'}
+                            </button>
+                            <button
+                                onClick={() => setVentilador(!ventilador)}
+                                className={`p-2 rounded ${ventilador ? 'bg-green-500' : 'bg-gray-300'}`}
+                            >
+                                {ventilador ? 'Ventilador: Sim' : 'Ventilador: Não'}
+                            </button>
+                            <button
+                                onClick={() => setWifi(!wifi)}
+                                className={`p-2 rounded ${wifi ? 'bg-green-500' : 'bg-gray-300'}`}
+                            >
+                                {wifi ? 'Wi-Fi: Sim' : 'Wi-Fi: Não'}
+                            </button>
+                            <button
+                                onClick={() => setProjetor(!projetor)}
+                                className={`p-2 rounded ${projetor ? 'bg-green-500' : 'bg-gray-300'}`}
+                            >
+                                {projetor ? 'Projetor: Sim' : 'Projetor: Não'}
+                            </button>
+                            <button
+                                onClick={() => setChaveeletronica(!chaveeletronica)}
+                                className={`p-2 rounded ${chaveeletronica ? 'bg-green-500' : 'bg-gray-300'}`}
+                            >
+                                {chaveeletronica ? 'Chave Eletrônica: Sim' : 'Chave Eletrônica: Não'}
+                            </button>
+
+                        </div>
+                        <button
+                            onClick={() => setAtributePopUp(false)}
+                            className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+                        >
+                            Fechar
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -5,7 +5,7 @@ import Header from "@/app/components/header/Header";
 import GestaoAmbientes from "@/app/components/gestaoAmbientes/GestaoAmbientes";
 import ConcluirExclusao from "@/app/components/concluirExclusao/concluirExclusao";
 import api from '../../../src/config/configApi';
-
+import { FaSearch } from "react-icons/fa";
 const handleEdit = () => {
     console.log("Editar ambiente");
 }
@@ -14,35 +14,48 @@ const GestaoAmbiente = () => {
     const [dados, setDados] = useState([]);
     const [excluirClicado, setExcluirClicado] = useState(false);
     const [ambienteParaExcluir, setAmbienteParaExcluir] = useState(null); // Usuário selecionado para exclusão
+    const [filtro, setFiltro] = useState('');
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const searchParams = useSearchParams();
-    const nif = searchParams.get('nif');
+    const nif = searchParams.get("nif");
 
     useEffect(() => {
         async function fetchUser() {
-            try {
-                const response = await api.get(`/usuarios/${nif}`);
-                if (response.data) {
-                    setUser(response.data[0]);
-                } else {
-                    setUser(null);
-                }
-            } catch (error) {
-                console.error("Erro ao buscar o ambiente: ", error);
-                setUser(null);
-            } finally {
-                setLoading(false);
+          try {
+            const response = await api.get(`/usuarios/${nif}`);
+            if (response.data) {
+              setUser(response.data);
+            } else {
+              setUser(null);
             }
-        }
-
-        if (nif) {
-            fetchUser();
-        } else {
+          } catch (error) {
+            console.error("Erro ao buscar o usuário: ", error);
+            setUser(null);
+          } finally {
             setLoading(false);
+          }
         }
-    }, [nif]);
+    
+        if (nif) {
+          fetchUser();
+        } else {
+          setLoading(false);
+        }
+      }, [nif]);
+    
+      //Caso nif nn seja de um usuário ADM
+      useEffect(() => {
+        if (!loading) {
+          if (!user || !user.adm) {
+            alert(
+              "Nenhum usuário com esse NIF encontrado, redirecionando para login."
+            );
+            router.push("/administracao/login");
+          }
+        }
+      }, [loading, user, router]);
 
     useEffect(() => {
         async function fetchAmbientes() {
@@ -111,10 +124,25 @@ const GestaoAmbiente = () => {
     if (loading) {
         return <div>Carregando...</div>;
     }
-
+  // Filtrar ambientes com base no texto do filtro
+  const ambientesFiltrados = dados.filter(ambiente =>
+    ambiente.nome.toLowerCase().includes(filtro.toLowerCase())
+);
     return (
         <div className="bg-white min-h-screen">
             <Header />
+            {/* filtro por nome de ambiente */}
+            <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 border border-[#808080]-600 p-2 rounded-full">
+
+            <FaSearch className="text-[#9A1915] m-auto ml-2" />
+            <input
+                type="text"
+                placeholder="Filtrar por nome do ambiente"
+                value={filtro}
+                onChange={(e) => setFiltro(e.target.value)}
+               className="focus:outline-none w-full text-black"
+            />
+            </div>
             {/* botao para voltar para o menu */}
             <img
                 src="/images/imgMenuAdm/btvoltar.png"
@@ -139,8 +167,8 @@ const GestaoAmbiente = () => {
                 </div>
                 {/* componentes */}
 
-                {dados && dados.length > 0 ? (
-                    dados.map((ambiente) => (
+                {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
+                    ambientesFiltrados.map((ambiente) => (
                         <GestaoAmbientes
                             key={ambiente.numero_ambiente}
                             nome={ambiente.nome}

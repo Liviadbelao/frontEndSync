@@ -20,9 +20,6 @@ const EditarUsuarioPage = () => {
   const nif = searchParams.get('nif'); // 
   const nifEdit = searchParams.get('nifEdit'); // 
 
-  console.log(nif, nifEdit);
-
-
   const [image, setImage] = useState(null);
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState("");
@@ -31,7 +28,46 @@ const EditarUsuarioPage = () => {
   const [notiwhere, setNotiwhere] = useState(0);
   const [adm, setAdm] = useState(true);
   const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [carregando, setCarregando] = useState(false)
+
+  //Importando dados API
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const response = await api.get(`/usuarios/${nif}`);
+        if (response.data) {
+          setUser(response.data);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar o usuário: ", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (nif) {
+      fetchUser();
+    } else {
+      setLoading(false);
+    }
+  }, [nif]);
+
+  //Caso nif nn seja de um usuário ADM
+  useEffect(() => {
+    if (!loading) {
+      if (!user || !user.adm) {
+        alert(
+          "Nenhum usuário com esse NIF encontrado, redirecionando para login."
+        );
+        router.push("/administracao/login");
+      }
+    }
+  }, [loading, user, router]);
 
   useEffect(() => {
 
@@ -97,17 +133,10 @@ const EditarUsuarioPage = () => {
     formData.append("email", email);
     formData.append("telefone", telefone);
     formData.append("adm", adm);
-    formData.append("notification", notification);
+    formData.append("notificacao", notification);
     formData.append("notiwhere", notiwhere);
     formData.append("image", image);
-
-    const usuarioEditado = {
-      nome,
-      email,
-      telefone,
-      adm,
-      image
-    }
+    console.log(image)
 
     try {
       const img = await faceapi.fetchImage(preview);
@@ -123,7 +152,7 @@ const EditarUsuarioPage = () => {
 
         formData.append("descriptor", descriptor);
         console.log("Face descriptors:", descriptors.join(","));
-        const response = await api.put(`/usuarios/${nifEdit}`, usuarioEditado);
+        const response = await api.put(`/usuarios/${nifEdit}`, formData);
         console.log(response);
         setLoading(false); // Inicia o loader
 

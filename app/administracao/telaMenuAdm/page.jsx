@@ -7,6 +7,7 @@ import TopicosMenu from "@/app/components/topicosMenu/TopicosMenu";
 import Header from "@/app/components/header/Header";
 import api from "../../../src/config/configApi";
 import TelaCarregar from "@/app/components/telaCarregar/TelaCarregar";
+import Footer from "@/app/components/footer/Footer";
 
 //Iniciando página
 const TelaMenuAdm = () => {
@@ -100,7 +101,7 @@ const TelaMenuAdm = () => {
           <TopicosMenu
             topicos="Reserva de ambientes"
             imgSrc="/images/imgMenuAdm/reservaicon.png"
-            onClick={() => redirecionar('/totem/ambientes')}
+            onClick={() => redirecionar('/administracao/ambientes')}
           />
 
         {/* Controle de Informações*/}
@@ -111,6 +112,7 @@ const TelaMenuAdm = () => {
         </div>
       </div>
       {carregando && <TelaCarregar />}
+      <Footer />
     </div>
   ) : null;
 };

@@ -2,28 +2,31 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import api from "../../../src/config/configApi";
-import BasicModal from "@/app/components/modal/modal";
-import Header from "@/app/components/header/Header";
 import { IoKeyOutline } from "react-icons/io5";
 import { TbAirConditioning } from "react-icons/tb";
 import { GiComputerFan } from "react-icons/gi";
 import { AiOutlineWifi } from "react-icons/ai";
 import { LuProjector } from "react-icons/lu";
 import { GiStaplerPneumatic } from "react-icons/gi";
-import { FaSearch } from "react-icons/fa";
 import { GiTheater } from "react-icons/gi";
+import { FaSearch } from "react-icons/fa";
+// import BasicModal from "@/app/components/modal/modal"; 
 
+import Header from "@/app/components/header/Header";
+import ReservaSala from "@/app/components/reservaSala/ReservarSala";
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [ambienteParaReserva, setAmbienteParaReserva] = useState(false); 
+    const [carregar, setCarregar] = useState(true);
     const [filtro, setFiltro] = useState('');
     const router = useRouter();
     const searchParams = useSearchParams();
     const nif = searchParams.get('nif');
     const [ambientesReservados, setAmbientesReservados] = useState([]);
-    const [modaisAbertos, setModaisAbertos] = useState([]);  // Controle do estado dos modais
+  const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
         async function fetchUser() {
@@ -38,40 +41,51 @@ const ambientes = () => {
                 console.error("Erro ao buscar o usuário: ", error);
                 setUser(null);
             } finally {
-                setLoading(false);
+                setCarregar(false);
             }
         }
 
         if (nif) {
             fetchUser();
         } else {
-            setLoading(false);
+            setCarregar(false);
         }
     }, [nif]);
 
-    const reservarAmbiente = async (id) => {
+    const reservarAmbiente = async (ambiente) => {
+        setAmbienteParaReserva(ambiente); // Armazena o ID do ambiente para a reserva
+        
+    };
+
+  
+    const confirmarReservarAmbiente = async (ambiente) => {
         const date = new Date();
-
+    
+        // Formata o payload conforme esperado pelo servidor
         const data = {
-            data_inicio: date.toISOString().slice(0, 10),
-            funcionario: nif,  // Atribui null se user.nif for inválido
-            ambiente: id,
+            data_inicio: date.toISOString().slice(0, 10),  // Formato 'YYYY-MM-DD'
+            funcionario: nif,  // Verifica se `nif` é um valor válido
+            ambiente: ambiente.numero_ambiente, // Use uma propriedade única para identificar o ambiente
         };
-
+    
+        console.log("Dados a serem enviados:", data); // Log para verificar o conteúdo de `data`
+    
         try {
-            const response = await api.post(`/historico`, data);
-            console.log(response);
+            const response = await api.post(`/historico`, data);  // Faz a requisição de reserva
+            console.log("Reserva realizada com sucesso:", response);
+            setAmbienteParaReserva(false);
         } catch (error) {
-            console.error("Erro ao reservar o ambiente:", error);
+            console.error("Erro ao reservar o ambiente:", error);  // Log de erro detalhado
         } finally {
             try {
+                // Atualiza os dados dos ambientes após a tentativa de reserva
                 const response = await api.get(`/ambientes`);
                 setDados(response.data);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Erro ao buscar dados dos ambientes:", error);
             }
         }
-    }
+    };
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {
@@ -79,9 +93,6 @@ const ambientes = () => {
                 const response = await api.get(`/historico/${nif}`);
                 setAmbientesReservados(response.data);
                 console.log(response.data);
-                // Abrir automaticamente os modais para os ambientes reservados
-                setModaisAbertos(response.data.map(item => item.ambiente)); // Armazena quais modais devem ser abertos
-
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -91,6 +102,7 @@ const ambientes = () => {
             fetchHistoricoFromUser();
         }
     }, [nif]);
+
 
     useEffect(() => {
         const fetchAmbientes = async () => {
@@ -104,92 +116,68 @@ const ambientes = () => {
 
         fetchAmbientes();
     }, []);
-
-
-    const handleCloseAndUpdateAmbientes = async (ambienteId) => {
-        try {
-            // Fecha o modal
-            setModaisAbertos(modaisAbertos.filter(id => id !== ambienteId));
-
-            // Atualiza os ambientes
-            const response = await api.get(`/ambientes`);
-            setDados(response.data);
-        } catch (error) {
-            console.error("Erro ao atualizar ambientes:", error);
-        }
-    };
-
     // Filtrar ambientes com base no texto do filtro
     const ambientesFiltrados = dados.filter(ambiente =>
         ambiente.nome.toLowerCase().includes(filtro.toLowerCase())
     );
 
     return (
+
         <div className=" bg-white min-h-screen ">
             <Header />
 
-            {
-                ambientesReservados && ambientesReservados.length > 0 ? (
-                    <>
-                        {ambientesReservados.map((ambiente) => (
-                            // Verifica se a data_fim está definida para o ambiente
-                            !ambiente.data_fim ? (
-                                <BasicModal
-                                    id={ambiente.id}
-                                    key={ambiente.ambiente_nome}
-                                    nomeSala={ambiente.ambiente_nome}
-                                    ambienteId={ambiente.ambiente}
-                                    usuarioid={nif}
-                                    variavel={setAmbientesReservados}
-                                    imgSala={`http://localhost:3033${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
-                                    nif={nif} // Passe o nif do usuário
-                                    open={modaisAbertos.includes(ambiente.ambiente)}  // Verifica se o modal está aberto para este ambiente
-                                    handleClose={() => handleCloseAndUpdateAmbientes(ambiente.ambiente)}  // Chama a função para fechar o modal e atualizar ambientes
-                                />
+            <img
+        src="/images/imgMenuAdm/btvoltar.png"
+        alt="botao voltar"
+        className="mr-10 cursor-pointer w-10 h-10 mt-8 ml-10"
+        onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
+      />
 
-                            ) : null // Se a data_fim não estiver definida, o modal não será renderizado
+           
 
-                        ))}
-                    </>
-                ) : null
-            }
+      
+
+<p className="text-black text-center text-4xl font-bold">Reserve sua sala :</p>
+
+<div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 border border-[#808080]-600 p-2 rounded-full">
 
 
-            <div className="p-10 bg-white min-h-screen">
-                <p className="text-black">Reserve sua sala:</p>
+<FaSearch className="text-[#9A1915] m-auto ml-2" />
 
 
+<input
+    type="text"
+    placeholder="Filtrar por nome do ambiente"
+    value={filtro}
+    onChange={(e) => setFiltro(e.target.value)}
+    className="focus:outline-none w-full text-black"
+/>
+</div>
 
-                <input
-                    type="text"
-                    placeholder="Filtrar por nome do ambiente"
-                    value={filtro}
-                    onChange={(e) => setFiltro(e.target.value)}
-                    className="border p-2 mb-4"
-                />
-                <div className="grid grid-cols-2 gap-4">
+            <div className="p-10 bg-white min-h-screen mb-14  ">
+                
+                <div className="grid grid-cols-4 gap-4 gap-y-20 ">
                     {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                         ambientesFiltrados.map((ambiente) => (
 
-                            <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
-                                <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
-                                <div className="p-4">
-                                    <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
-                                    <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
 
+                            <div className="bg-[#D9D9D9] w-[80%] h-[100%] rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
+                                <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[180px] w-[600px] rounded-lg" alt={ambiente.nome} />
+                                <div className="p-4">
+                                    <p className="font-semibold text-xs mb-2 text-black mt-8">{ambiente.nome}</p>
+                                    <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
                                     {
                                         ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black " /> : null
                                     }
                                     {
                                         ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null
                                     }
-
                                     <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
                                 </div>
                                 <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                     {
                                         ambiente.disponivel ? (
-                                            <button className="bg-[#9A1915] text-white p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente.numero_ambiente)}>
+                                            <button className="bg-[#9A1915] text-white mb-6 p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente)}>
                                                 Reservar
                                             </button>
                                         ) : (
@@ -197,7 +185,7 @@ const ambientes = () => {
                                         )
                                     }
                                 </div>
-                                <div className={`bg-[#9A1915] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2 ${ambiente.disponivel ? '' : 'bg-[#2e2e2e]'}`}>
+                                <div className={`bg-[#9A1915] gap-2 flex text-white z-20 p-2 mt-9 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2 ${ambiente.disponivel ? '' : 'bg-[#2e2e2e]'}`}>
                                     {
                                         ambiente.chave && <IoKeyOutline />
                                     }
@@ -221,6 +209,16 @@ const ambientes = () => {
                     )}
                 </div>
             </div>
+            
+            {ambienteParaReserva && (
+                <ReservaSala
+                onClose={() => setAmbienteParaReserva(false)}
+                onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
+                img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
+                name={ambienteParaReserva.nome}
+                />
+                
+            )}
         </div>
     );
 };
