@@ -108,6 +108,7 @@ const TelaMenuAdm = () => {
           <TopicosMenu
             topicos="Gestão de informações"
             imgSrc="/images/imgMenuAdm/painel.png"
+            onClick={() => redirecionar('/administracao/gestaoInformacoes')}
           />
         </div>
       </div>
