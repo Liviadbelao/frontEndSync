@@ -96,10 +96,12 @@ export default function BasicModal({
         }}
       >
         {/* Ícone de fechar */}
-        <IoClose
-          onClick={handleClose}
-          className="absolute top-4 right-4 w-6 h-6 cursor-pointer text-gray-600 hover:text-red-600 transition-colors duration-200"
-        />
+        <img
+            src="/images/modal/fechar.png"
+            alt="botao fechar"
+            className="absolute -top-5 -left-3 cursor-pointer w-10 h-10"
+            onClick={handleClose}
+          />
 
         {/* Imagem do ambiente */}
         <img
