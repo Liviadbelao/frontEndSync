@@ -20,7 +20,7 @@ function ContagemRegressiva({ tempoInicial = 3 }) {
       return () => clearTimeout(timerId);
     } else if (tempoRestante === 0) {
       // Redireciona para a rota especificada quando o tempo chega a zero
-      // router.push('/totem/telaDescanso');
+        router.push('/totem/telaDescanso');
     }
   }, [tempoRestante, ativo, router]);
 

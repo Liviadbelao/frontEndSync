@@ -13,12 +13,14 @@ import { GiStaplerPneumatic } from "react-icons/gi";
 import { FaSearch } from "react-icons/fa";
 import { GiTheater } from "react-icons/gi";
 import ReservaSala from "@/app/components/reservaSala/ReservarSala";
+import TelaCarregar from "@/app/components/telaCarregar/TelaCarregar";
 
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [carregando, setCarregando] = useState(false)
     const [filtro, setFiltro] = useState('');
     const [ambienteParaReserva, setAmbienteParaReserva] = useState(false);
     const router = useRouter();
@@ -59,6 +61,9 @@ const ambientes = () => {
     const confirmarReservarAmbiente = async (ambiente) => {
         const date = new Date();
 
+        setCarregando(true)
+
+
         // Formata o payload conforme esperado pelo servidor
         const data = {
             data_inicio: date.toISOString(),  // Inclui data e hora completos
@@ -72,6 +77,8 @@ const ambientes = () => {
             const response = await api.post(`/historico`, data);  // Faz a requisição de reserva
             console.log("Reserva realizada com sucesso:", response);
             setAmbienteParaReserva(false);
+            router.push(`/totem/contagemRegressivaTela`)
+            setCarregando(false)
         } catch (error) {
             console.error("Erro ao reservar o ambiente:", error);  // Log de erro detalhado
         } finally {
@@ -185,6 +192,7 @@ const ambientes = () => {
 
 
                 </div>
+
                 {/* tab ambientes disponivéis e reservados */}
                 <div className="gap-2 ml-60 mb-10">
                     <button onClick={() => setTab('ativado')} className={`rounded-l-lg  px-4 py-2 ${tab === 'ativado' ? 'bg-[#9A1915] text-white' : 'bg-gray-200 text-black'}`}>
@@ -194,6 +202,7 @@ const ambientes = () => {
                         Reservados
                     </button>
                 </div>
+
                 <div className="grid grid-cols-2 gap-4">
                     {tab === 'ativado' ? (
                         ambientesFiltrados && ambientesFiltrados.filter((ambiente) => ambiente.disponivel).length > 0 ? (
@@ -268,6 +277,7 @@ const ambientes = () => {
                 />
 
             )}
+            {carregando && <TelaCarregar />}
         </div>
     );
 };
