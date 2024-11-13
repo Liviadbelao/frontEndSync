@@ -1,128 +1,144 @@
-//Importações
-import * as React from 'react';
-import Button from '@mui/material/Button';
+import React from 'react';
 import Modal from '@mui/material/Modal';
-import { useRouter } from "next/navigation";
-import { IoIosArrowBack } from "react-icons/io";
-import { IoIosArrowForward } from "react-icons/io";
-import { GiHouseKeys } from "react-icons/gi";
+import { IoClose } from 'react-icons/io5';
+import api from '../../../src/config/configApi';
 
-//Criando página
-export default function BasicModal() {
+export default function BasicModal({
+  id,
+  nomeSala,
+  imgSala,
+  ambienteId,
+  usuarioid,
+  open,
+  handleClose,
+  variavel,
+  atualizarChavesPendentes
+}) {
 
-  //Declaranto variável de rotas
-  const router = useRouter();
+  const devolverTodasReservas = async () => {
+    try {
+      const date = new Date();
 
-  //Criando estado de variáveis
-  const [open, setOpen] = React.useState(false);
-  const [devolver, setDevolver] = React.useState(false)
+      const usuarioEditado = {
+        data_fim: date,
+        usuario: usuarioid
+      };
 
-  //Abrir o modal automaticamente
-  React.useEffect(() => {
-    setOpen(true);
-  }, []);
 
-  //Declarando variantes de abertura e fechamento de modal
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+      const response = await api.put(`/historico/todos`, usuarioEditado); // Endpoint ajustado
+      console.log(response);
 
-  //Fechar modal
-  const fecharModal = () => {
-    handleClose();
-    router.push('/totem/telaDescanso');
-  }
-  const cliqueDevolver = () => {
-    setDevolver(true);
-  }
+      if (response.status === 200) {
+        console.log("Chaves devolvidas com sucesso");
+        if (atualizarChavesPendentes && typeof atualizarChavesPendentes === 'function') {
+          atualizarChavesPendentes();  // Atualiza o estado no componente pai
+        }
 
-  //Corpo da página
+        // Fecha o modal após a ação
+        variavel([]);
+        handleClose();
+      } else {
+        console.error("Erro ao devolver as chaves");
+      }
+    } catch (error) {
+      console.error("Erro ao devolver as chaves:", error);
+      alert("Erro ao tentar devolver as chaves. Tente novamente.");
+    }
+  };
+
+
+  // Função para devolver 1 ambiente
+  const devolverUmaChave = async () => {
+    try {
+      const date = new Date();
+
+      const usuarioEditado = {
+        id: id,
+        data_fim: date,
+        ambiente: ambienteId,
+      }
+      // Chama a API para devolver a chave de um ambiente específico
+      const response = await api.put(`/historico`, usuarioEditado); // Chama o endpoint correto para devolver a chave
+
+      // Verificar se a requisição foi bem-sucedida
+      if (response.status == 200) {
+        // Atualiza o estado para refletir que a chave foi devolvida
+        if (atualizarChavesPendentes && typeof atualizarChavesPendentes === 'function') {
+          atualizarChavesPendentes();  // Atualiza o estado no componente pai
+        }
+
+        // Fecha o modal após a ação
+        handleClose();
+      } else {
+        console.error("Erro ao devolver a chave");
+      }
+    } catch (error) {
+      console.error("Erro ao devolver a chave:", error);
+      alert("Erro ao tentar devolver a chave. Tente novamente.");
+    }
+  };
   return (
-
-    /* Div principal */
-    <div>
-
-      {/* Modal */}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        BackdropProps={{
-          style: { pointerEvents: 'none' }
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+      BackdropProps={{
+        style: { backgroundColor: 'transparent' } // Desfoque de fundo
+      }}
+      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} // Centraliza o modal
+    >
+      <div
+        onClick={(e) => e.stopPropagation()} // Impede o fechamento ao clicar dentro do modal
+        className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative transition-transform transform"
+        style={{
+          animation: 'fadeIn 0.3s ease-in-out' // Transição suave para abrir
         }}
       >
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[3%] shadow-lg w-[70%] h-[60%] p-16"
-        >
-          {/* Botão de Fechar posicionado parcialmente fora do modal */}
-
-          {/* Imagem de fechar */}
-          <img
-            onClick={fecharModal}
+        {/* Ícone de fechar */}
+        <img
             src="/images/modal/fechar.png"
-            alt="Descrição da Imagem"
-            className="absolute -top-8 -left-8 w-16 "
+            alt="botao fechar"
+            className="absolute -top-5 -left-3 cursor-pointer w-10 h-10"
+            onClick={handleClose}
           />
 
-{
-  devolver ? (
-    <p className='text-black font-bold text-center text-5xl mb-8'>
-            Deseja reservar sala pré-definida?
-          </p>
-  ) : (
-    <p className='text-black font-bold text-center text-5xl mb-8'>
-            Você tem chaves pendentes!
-          </p>
-  )
-}
+        {/* Imagem do ambiente */}
+        <img
+          src={imgSala}
+          alt={nomeSala}
+          className="w-full h-40 object-cover rounded-md mb-4" // Imagem mais estilizada
+        />
 
-          {/* Caso 1: não tem chaves pendentes e tem ambientes pré-definidos */}
-          {/* Div com scroll */}
-          {/* Apenas aparecer setas caso tenha mais de um item */}
-          <div className="flex items-center justify-between">
+        {/* Título do ambiente */}
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
+          {nomeSala}
+        </h2>
 
-            {/* Seta esquerda */}
-            {/* <IoIosArrowBack className="text-black text-4xl cursor-pointer" /> */}
+        {/* Descrição e detalhes do ambiente */}
+        <p className="text-sm text-gray-600 mb-6 text-center">
+          Ambiente reservado com sucesso! Aproveite sua reserva.
+        </p>
 
-            {/* Div de imagens */}
-             <div className="overflow-x-auto whitespace-nowrap w-full no-scrollbar mx-2  ">
-              <div className="inline-block mr-6 text-center">
-                <img
-                  src="/images/telaSelection/inicioSelection.jpg"
-                  alt="Descrição da Imagem"
-                  className="object-cover rounded-2xl"
-                />
-                <p className="text-black mt-2 text-2xl">Sala 1</p>
-              </div>
+        {/* Botões de ação */}
+        <div className="flex justify-center gap-4">
+          {/* Botão para devolver uma chave */}
+          <button
+            onClick={devolverTodasReservas}
+            className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
+          >
+            Devolver todas reservas
+          </button>
 
-              <div className="inline-block mr-6 text-center">
-                <img
-                  src="/images/telaSelection/inicioSelection.jpg"
-                  alt="Descrição da Imagem"
-                  className="object-cover rounded-2xl"
-                />
-                <p className="text-black mt-2 text-2xl">Sala 2</p>
-              </div>
-            </div> 
-
-            {/* Seta direita */}
-            {/* <IoIosArrowForward className="text-black text-4xl cursor-pointer" /> */}
-          </div>
-
-{/* Caso 2: Tem chaves pendentes */}
-
-
-          {/* Texto 2 */}
-          {/* <p className='text-black text-center text-4xl mt-10'>
-            Clique para reservar!
-          </p> */}
-
-          {/* Botão outras salas */}
-          <button className="mt-16 rounded-full bg-[#E30613] text-2xl p-4 px-10 text-white" onClick={cliqueDevolver}>Devolver Chave</button>
-          <button className="mt-16 rounded-full bg-[#E30613] text-2xl p-4 px-10 text-white">Reservar outra sala</button>
+          {/* Botão para devolver todas as chaves */}
+          <button
+            onClick={devolverUmaChave}
+            className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
+          >
+            Devolver apenas este ambiente
+          </button>
         </div>
-      </Modal>
-    </div>
+      </div>
+    </Modal>
   );
 }

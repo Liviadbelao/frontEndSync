@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import api from "../../../src/config/configApi";
+import BasicModal from "@/app/components/modal/modal";
+import Header from "@/app/components/header/Header";
 import { IoKeyOutline } from "react-icons/io5";
 import { TbAirConditioning } from "react-icons/tb";
 import { GiComputerFan } from "react-icons/gi";
@@ -10,9 +12,7 @@ import { LuProjector } from "react-icons/lu";
 import { GiStaplerPneumatic } from "react-icons/gi";
 import { FaSearch } from "react-icons/fa";
 import { GiTheater } from "react-icons/gi";
-import BasicModal from "@/app/components/modal/modal";
 
-import Header from "@/app/components/header/Header";
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
@@ -23,6 +23,7 @@ const ambientes = () => {
     const searchParams = useSearchParams();
     const nif = searchParams.get('nif');
     const [ambientesReservados, setAmbientesReservados] = useState([]);
+    const [modaisAbertos, setModaisAbertos] = useState([]);  // Controle do estado dos modais
 
     useEffect(() => {
         async function fetchUser() {
@@ -70,9 +71,7 @@ const ambientes = () => {
                 console.error("Error fetching data:", error);
             }
         }
-
     }
-
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {
@@ -80,6 +79,9 @@ const ambientes = () => {
                 const response = await api.get(`/historico/${nif}`);
                 setAmbientesReservados(response.data);
                 console.log(response.data);
+                // Abrir automaticamente os modais para os ambientes reservados
+                setModaisAbertos(response.data.map(item => item.ambiente)); // Armazena quais modais devem ser abertos
+
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -89,7 +91,6 @@ const ambientes = () => {
             fetchHistoricoFromUser();
         }
     }, [nif]);
-
 
     useEffect(() => {
         const fetchAmbientes = async () => {
@@ -103,13 +104,27 @@ const ambientes = () => {
 
         fetchAmbientes();
     }, []);
+
+
+    const handleCloseAndUpdateAmbientes = async (ambienteId) => {
+        try {
+            // Fecha o modal
+            setModaisAbertos(modaisAbertos.filter(id => id !== ambienteId));
+
+            // Atualiza os ambientes
+            const response = await api.get(`/ambientes`);
+            setDados(response.data);
+        } catch (error) {
+            console.error("Erro ao atualizar ambientes:", error);
+        }
+    };
+
     // Filtrar ambientes com base no texto do filtro
     const ambientesFiltrados = dados.filter(ambiente =>
         ambiente.nome.toLowerCase().includes(filtro.toLowerCase())
     );
 
     return (
-
         <div className=" bg-white min-h-screen ">
             <Header />
 
@@ -117,25 +132,32 @@ const ambientes = () => {
                 ambientesReservados && ambientesReservados.length > 0 ? (
                     <>
                         {ambientesReservados.map((ambiente) => (
-                            <BasicModal
-                                key={ambiente.ambiente_nome}
-                                nomeSala={ambiente.ambiente_nome}
-                                imgSala={`http://localhost:3033${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
-                                nif={nif} // Passe o nif do usuário
-                            />
+                            // Verifica se a data_fim está definida para o ambiente
+                            !ambiente.data_fim ? (
+                                <BasicModal
+                                    id={ambiente.id}
+                                    key={ambiente.ambiente_nome}
+                                    nomeSala={ambiente.ambiente_nome}
+                                    ambienteId={ambiente.ambiente}
+                                    usuarioid={nif}
+                                    variavel={setAmbientesReservados}
+                                    imgSala={`http://localhost:3033${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
+                                    nif={nif} // Passe o nif do usuário
+                                    open={modaisAbertos.includes(ambiente.ambiente)}  // Verifica se o modal está aberto para este ambiente
+                                    handleClose={() => handleCloseAndUpdateAmbientes(ambiente.ambiente)}  // Chama a função para fechar o modal e atualizar ambientes
+                                />
+
+                            ) : null // Se a data_fim não estiver definida, o modal não será renderizado
+
                         ))}
                     </>
                 ) : null
             }
 
 
+            <div className="p-10 bg-white min-h-screen">
+                <p className="text-black">Reserve sua sala:</p>
 
-            <p>Reserve sua sala:</p>
-            {/* filtro ambientes por nome */}
-            <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 border border-[#808080]-600 p-2 rounded-full">
-
-
-                <FaSearch className="text-[#9A1915] m-auto ml-2" />
 
 
                 <input
@@ -143,30 +165,25 @@ const ambientes = () => {
                     placeholder="Filtrar por nome do ambiente"
                     value={filtro}
                     onChange={(e) => setFiltro(e.target.value)}
-                    className="focus:outline-none w-full text-black"
+                    className="border p-2 mb-4"
                 />
-            </div>
-            <div className="p-10 bg-white min-h-screen">
-                <p className="text-black">Reserve sua sala:</p>
-
-
-
                 <div className="grid grid-cols-2 gap-4">
                     {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                         ambientesFiltrados.map((ambiente) => (
-
 
                             <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
                                 <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
                                 <div className="p-4">
                                     <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                     <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
+
                                     {
                                         ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black " /> : null
                                     }
                                     {
                                         ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null
                                     }
+
                                     <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
                                 </div>
                                 <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
