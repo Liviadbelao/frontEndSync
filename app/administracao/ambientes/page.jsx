@@ -17,6 +17,7 @@ import Header from "@/app/components/header/Header";
 const ambientes = () => {
     const [dados, setDados] = useState([]);
     const [user, setUser] = useState(null);
+    const [ambienteParaReserva, setAmbienteParaReserva] = useState(null); 
     const [carregar, setCarregar] = useState(true);
     const [filtro, setFiltro] = useState('');
     const router = useRouter();
