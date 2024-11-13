@@ -6,6 +6,7 @@ import api from '../../../src/config/configApi';
 import { IoKeyOutline } from "react-icons/io5";
 import { TbAirConditioning } from "react-icons/tb";
 import { GiComputerFan } from "react-icons/gi";
+import { FaSearch } from "react-icons/fa";
 import { AiOutlineWifi } from "react-icons/ai";
 import { LuProjector } from "react-icons/lu";
 
@@ -94,14 +95,18 @@ const MonitoramentoAmbientes = () => {
             />
             <h1 className="text-center text-3xl font-bold text-black mb-10">Monitoramento de Ambientes</h1>
 
+            <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 mb-8 border border-[#808080]-600 p-2 rounded-full">
+            <FaSearch className="text-[#9A1915] m-auto ml-2" />
             {/* Campo de busca */}
             <input
                 type="text"
                 placeholder="Buscar ambiente"
-                className="bg-gray-100 p-2 rounded-lg mb-5"
+                className="focus:outline-none w-full text-black"
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
             />
+
+</div>
 
             <div className="grid md:grid-cols-4 gap-8">
                 {/* Ambientes em aberto */}
@@ -123,7 +128,7 @@ const MonitoramentoAmbientes = () => {
                         </div>
                         <button 
                             onClick={() => handleDevolver(item.id)} 
-                            className="mt-3 text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded"
+                            className="mt-3 text-white bg-[#b42424] hover:bg-red-700 px-3 py-1 rounded"
                         >
                             Devolver
                         </button>

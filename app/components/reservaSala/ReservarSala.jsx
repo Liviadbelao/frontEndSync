@@ -12,7 +12,16 @@ const ReservaSala = ({ onClose, onConfirm, img, name }) => {
           onClick={(e) => e.stopPropagation()}
           className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[3%] shadow-lg w-[25%] h-[65%] p-16"
         >
-          <p className="text-black text-2xl font-semibold mb-14 ">Confirmar reserva?</p>
+
+<img
+            src="/images/modal/fechar.png"
+            alt="botao fechar"
+            className="absolute -top-5 -left-3 cursor-pointer w-10 h-10"
+            onClick={onClose}
+          />
+
+
+          <p className="text-black text-2xl font-semibold mb-11 ">Confirmar reserva?</p>
           <div className="flex items-center justify-center h-32 mb-6 ">
             <Image
               src={img || "/images/default-placeholder.png"} // imagem padrão
@@ -23,14 +32,12 @@ const ReservaSala = ({ onClose, onConfirm, img, name }) => {
             />
           </div>
 
-          <p className='mt-16 text-black text-xl font-bold'>{name}</p>
+          <p className='mt-16 text-black text-xl font-bold text-center'>{name}</p>
           <div className="flex flex-row space-x-4 mt-5 ">
-            <button className="rounded-full bg-[#b42424]  p-4 px-10 text-white" onClick={onConfirm}>
+            <button className="rounded-full bg-[#b42424] w-80  p-4 px-10 text-white" onClick={onConfirm}>
               Sim
             </button>
-            <button className=" rounded-full bg-[#b42424]     p-4 px-10 text-white" onClick={onClose}>
-              Cancelar
-            </button>
+           
           </div>
         </div>
       </Modal>
