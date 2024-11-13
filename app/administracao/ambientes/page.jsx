@@ -25,8 +25,9 @@ const ambientes = () => {
     const searchParams = useSearchParams();
     const nif = searchParams.get('nif');
     const [ambientesReservados, setAmbientesReservados] = useState([]);
-  const [loading, setLoading] = useState(true);
-
+    const [loading, setLoading] = useState(true);
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
 
     useEffect(() => {
         async function fetchUser() {
@@ -60,8 +61,13 @@ const ambientes = () => {
   
     const confirmarReservarAmbiente = async (ambiente) => {
         const date = new Date();
+        
+        if (startTime) {
+            date.setHours(startTime.split(":")[0] - 3);
+            date.setMinutes(startTime.split(":")[1]);
+        }
     
-        console.log(date)
+        console.log(date);
         // Formata o payload conforme esperado pelo servidor
         const data = {
             data_inicio: date.toISOString(),  // Inclui data e hora completos
@@ -75,6 +81,23 @@ const ambientes = () => {
             const response = await api.post(`/historico`, data);  // Faz a requisição de reserva
             console.log("Reserva realizada com sucesso:", response);
             setAmbienteParaReserva(false);
+    
+            // Se o tipo do ambiente for "externo", faz a devolução automática
+            if (ambiente.tipodoambiente === "externo") {
+                const date = new Date();
+                
+                if (endTime) {
+                    date.setHours(endTime.split(":")[0]- 3);
+                    date.setMinutes(endTime.split(":")[1]);
+                }
+
+                const dataDevolucao = {
+                    data_fim: date,  // Usa o endTime para a devolução
+                };
+                console.log(ambiente)
+                await api.post(`/historico/devolver/${response.data.id}`, dataDevolucao);
+                console.log("Devolução realizada com sucesso");
+            }
         } catch (error) {
             console.error("Erro ao reservar o ambiente:", error);  // Log de erro detalhado
         } finally {
@@ -86,7 +109,7 @@ const ambientes = () => {
                 console.error("Erro ao buscar dados dos ambientes:", error);
             }
         }
-    };    
+    };       
 
     useEffect(() => {
         const fetchHistoricoFromUser = async () => {
@@ -228,6 +251,10 @@ const ambientes = () => {
                 img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
                 name={ambienteParaReserva.nome}
                 typeAmb={ambienteParaReserva.tipodoambiente}
+                startTime={startTime}
+                endTime={endTime}
+                setStartTime={setStartTime}
+                setEndTime={setEndTime}
                 />
                 
             )}

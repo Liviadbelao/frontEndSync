@@ -70,7 +70,11 @@ const MonitoramentoAmbientes = () => {
 
     const handleDevolver = async (id) => {
         try {
-            const data = { data_fim: new Date().toISOString() };
+            const date = new Date();
+
+            date.setHours(date.getHours() - 3);
+
+            const data = { data_fim: date.toISOString() };
             await api.post(`/historico/devolver/${id}`, data);
             const response = await api.get(`/historico/infos/filtered`);
             setDados(response.data);
