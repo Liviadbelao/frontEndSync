@@ -40,15 +40,16 @@ function ContagemRegressiva({ tempoInicial = 3 }) {
         <div className="bg-[#EA2626] w-96 h-96 flex items-center justify-center rounded-full mt-10">
           <h2 className="text-white text-8xl">{tempoRestante}</h2>
         </div>
-        {tempoRestante === 0 && <p>Tempo esgotado!</p>}
       </div>
+      <div className="flex flex-col items-center justify-center mt-20">
       <button
-        className="mt-16 rounded-full bg-[#E30613] text-2xl p-4 px-10 text-white"
+        className="mt-16 rounded-full bg-[#E30613] text-4xl p-4 px-10 text-white"
         onClick={handleReservarOutraChave}
-      >
+        >
         Reservar outra chave
       </button>
-      {loading && <TelaCarregar/>}
+        </div>
+      {loading && <TelaCarregar tamanho={'100'} />}
     </div>
   );
 }
