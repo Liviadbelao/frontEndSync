@@ -10,6 +10,7 @@ import { AiOutlineWifi } from "react-icons/ai";
 import { LuProjector } from "react-icons/lu";
 
 const MonitoramentoAmbientes = () => {
+    const [searchName, setSearchName] = useState('');
     const [dados, setDados] = useState([]);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -56,9 +57,9 @@ const MonitoramentoAmbientes = () => {
     useEffect(() => {
         async function fetchInfosAmbientes() {
             try {
-                const response = await api.get(`/historico/infos`);
+                const response = await api.get(`/historico/infos/filtered`);
                 setDados(response.data);
-                console.log(response.data);
+                console.log(response)
             } catch (error) {
                 console.error("Erro ao buscar os dados: ", error);
             }
@@ -70,6 +71,8 @@ const MonitoramentoAmbientes = () => {
         try {
             const data = { data_fim: new Date().toISOString().slice(0, 10) };
             await api.post(`/historico/devolver/${id}`, data);
+            const response = await api.get(`/historico/infos/filtered`);
+            setDados(response.data);
         } catch (error) {
             console.error("Erro ao devolver o ambiente: ", error);
         }
@@ -86,9 +89,18 @@ const MonitoramentoAmbientes = () => {
             />
             <h1 className="text-center text-3xl font-bold text-black mb-10">Monitoramento de Ambientes</h1>
 
+            {/* Campo de busca */}
+            <input
+                type="text"
+                placeholder="Buscar ambiente"
+                className="bg-gray-100 p-2 rounded-lg mb-5"
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+            />
+
             <div className="grid md:grid-cols-4 gap-8">
                 {/* Ambientes em aberto */}
-                {dados.filter(item => !item.data_fim).map((item) => (
+                {dados.filter(item => !item.data_fim && item.nome_ambiente.toLowerCase().includes(searchName.toLowerCase())).map((item) => (
                     <div key={item.id} className="bg-gray-100 w-64 shadow-md rounded-lg p-5 flex flex-col">
                         <img
                             src={`http://localhost:3033${item.imagem_ambiente}`}
@@ -121,7 +133,7 @@ const MonitoramentoAmbientes = () => {
                 ))}
 
                 {/* Ambientes já devolvidos */}
-                {dados.filter(item => item.data_fim).map((item) => (
+                {dados.filter(item => item.data_fim && item.nome_ambiente.toLowerCase().includes(searchName.toLowerCase())).map((item) => (
                     <div key={item.id} className="bg-gray-100 w-64 shadow-md rounded-lg p-5 flex flex-col">
                         <img
                             src={`http://localhost:3033${item.imagem_ambiente}`}
