@@ -13,11 +13,12 @@ import { FaSearch } from "react-icons/fa";
 import BasicModal from "@/app/components/modal/modal"; 
 
 import Header from "@/app/components/header/Header";
+import ReservaSala from "@/app/components/reservaSala/ReservarSala";
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
     const [user, setUser] = useState(null);
-    const [ambienteParaReserva, setAmbienteParaReserva] = useState(null); 
+    const [ambienteParaReserva, setAmbienteParaReserva] = useState(false); 
     const [carregar, setCarregar] = useState(true);
     const [filtro, setFiltro] = useState('');
     const router = useRouter();
@@ -52,7 +53,10 @@ const ambientes = () => {
     }, [nif]);
 
     const reservarAmbiente = async (id) => {
-        const date = new Date();
+        setAmbienteParaReserva(id); // Armazena o ID do ambiente para a reserva
+    };
+    const confirmarReservarAmbiente = async (id) => {
+        const date = new Date()
 
         const data = {
             data_inicio: date.toISOString().slice(0, 10),
@@ -63,6 +67,7 @@ const ambientes = () => {
         try {
             const response = await api.post(`/historico`, data);
             console.log(response);
+            setAmbienteParaReserva(false)
         } catch (error) {
             console.error("Erro ao reservar o ambiente:", error);
         } finally {
@@ -73,6 +78,7 @@ const ambientes = () => {
                 console.error("Error fetching data:", error);
             }
         }
+
 
     }
 
@@ -198,6 +204,12 @@ const ambientes = () => {
                     )}
                 </div>
             </div>
+            {ambienteParaReserva && (
+    <ReservaSala
+        onClose={() => setAmbienteParaReserva(false)}
+        onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
+    />
+)}
         </div>
     );
 };
