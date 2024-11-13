@@ -8,6 +8,7 @@ import Input from "@/app/components/input/input";
 import Image from "next/image";
 import TelaCarregar from "@/app/components/telaCarregar/telaCarregar";
 import TelaCertinho from "@/app/components/telaCertinho/TelaCertinho";
+import Footer from "@/app/components/footer/Footer";
 
 const EditAmbiente = () => {
     const [nome, setNome] = useState("");
@@ -145,6 +146,10 @@ const EditAmbiente = () => {
         }
     };
 
+    const onClose  = () => {
+        setAtributePopUp(false)
+    }
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         setImagem(file);
@@ -195,7 +200,7 @@ const EditAmbiente = () => {
             />
 
             <div className="flex flex-col items-center justify-center">
-                <p className="font-normal md:font-bold mt-40 text-2xl">Edição de Ambiente</p>
+                <p className="font-normal text-black md:font-bold my-16 text-4xl">Edição de Ambiente</p>
                 <form
                     className="flex flex-col bg-[#D9D9D9] text-black w-[55%] border-2 border-red-500 items-center pt-6 mb-16 rounded-md"
                     onSubmit={handleUpdateAmbiente}
@@ -373,7 +378,7 @@ const EditAmbiente = () => {
                         <hr className="border-0 border-t-2 border-red-500 w-full" />
                         <div className="flex flex-wrap">
                             {arcondicionado && (
-                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                <div className="flex items-center m-6 border-2 rounded-full border-black w-16">
                                     <Image
                                         src="/icones/ar-condicionado.png"
                                         alt="Ar condicionado"
@@ -385,7 +390,7 @@ const EditAmbiente = () => {
                             )}
 
                             {ventilador && (
-                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                <div className="flex items-center m-6 border-2 rounded-full border-black w-16">
                                     <Image
                                         src="/icones/ventilador.png"
                                         alt="Ventilador"
@@ -397,7 +402,7 @@ const EditAmbiente = () => {
                             )}
 
                             {wifi && (
-                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                <div className="flex items-center m-6 border-2 rounded-full border-black w-16">
                                     <Image
                                         src="/icones/internet.png"
                                         alt="Wi-Fi"
@@ -409,7 +414,7 @@ const EditAmbiente = () => {
                             )}
 
                             {projetor && (
-                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                <div className="flex items-center m-6 border-2 rounded-full border-black w-16">
                                     <Image
                                         src="/icones/projetor.png"
                                         alt="Projetor"
@@ -421,7 +426,7 @@ const EditAmbiente = () => {
                             )}
 
                             {chaveeletronica && (
-                                <div className="flex items-center m-6 border-2 rounded-full border-black shadow-lg w-16">
+                                <div className="flex items-center m-6 border-2 rounded-full border-black w-16">
                                     <Image
                                         src="/icones/chave-do-cartao.png"
                                         alt="Chave eletrônica"
@@ -465,49 +470,51 @@ const EditAmbiente = () => {
             {atributePopUp && (
                 <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-75">
                     <div className="bg-white p-6 rounded shadow-md">
-                        <p className="font-bold mb-4">Configurar Atributos</p>
+                     <img
+            src="/images/modal/fechar.png"
+            alt="botao fechar"
+            className="absolute top-[215px] left-[515px] cursor-pointer w-10 h-10"
+            onClick={onClose}
+          />
+                        <p className="font-bold mb-4 text-black">Configurar Atributos</p>
                         <div className="grid grid-cols-2 gap-4">
                             <button
                                 onClick={() => setArcondicionado(!arcondicionado)}
-                                className={`p-2 rounded ${arcondicionado ? 'bg-green-500' : 'bg-gray-300'}`}
+                                className={`p-2 rounded ${arcondicionado ? 'bg-green-500' : 'bg-gray-300'} ${arcondicionado ? 'text-white' : 'text-black'}`}
                             >
                                 {arcondicionado ? 'Ar Condicionado: Sim' : 'Ar Condicionado: Não'}
                             </button>
                             <button
                                 onClick={() => setVentilador(!ventilador)}
-                                className={`p-2 rounded ${ventilador ? 'bg-green-500' : 'bg-gray-300'}`}
+                                className={`p-2 rounded ${ventilador ? 'bg-green-500' : 'bg-gray-300'} ${ventilador ? 'text-white' : 'text-black'}`}
                             >
                                 {ventilador ? 'Ventilador: Sim' : 'Ventilador: Não'}
                             </button>
                             <button
                                 onClick={() => setWifi(!wifi)}
-                                className={`p-2 rounded ${wifi ? 'bg-green-500' : 'bg-gray-300'}`}
+                                className={`p-2 rounded ${wifi ? 'bg-green-500' : 'bg-gray-300'} ${wifi ? 'text-white' : 'text-black'} `}
                             >
                                 {wifi ? 'Wi-Fi: Sim' : 'Wi-Fi: Não'}
                             </button>
                             <button
                                 onClick={() => setProjetor(!projetor)}
-                                className={`p-2 rounded ${projetor ? 'bg-green-500' : 'bg-gray-300'}`}
+                                className={`p-2 rounded ${projetor ? 'bg-green-500' : 'bg-gray-300'} ${projetor ? 'text-white' : 'text-black'}`}
                             >
                                 {projetor ? 'Projetor: Sim' : 'Projetor: Não'}
                             </button>
                             <button
                                 onClick={() => setChaveeletronica(!chaveeletronica)}
-                                className={`p-2 rounded ${chaveeletronica ? 'bg-green-500' : 'bg-gray-300'}`}
+                                className={`p-2 rounded ${chaveeletronica ? 'bg-green-500' : 'bg-gray-300'} ${chaveeletronica ? 'text-white' : 'text-black'}`}
                             >
                                 {chaveeletronica ? 'Chave Eletrônica: Sim' : 'Chave Eletrônica: Não'}
                             </button>
 
                         </div>
-                        <button
-                            onClick={() => setAtributePopUp(false)}
-                            className="bg-red-500 text-white px-4 py-2 rounded mt-4"
-                        >
-                            Fechar
-                        </button>
+
                     </div>
                 </div>
             )}
+            <Footer />
         </div>
     );
 }
