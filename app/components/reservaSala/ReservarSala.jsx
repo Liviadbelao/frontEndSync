@@ -23,7 +23,7 @@ const ReservaSala = ({ onClose, onConfirm, img, name }) => {
             />
           </div>
 
-          <p className='mt-16 text-black text-xl font-bold'>{name}</p>
+          <p className='mt-16 text-black text-xl font-bold text-center'>{name}</p>
           <div className="flex flex-row space-x-4 mt-5 ">
             <button className="rounded-full bg-[#b42424]  p-4 px-10 text-white" onClick={onConfirm}>
               Sim
