@@ -405,7 +405,7 @@ const Ambiente = () => {
                                         className="p-2"
                                     />
                                 </div>}
-                            <div className="flex items-center m-6 border-0 rounded-full border-black shadow-lg w-16">
+                            <div className="flex items-center m-6 border-0 rounded-full border-black ">
                                 <Image
                                     src="/images/imgMenuAdm/botao-adicionar.png" // Replace with the image URL
                                     alt="Configurar Atributos"
