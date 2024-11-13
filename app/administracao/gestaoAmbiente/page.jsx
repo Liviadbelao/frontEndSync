@@ -14,36 +14,48 @@ const GestaoAmbiente = () => {
     const [dados, setDados] = useState([]);
     const [excluirClicado, setExcluirClicado] = useState(false);
     const [ambienteParaExcluir, setAmbienteParaExcluir] = useState(null); // Usuário selecionado para exclusão
-    const [user, setUser] = useState(null);
     const [filtro, setFiltro] = useState('');
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const searchParams = useSearchParams();
-    const nif = searchParams.get('nif');
+    const nif = searchParams.get("nif");
 
     useEffect(() => {
         async function fetchUser() {
-            try {
-                const response = await api.get(`/usuarios/${nif}`);
-                if (response.data) {
-                    setUser(response.data[0]);
-                } else {
-                    setUser(null);
-                }
-            } catch (error) {
-                console.error("Erro ao buscar o ambiente: ", error);
-                setUser(null);
-            } finally {
-                setLoading(false);
+          try {
+            const response = await api.get(`/usuarios/${nif}`);
+            if (response.data) {
+              setUser(response.data);
+            } else {
+              setUser(null);
             }
-        }
-
-        if (nif) {
-            fetchUser();
-        } else {
+          } catch (error) {
+            console.error("Erro ao buscar o usuário: ", error);
+            setUser(null);
+          } finally {
             setLoading(false);
+          }
         }
-    }, [nif]);
+    
+        if (nif) {
+          fetchUser();
+        } else {
+          setLoading(false);
+        }
+      }, [nif]);
+    
+      //Caso nif nn seja de um usuário ADM
+      useEffect(() => {
+        if (!loading) {
+          if (!user || !user.adm) {
+            alert(
+              "Nenhum usuário com esse NIF encontrado, redirecionando para login."
+            );
+            router.push("/administracao/login");
+          }
+        }
+      }, [loading, user, router]);
 
     useEffect(() => {
         async function fetchAmbientes() {

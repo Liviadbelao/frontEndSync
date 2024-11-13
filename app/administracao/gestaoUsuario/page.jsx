@@ -9,6 +9,7 @@ import api from "../../../src/config/configApi"; // Ajuste o caminho conforme ne
 import ConcluirExclusao from "@/app/components/concluirExclusao/concluirExclusao";
 
 import { FaSearch } from "react-icons/fa";
+import ModalUsuario from "@/app/components/modalUsuario/ModalUsuario";
 
 //Iniciando página
 const GestaoUsuariosPage = () => {
@@ -18,9 +19,21 @@ const GestaoUsuariosPage = () => {
   const [excluirClicado, setExcluirClicado] = useState(false);
   const [usuarioParaExcluir, setUsuarioParaExcluir] = useState(null); // Usuário selecionado para exclusão
   const router = useRouter();
+  const [abrirModal, setAbrirModal] = useState(null);
   const [filtro, setFiltro] = useState('');
   const searchParams = useSearchParams();
   const nif = searchParams.get('nif');
+
+    //Const para abertura do modal
+    const openModal = (id) => {
+      setAbrirModal(id);
+    };
+  
+  
+    //Const para fechamento do modal
+    const closeModal = () => {
+      setAbrirModal(null);
+    };
 
   //Resgatando dados API
   useEffect(() => {
@@ -52,7 +65,7 @@ const GestaoUsuariosPage = () => {
     if (!loading) {
       if (!user || !user.adm) {
         alert("Nenhum usuário com esse NIF encontrado, redirecionando para login.");
-
+        router.push('/administracao/login');
       }
     }
   }, [loading, user, router]);
@@ -156,6 +169,7 @@ const GestaoUsuariosPage = () => {
               imgGestor={`http://localhost:3033${usuario.caminho_imagem}`}
               editar={() => handleEditClick(usuario)} // Chama a função de edição
               excluir={() => handleDeleteClick(usuario)}
+              funcao={() => openModal(usuario.nif)} 
             />
           ))
         ) : (
@@ -171,6 +185,25 @@ const GestaoUsuariosPage = () => {
           name={usuarioParaExcluir.nome}
         />
       )}
+
+{
+  abrirModal && (
+    dados.filter((usuario) => usuario.nif === abrirModal) // Filtra o usuário correto
+      .map((usuario) => (
+        <div key={usuario.id}>
+          <ModalUsuario
+            nome={usuario.nome} 
+            imagem={`http://localhost:3033${usuario.caminho_imagem}`} // Corrige o caminho para a imagem
+            adm={usuario.adm} 
+            nif={usuario.nif} 
+            celular={usuario.telefone} 
+            email={usuario.email} 
+            fechar={closeModal} 
+          />
+        </div>
+      ))
+  )
+}
     </div>
   );
 };
