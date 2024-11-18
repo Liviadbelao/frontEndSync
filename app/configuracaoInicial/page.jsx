@@ -32,7 +32,7 @@ const ConfigInicial = () => {
         setLoading(false);
       }
     }
-  
+
     if (nif) {
       fetchUser();
     } else {
@@ -40,8 +40,6 @@ const ConfigInicial = () => {
       setUser(null); // Garante um estado consistente
     }
   }, [nif]);
-  
-
 
 
   async function testar() {
@@ -80,7 +78,9 @@ const ConfigInicial = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
+
       {user && <Popup nome={user.nome} />}
+
 
       <div className="max-w-3xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
@@ -97,22 +97,17 @@ const ConfigInicial = () => {
                   <>
                     <img
                       src={`http://localhost:3033${user?.caminho_imagem}`}
-
                       alt={`imagem do usuario ${user.nome}`}
                       className="w-16 h-16 rounded-full object-cover"
                     />
-
                     <div>
-                      <h2 className="text-xl font-semibold text-white">
-                        {user.nome}
-                      </h2>
+                      <h2 className="text-xl font-semibold text-white">{user.nome}</h2>
                       <p className="text-sm text-gray-300">
                         {user.adm ? "Administrador" : "Usuário"}
                       </p>
                     </div>
                   </>
                 )}
-
               </div>
             </div>
 
