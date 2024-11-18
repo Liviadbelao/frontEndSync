@@ -11,7 +11,7 @@ const getGreeting = () => {
     }
 };
 
-const Popup = () => {
+const Popup = ({nome}) => {
     const [isVisible, setIsVisible] = useState(true);
     const [greeting, setGreeting] = useState('');
 
@@ -32,7 +32,7 @@ const Popup = () => {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
             <div className="bg-pink-100 p-6 rounded-lg shadow-lg text-center">
-                <h2 className="text-xl font-bold mb-4">{greeting}, Thiago Ferreira!</h2>
+                <h2 className="text-xl font-bold mb-4">{greeting}, {nome}</h2>
                 <p>Antes de tudo vamos configurar seu perfil.</p>
             </div>
         </div>
