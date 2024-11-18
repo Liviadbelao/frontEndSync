@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
+  
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -14,6 +15,7 @@
     "@mui/icons-material": "^6.1.2",
     "@mui/material": "^6.1.2",
     "axios": "^1.7.7",
+    "cors": "^2.8.5",
     "face-api.js": "^0.20.0",
     "ldrs": "^1.0.2",
     "next": "14.2.12",

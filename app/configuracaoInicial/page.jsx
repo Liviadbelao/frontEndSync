@@ -41,7 +41,20 @@ const ConfigInicial = () => {
     }
   }, [nif]);
 
+  async function atualizarNotificacoes() {
+    const {nif} = req.params;  
+    const notificacao = { email: true, whatsapp: false };  
+    try {
+        const response = await axios.put(`http://localhost:3033/usuarios/${nif}/notificacoes`, {
+            notificacao: notificacao,
+            notiwhere: notificacao.whatsapp ? 'whatsapp' : (notificacao.email ? 'email' : 'ambos'),
+        });
 
+        console.log('Preferências de notificações atualizadas com sucesso:', response.data);
+    } catch (error) {
+        console.error('Erro ao atualizar preferências:', error);
+    }
+} 
   async function testar() {
     console.log('whatsapp:', whatsappOn);
     console.log('email:', emailOn);
