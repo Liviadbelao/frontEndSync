@@ -24,10 +24,13 @@ const ambientes = () => {
     const [filtro, setFiltro] = useState('');
     const [ambienteParaReserva, setAmbienteParaReserva] = useState(false);
     const router = useRouter();
+    const [tab, setTab] = useState('ativado');
     const searchParams = useSearchParams();
     const nif = searchParams.get('nif');
     const [ambientesReservados, setAmbientesReservados] = useState([]);
     const [modaisAbertos, setModaisAbertos] = useState([]);  // Controle do estado dos modais
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
 
     useEffect(() => {
         async function fetchUser() {
@@ -59,23 +62,43 @@ const ambientes = () => {
 
     const confirmarReservarAmbiente = async (ambiente) => {
         const date = new Date();
-        setCarregando(true)
-
+        
+        if (startTime) {
+            date.setHours(startTime.split(":")[0] - 3);
+            date.setMinutes(startTime.split(":")[1]);
+        }
+    
+        console.log(date);
         // Formata o payload conforme esperado pelo servidor
         const data = {
             data_inicio: date.toISOString(),  // Inclui data e hora completos
             funcionario: nif,  // Verifica se `nif` é um valor válido
             ambiente: ambiente.numero_ambiente,  // Usa uma propriedade única para identificar o ambiente
         };
-
+    
         console.log("Dados a serem enviados:", data); // Log para verificar o conteúdo de `data`
-
+    
         try {
             const response = await api.post(`/historico`, data);  // Faz a requisição de reserva
             console.log("Reserva realizada com sucesso:", response);
             setAmbienteParaReserva(false);
-            router.push(`/totem/contagemRegressivaTela`)
-            setCarregando(false)
+    
+            // Se o tipo do ambiente for "externo", faz a devolução automática
+            if (ambiente.tipodoambiente === "externo") {
+                const date = new Date();
+                
+                if (endTime) {
+                    date.setHours(endTime.split(":")[0]- 3);
+                    date.setMinutes(endTime.split(":")[1]);
+                }
+
+                const dataDevolucao = {
+                    data_fim: date,  // Usa o endTime para a devolução
+                };
+                console.log(ambiente)
+                await api.post(`/historico/devolver/${response.data.id}`, dataDevolucao);
+                console.log("Devolução realizada com sucesso");
+            }
         } catch (error) {
             console.error("Erro ao reservar o ambiente:", error);  // Log de erro detalhado
         } finally {
@@ -190,57 +213,78 @@ const ambientes = () => {
 
 
                 </div>
+
+                {/* tab ambientes disponivéis e reservados */}
+                <div className="gap-2 ml-60 mb-10">
+                    <button onClick={() => setTab('ativado')} className={`rounded-l-lg  px-4 py-2 ${tab === 'ativado' ? 'bg-[#9A1915] text-white' : 'bg-gray-200 text-black'}`}>
+                        Disponivéis
+                    </button>
+                    <button onClick={() => setTab('reservado')} className={`rounded-r-lg px-4 py-2 ${tab === 'reservado' ? 'bg-[#9A1915] text-white' : 'bg-gray-200 text-black'}`}>
+                        Reservados
+                    </button>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
-                    {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
-                        ambientesFiltrados.map((ambiente) => (
-
-                            <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
-                                <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
-                                <div className="p-4">
-                                    <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
-                                    <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-
-                                    {
-                                        ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black " /> : null
-                                    }
-                                    {
-                                        ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null
-                                    }
-
-                                    <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
-                                </div>
-                                <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-                                    {
-                                        ambiente.disponivel ? (
+                    {tab === 'ativado' ? (
+                        ambientesFiltrados && ambientesFiltrados.filter((ambiente) => ambiente.disponivel).length > 0 ? (
+                            ambientesFiltrados
+                                .filter((ambiente) => ambiente.disponivel)
+                                .map((ambiente) => (
+                                    <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10 ml-16" key={ambiente.numero_ambiente}>
+                                        <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
+                                        <div className="p-4">
+                                            <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
+                                            <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
+                                            {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
+                                            {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
+                                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
+                                        </div>
+                                        <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                             <button className="bg-[#9A1915] text-white p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente)}>
                                                 Reservar
                                             </button>
-                                        ) : (
-                                            <p className="bg-[#2e2e2e] text-white p-2 rounded-full z-20">Indisponível</p>
-                                        )
-                                    }
-                                </div>
-                                <div className={`bg-[#9A1915] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2 ${ambiente.disponivel ? '' : 'bg-[#2e2e2e]'}`}>
-                                    {
-                                        ambiente.chave && <IoKeyOutline />
-                                    }
-                                    {
-                                        ambiente.ar_condicionado && <TbAirConditioning />
-                                    }
-                                    {
-                                        ambiente.ventilador && <GiComputerFan />
-                                    }
-                                    {
-                                        ambiente.wifi && <AiOutlineWifi />
-                                    }
-                                    {
-                                        ambiente.projetor && <LuProjector />
-                                    }
-                                </div>
-                            </div>
-                        ))
+                                        </div>
+                                        <div className="bg-[#9A1915] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                                            {ambiente.chave && <IoKeyOutline />}
+                                            {ambiente.ar_condicionado && <TbAirConditioning />}
+                                            {ambiente.ventilador && <GiComputerFan />}
+                                            {ambiente.wifi && <AiOutlineWifi />}
+                                            {ambiente.projetor && <LuProjector />}
+                                        </div>
+                                    </div>
+                                ))
+                        ) : (
+                            <p className="text-center text-gray-500">Nenhum ambiente disponível</p>
+                        )
                     ) : (
-                        <p className="text-center text-gray-500">Nenhum ambiente encontrado</p>
+                        ambientesFiltrados && ambientesFiltrados.filter((ambiente) => !ambiente.disponivel).length > 0 ? (
+                            ambientesFiltrados
+                                .filter((ambiente) => !ambiente.disponivel)
+                                .map((ambiente) => (
+                                    <div className="bg-[#D9D9D9] ml-16 w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
+                                        <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
+                                        <div className="p-4">
+                                            <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
+                                            <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
+                                            {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
+                                            {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
+                                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
+                                        </div>
+                                        <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                                            <p className="bg-[#2e2e2e] text-white p-2 rounded-full z-20">Indisponível</p>
+                                        </div>
+                                        <div className="bg-[#2e2e2e] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                                            {ambiente.chave && <IoKeyOutline />}
+                                            {ambiente.ar_condicionado && <TbAirConditioning />}
+                                            {ambiente.ventilador && <GiComputerFan />}
+                                            {ambiente.wifi && <AiOutlineWifi />}
+                                            {ambiente.projetor && <LuProjector />}
+                                        </div>
+                                    </div>
+                                ))
+                        ) : (
+                            <p className="text-center text-gray-500">Nenhum ambiente reservado</p>
+                        )
                     )}
                 </div>
             </div>
@@ -251,6 +295,11 @@ const ambientes = () => {
                     onConfirm={() => confirmarReservarAmbiente(ambienteParaReserva)} // Passa o ID ao confirmar
                     img={`http://localhost:3033${ambienteParaReserva.caminho_imagem}`}
                     name={ambienteParaReserva.nome}
+                    typeAmb={ambienteParaReserva.tipodoambiente}
+                    startTime={startTime}
+                    endTime={endTime}
+                    setStartTime={setStartTime}
+                    setEndTime={setEndTime}
                 />
 
             )}
