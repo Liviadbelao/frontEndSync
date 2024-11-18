@@ -10,6 +10,7 @@ import ConcluirExclusao from "@/app/components/concluirExclusao/concluirExclusao
 
 import { FaSearch } from "react-icons/fa";
 import ModalUsuario from "@/app/components/modalUsuario/ModalUsuario";
+import Footer from "@/app/components/footer/Footer";
 
 //Iniciando página
 const GestaoUsuariosPage = () => {
@@ -204,6 +205,8 @@ const GestaoUsuariosPage = () => {
       ))
   )
 }
+
+<Footer/>
     </div>
   );
 };

@@ -14,6 +14,7 @@ import { hourglass } from "ldrs";
 import TelaCarregar from "@/app/components/telaCarregar/telaCarregar";
 import { useRouter, useSearchParams } from "next/navigation";
 import TelaCertinho from "@/app/components/telaCertinho/TelaCertinho";
+import Footer from "@/app/components/footer/Footer";
 
 
 //Criando Página
@@ -222,8 +223,8 @@ const InputComponent = () => {
           onSubmit={uploadImage}
         >
           {/* Campo de Nome */}
-          <div className="w-[70%] m-2 text-black">
-            <label>Nome:</label>
+          <div className="w-[70%] m-2">
+            <label className="font-bold">Nome:</label>
             <Input
               tipo={"text"}
               placeholder={"Nome"}
@@ -235,8 +236,8 @@ const InputComponent = () => {
           </div>
 
           {/* Campo de Telefone */}
-          <div className="w-[70%] m-2 font-black">
-            <label>Telefone:</label>
+          <div className="w-[70%] m-2">
+            <label className="font-bold">Telefone:</label>
             <Input
               tipo={"number"}
               placeholder={"telefone"}
@@ -248,8 +249,8 @@ const InputComponent = () => {
           </div>
 
           {/* Campo de Email */}
-          <div className="w-[70%] m-2 font-black">
-            <label>Email:</label>
+          <div className="w-[70%] m-2">
+            <label className="font-bold">Email:</label>
             <Input
               tipo={"email"}
               placeholder={"email"}
@@ -261,8 +262,8 @@ const InputComponent = () => {
           </div>
 
           {/* Campo de Nif */}
-          <div className="w-[70%] m-2 font-black">
-            <label>Nif:</label>
+          <div className="w-[70%] m-2">
+            <label className="font-bold">Nif:</label>
             <Input
               tipo={"number"}
               placeholder={"nif"}
@@ -274,7 +275,7 @@ const InputComponent = () => {
           </div>
 
           <div className="w-[70%] m-4 p-4 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition relative">
-            <label className="font-semibold  text-gray-600 text-center mb-2">
+            <label className="text-gray-600 text-center mb-2">
               Selecione uma imagem do ambiente:
             </label>
             {/* Elemento invisível de input de arquivo */}
@@ -321,9 +322,9 @@ const InputComponent = () => {
             </div>
           </div>
           {/* Campo de Administrador */}
-          <div className="w-[70%] m-2">
-            <label className="flex items-center cursor-pointer">
-              <span className="text-gray-700 font-medium mr-3">Administrador:</span>
+          <div className="w-[70%] m-10">
+            <label className="flex flex-column items-center justify-center cursor-pointer">
+              <span className="text-gray-700 font-medium mr-3 text-xl">Administrador:</span>
               <div className="relative">
                 <input
                   type="checkbox"
@@ -333,13 +334,13 @@ const InputComponent = () => {
                 />
                 {/* Toggle Background */}
                 <div
-                  className={`w-10 h-5 bg-gray-300 rounded-full  shadow-inner 
+                  className={`w-12 h-6 bg-gray-300 rounded-full  shadow-inner 
           ${adm ? "bg-green-500" : "bg-gray-300"} transition-colors`}
                 ></div>
                 {/* Toggle Circle */}
                 <div
-                  className={` -mt-[18px] w-4 h-4 bg-white rounded-full shadow  left-1
-          ${adm ? "transform translate-x-5" : ""} transition-transform`}
+                  className={` -mt-[20px] w-4 h-4 bg-white rounded-full shadow  left-1
+          ${adm ? "transform translate-x-7" : ""} transition-transform`}
                 ></div>
               </div>
             </label>
@@ -351,6 +352,7 @@ const InputComponent = () => {
         </form>
       </div>
       {loading && <TelaCarregar />}
+      <Footer/>
     </div>
   );
 };

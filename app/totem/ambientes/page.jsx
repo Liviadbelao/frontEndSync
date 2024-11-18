@@ -14,7 +14,7 @@ import { FaSearch } from "react-icons/fa";
 import { GiTheater } from "react-icons/gi";
 import ReservaSala from "@/app/components/reservaSala/ReservarSala";
 import TelaCarregar from "@/app/components/telaCarregar/TelaCarregar";
-
+import TimerInatividade from "@/app/components/TimerInatividade/TimerInatividade";
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
@@ -172,6 +172,7 @@ const ambientes = () => {
 
 
             <div className="p-10 bg-white min-h-screen">
+                <TimerInatividade />
                 <p className="text-black text-center font-bold text-2xl">Reserve sua sala:</p>
 
 
