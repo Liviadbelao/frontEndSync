@@ -27,7 +27,7 @@ const telaDescanso = () => {
       <div
         className="w-full h-1/3 bg-white bg-opacity-60 absolute bottom-0 flex justify-center items-center"
       >
-        <div className="flex items-center justify-center space-x-1">
+        <div className="flex items-center justify-center space-x-4">
           <p className="text-5xl text-black">Toque na</p>
           <p className="text-5xl text-black font-bold">tela</p>
           <p className="text-5xl text-black">para</p>
