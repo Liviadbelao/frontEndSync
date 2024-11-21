@@ -1,9 +1,21 @@
-const Header = () =>{
-    return(
-        <div className="justify-start w-100 bg-[#D9D9D9] p-1.5 sm:p-4">
-            <img className='w-40 sm:w-60' src ={'/images/logoSenai/logo.png'} />
-        </div>
-    )
-}
+import { useRouter } from "next/navigation";
 
-export default Header
+const Header = () => {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/");
+  };
+
+  return (
+    <div className="flex justify-between items-center w-100 bg-[#D9D9D9] p-0.5 sm:p-2">
+      <img className="w-40 sm:w-60" src={"/images/logoSenai/logo.png"} />
+     
+        <img  w-8 h-8 onClick={handleLogout} src={"/images/logoSenai/exit.png"} />
+      
+    </div>
+  );
+};
+
+export default Header;
