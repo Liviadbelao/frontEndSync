@@ -7,6 +7,7 @@ import ConcluirExclusao from "@/app/components/concluirExclusao/concluirExclusao
 import api from '../../../src/config/configApi';
 import { FaSearch } from "react-icons/fa";
 import Footer from "@/app/components/footer/Footer";
+import ModalAmbiente from "@/app/components/modalAmbiente/ModalAMbiente";
 const handleEdit = () => {
     console.log("Editar ambiente");
 }
@@ -17,46 +18,57 @@ const GestaoAmbiente = () => {
     const [ambienteParaExcluir, setAmbienteParaExcluir] = useState(null); // Usuário selecionado para exclusão
     const [filtro, setFiltro] = useState('');
     const [user, setUser] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const searchParams = useSearchParams();
     const nif = searchParams.get("nif");
 
+
+    const abrirModal = (ambiente) => {
+        setSelectedAmbiente(ambiente); // Configura o ambiente selecionado
+        setShowModal(true); // Exibe o modal
+    };
+
+    const fecharModal = () => {
+        setShowModal(false); // Fecha o modal
+        setSelectedAmbiente(null); // Reseta os dados do ambiente
+    };
     useEffect(() => {
         async function fetchUser() {
-          try {
-            const response = await api.get(`/usuarios/${nif}`);
-            if (response.data) {
-              setUser(response.data);
-            } else {
-              setUser(null);
+            try {
+                const response = await api.get(`/usuarios/${nif}`);
+                if (response.data) {
+                    setUser(response.data);
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar o usuário: ", error);
+                setUser(null);
+            } finally {
+                setLoading(false);
             }
-          } catch (error) {
-            console.error("Erro ao buscar o usuário: ", error);
-            setUser(null);
-          } finally {
-            setLoading(false);
-          }
         }
-    
+
         if (nif) {
-          fetchUser();
+            fetchUser();
         } else {
-          setLoading(false);
+            setLoading(false);
         }
-      }, [nif]);
-    
-      //Caso nif nn seja de um usuário ADM
-      useEffect(() => {
+    }, [nif]);
+
+    //Caso nif nn seja de um usuário ADM
+    useEffect(() => {
         if (!loading) {
-          if (!user || !user.adm) {
-            alert(
-              "Nenhum usuário com esse NIF encontrado, redirecionando para login."
-            );
-            router.push("/administracao/login");
-          }
+            if (!user || !user.adm) {
+                alert(
+                    "Nenhum usuário com esse NIF encontrado, redirecionando para login."
+                );
+                router.push("/administracao/login");
+            }
         }
-      }, [loading, user, router]);
+    }, [loading, user, router]);
 
     useEffect(() => {
         async function fetchAmbientes() {
@@ -125,10 +137,10 @@ const GestaoAmbiente = () => {
     if (loading) {
         return <div>Carregando...</div>;
     }
-  // Filtrar ambientes com base no texto do filtro
-  const ambientesFiltrados = dados.filter(ambiente =>
-    ambiente.nome.toLowerCase().includes(filtro.toLowerCase())
-);
+    // Filtrar ambientes com base no texto do filtro
+    const ambientesFiltrados = dados.filter(ambiente =>
+        ambiente.nome.toLowerCase().includes(filtro.toLowerCase())
+    );
     return (
         <div className="bg-white min-h-screen">
             <Header />
@@ -145,14 +157,14 @@ const GestaoAmbiente = () => {
             {/* filtro por nome de ambiente */}
             <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto my-10 mb-8 border border-[#808080]-600 p-2 rounded-full">
 
-            <FaSearch className="text-[#9A1915] m-auto ml-2" />
-            <input
-                type="text"
-                placeholder="Filtrar por nome do ambiente"
-                value={filtro}
-                onChange={(e) => setFiltro(e.target.value)}
-               className="focus:outline-none w-full text-black"
-            />
+                <FaSearch className="text-[#9A1915] m-auto ml-2" />
+                <input
+                    type="text"
+                    placeholder="Filtrar por nome do ambiente"
+                    value={filtro}
+                    onChange={(e) => setFiltro(e.target.value)}
+                    className="focus:outline-none w-full text-black"
+                />
             </div>
 
 
@@ -171,6 +183,7 @@ const GestaoAmbiente = () => {
                 {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                     ambientesFiltrados.map((ambiente) => (
                         <GestaoAmbientes
+                            on={() => setShowModal(true)}
                             key={ambiente.numero_ambiente}
                             nome={ambiente.nome}
                             imgSrc2={`http://localhost:3033${ambiente.caminho_imagem}`}
@@ -191,7 +204,26 @@ const GestaoAmbiente = () => {
                     name={ambienteParaExcluir.nome}
                 />
             )}
-<Footer />
+            {showModal && (
+                <ModalAmbiente
+                    nome={dados.nome}
+                    numero_dados={dados.numero_ambiente}
+                    caminho_imagem={`http://localhost:3033${dados.caminho_imagem}`}
+                    chave={dados.chave}
+                    capacidadeAlunos={dados.capacidadeAlunos}
+                    tipodoambiente={dados.tipodoambiente}
+                    ar_condicionado={dados.ar_condicionado}
+                    ventilador={dados.ventilador}
+                    wifi={dados.wifi}
+                    projetor={dados.projetor}
+                    chave_eletronica={dados.chave_eletronica}
+
+                    disponivel={dados.disponivel}
+                    categoria={dados.categoria}
+                    fechar={() => setShowModal(false)} // Passando a função de fechar
+                />
+            )}
+            <Footer />
         </div>
     );
 }
