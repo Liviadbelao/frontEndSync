@@ -9,6 +9,8 @@ import { GiComputerFan } from "react-icons/gi";
 import { FaSearch } from "react-icons/fa";
 import { AiOutlineWifi } from "react-icons/ai";
 import { LuProjector } from "react-icons/lu";
+import Header from "@/app/components/header/Header";
+import Footer from "@/app/components/footer/Footer";
 
 const MonitoramentoAmbientes = () => {
     const [searchName, setSearchName] = useState('');
@@ -90,11 +92,12 @@ const MonitoramentoAmbientes = () => {
     
 
     return (
-        <div className="bg-white min-h-screen flex flex-col p-10">
+        <div className="bg-white min-h-full flex flex-col">
+            <Header />
             <img
                 src="/images/imgMenuAdm/btvoltar.png"
                 alt="botao voltar"
-                className="w-10 h-10 mb-5 cursor-pointer"
+                className="w-10 h-10 mb-5 cursor-pointer m-10"
                 onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
             />
             <h1 className="text-center text-3xl font-bold text-black mb-10">Monitoramento de Ambientes</h1>
@@ -112,7 +115,7 @@ const MonitoramentoAmbientes = () => {
 
 </div>
 
-            <div className="grid md:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-4 gap-8 ml-24">
                 {/* Ambientes em aberto */}
                 {dados.filter(item => !item.data_fim && item.nome_ambiente.toLowerCase().includes(searchName.toLowerCase())).map((item) => (
                     <div key={item.id} className="bg-gray-100 w-64 shadow-md rounded-lg p-5 flex flex-col">
@@ -175,6 +178,7 @@ const MonitoramentoAmbientes = () => {
                     </div>
                 ))}
             </div>
+            <Footer />
         </div>
     );
 };

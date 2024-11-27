@@ -9,7 +9,7 @@ import FooterInfos from "../footerInfos/FooterInfos";
 
 const Footer = () => {
     return (
-        <div className="justify-start w-100 bg-[#D9D9D9] p-1.5 sm:p-4 mt-20 flex ">
+        <div className="justify-start w-100 bg-[#D9D9D9] p-1.5 sm:p-4 mt-36 flex ">
             <div className="w-[40%]">
                 <div className="mb-2 ">
                     <h1 className="text-xl text-black border-b-2 border-[#E30613] w-[12%]"  >Desenvolvedores</h1>

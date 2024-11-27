@@ -68,12 +68,12 @@ const TelaMenuAdm = () => {
   }
 
   return user && user.adm ? (
-    <div className="bg-white items-center justify-center min-h-screen">
+    <div className="bg-white min-h-full items-center justify-center">
       <Header />
       <h1 className=" text-black font-extrabold text-2xl text-center mt-4">
         O que deseja fazer?
       </h1>
-      <div className="flex justify-center ml-40 mr-40 mt-4 mb-4 p-10 rounded-md bg-zinc-300 border-4 border-red-500">
+      <div className=" flex justify-center mx-96 mt-4 mb-4 p-10 rounded-md bg-zinc-300 border-4 border-red-500">
         <div className="grid grid-cols-2 gap-10">
 
         {/* Monitoramento Ambiente */}
