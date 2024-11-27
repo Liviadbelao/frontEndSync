@@ -7,6 +7,7 @@ import Header from "@/app/components/header/Header";
 import Input from "@/app/components/input/input";
 import SendButton from "@/app/components/sendButton/SendButton";
 import { useRouter } from "next/navigation";
+import BasicModal from "@/app/components/modal/modal";
 import TelaCertinho from "@/app/components/telaCertinho/TelaCertinho";
 
 // Criando Página
@@ -70,7 +71,8 @@ const LoginComponent = () => {
   return (
     <div className="bg-white min-h-screen flex flex-col overflow-y-auto">
       <Header />
-      
+    
+
       {/* Exibe TelaCertinho se showSuccess for true */}
       {showSuccess && <TelaCertinho onClose={() => setShowSuccess(false)} />}
 

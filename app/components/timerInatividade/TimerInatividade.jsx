@@ -14,6 +14,7 @@ function MonitorDeInatividade({ tempoInatividade = 10000 }) {
     const startTimer = () => {
       timerRef.current = setTimeout(() => {
         setInativo(true); // Mostra a mensagem quando o usuário está inativo
+        alert('Vc ainda esta ai?')
       }, tempoInatividade);
     };
 
@@ -30,8 +31,7 @@ function MonitorDeInatividade({ tempoInatividade = 10000 }) {
 
   return (
     <div>
-      <h1>Monitor de Inatividade</h1>
-      {inativo && <p>Você ainda está na página deste componente?</p>}
+
     </div>
   );
 }

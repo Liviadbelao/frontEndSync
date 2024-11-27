@@ -1,8 +1,8 @@
 //componente dos cards de gestao de ambientes
-const GestaoAmbientes = ({ nome, imgSrc2, onEdit, onDelete }) => {
+const GestaoAmbientes = ({ nome, imgSrc2, onEdit, onDelete, on }) => {
 
     return (
-        <div className="w-60 h-60 max-w-sm bg-gray-200 rounded-lg overflow-hidden">
+        <div className="w-60 h-60 max-w-sm bg-gray-200 rounded-lg overflow-hidden" onClick={on}>
             <div className="flex items-center justify-center bg-gray-300 h-32">
                 {imgSrc2 && <img src={imgSrc2} alt={nome} className="w-full h-full" />}
             </div>

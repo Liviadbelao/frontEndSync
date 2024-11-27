@@ -7,8 +7,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import GestaoUsuarios from "@/app/components/gestaoUsuarios/GestaoUsuarios";
 import api from "../../../src/config/configApi"; // Ajuste o caminho conforme necessário
 import ConcluirExclusao from "@/app/components/concluirExclusao/concluirExclusao";
-import { IoMdSearch } from "react-icons/io";
 
+import { FaSearch } from "react-icons/fa";
+import ModalUsuario from "@/app/components/modalUsuario/ModalUsuario";
+import Footer from "@/app/components/footer/Footer";
 
 //Iniciando página
 const GestaoUsuariosPage = () => {
@@ -18,9 +20,21 @@ const GestaoUsuariosPage = () => {
   const [excluirClicado, setExcluirClicado] = useState(false);
   const [usuarioParaExcluir, setUsuarioParaExcluir] = useState(null); // Usuário selecionado para exclusão
   const router = useRouter();
+  const [abrirModal, setAbrirModal] = useState(null);
   const [filtro, setFiltro] = useState('');
   const searchParams = useSearchParams();
   const nif = searchParams.get('nif');
+
+    //Const para abertura do modal
+    const openModal = (id) => {
+      setAbrirModal(id);
+    };
+  
+  
+    //Const para fechamento do modal
+    const closeModal = () => {
+      setAbrirModal(null);
+    };
 
   //Resgatando dados API
   useEffect(() => {
@@ -52,7 +66,7 @@ const GestaoUsuariosPage = () => {
     if (!loading) {
       if (!user || !user.adm) {
         alert("Nenhum usuário com esse NIF encontrado, redirecionando para login.");
-        
+        router.push('/administracao/login');
       }
     }
   }, [loading, user, router]);
@@ -102,11 +116,11 @@ const GestaoUsuariosPage = () => {
     return <div>Carregando...</div>;
   }
 
-   // Filtrar usuarios com base no texto do filtro
-   const usuariosFiltrados = dados.filter(usuario =>
+  // Filtrar usuarios com base no texto do filtro
+  const usuariosFiltrados = dados.filter(usuario =>
     usuario.nome.toLowerCase().includes(filtro.toLowerCase())
-    
-);
+
+  );
 
   return (
     <div className="bg-white min-h-screen flex flex-col overflow-y-auto">
@@ -122,18 +136,20 @@ const GestaoUsuariosPage = () => {
         Gestão de Usuarios
       </h1>
 
-      {/* Pesquisar */}
-      <div className=" flex border p-2 mx-28 mb-10 rounded-full">
-      <IoMdSearch className="text-black text-3xl m-1 " />
+   
+        {/* filtro */}
+        <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 border border-[#808080]-600 p-2 rounded-full mb-10">
 
-      <input
-                type="text"
-                placeholder="Filtrar por nome do usuario"
-                value={filtro}
-                onChange={(e) => setFiltro(e.target.value)}
-                className="focus:outline-none w-full text-black"
-                />
-                </div>
+          <FaSearch className="text-[#9A1915] m-auto ml-2" />
+          <input
+            type="text"
+            placeholder="Filtrar por nome do usuario"
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            className="focus:outline-none w-full text-black"
+          />
+        </div>
+    
 
       <div className="grid lg:grid-cols-4 gap-10 ml-16">
         <div className="flex items-center ml-10 mb-4">
@@ -154,6 +170,7 @@ const GestaoUsuariosPage = () => {
               imgGestor={`http://localhost:3033${usuario.caminho_imagem}`}
               editar={() => handleEditClick(usuario)} // Chama a função de edição
               excluir={() => handleDeleteClick(usuario)}
+              funcao={() => openModal(usuario.nif)} 
             />
           ))
         ) : (
@@ -169,6 +186,27 @@ const GestaoUsuariosPage = () => {
           name={usuarioParaExcluir.nome}
         />
       )}
+
+{
+  abrirModal && (
+    dados.filter((usuario) => usuario.nif === abrirModal) // Filtra o usuário correto
+      .map((usuario) => (
+        <div key={usuario.id}>
+          <ModalUsuario
+            nome={usuario.nome} 
+            imagem={`http://localhost:3033${usuario.caminho_imagem}`} // Corrige o caminho para a imagem
+            adm={usuario.adm} 
+            nif={usuario.nif} 
+            celular={usuario.telefone} 
+            email={usuario.email} 
+            fechar={closeModal} 
+          />
+        </div>
+      ))
+  )
+}
+
+<Footer/>
     </div>
   );
 };
