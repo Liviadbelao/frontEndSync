@@ -245,20 +245,27 @@ const ambientes = () => {
                                             <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
                                             {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
                                             {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
-                                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
+                                            {ambiente.capacidadealunos > 0 && (
+                                                <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
+                                            )}
                                         </div>
                                         <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                             <button className="bg-[#9A1915] text-white p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente)}>
                                                 Reservar
                                             </button>
                                         </div>
-                                        <div className="bg-[#9A1915] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-                                            {ambiente.chave && <IoKeyOutline />}
-                                            {ambiente.ar_condicionado && <TbAirConditioning />}
-                                            {ambiente.ventilador && <GiComputerFan />}
-                                            {ambiente.wifi && <AiOutlineWifi />}
-                                            {ambiente.projetor && <LuProjector />}
-                                        </div>
+                                       
+                                        
+                                        {(ambiente.chave || ambiente.ar_condicionado || ambiente.ventilador || ambiente.wifi || ambiente.projetor) && (
+                                            <div className="bg-[#9A1915] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                                                {ambiente.chave && <IoKeyOutline />}
+                                                {ambiente.ar_condicionado && <TbAirConditioning />}
+                                                {ambiente.ventilador && <GiComputerFan />}
+                                                {ambiente.wifi && <AiOutlineWifi />}
+                                                {ambiente.projetor && <LuProjector />}
+                                            </div>
+                                        )}
+                                      
                                     </div>
                                 ))
                         ) : (
