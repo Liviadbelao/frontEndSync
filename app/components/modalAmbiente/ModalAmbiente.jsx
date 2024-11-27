@@ -19,28 +19,30 @@ const ModalAmbiente = ({
 }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg w-80 max-w-md relative">
+      <div className="bg-white rounded-lg shadow-lg w-80 max-w-md relative overflow-hidden">
         
         {/* Botão de Fechar */}
         <button
           onClick={fechar}
-          className="absolute top-2 right-2 text-gray-500 hover:text-red-500 focus:outline-none"
+          className="absolute top-2 right-2 text-black-500 hover:text-red-500 focus:outline-none"
         >
           ✕
         </button>
 
         {/* Imagem do Ambiente */}
-        <div className="flex justify-center mb-4 bg-gray-200 rounded-lg p-4">
+        <div >
           <img
             src={caminho_imagem}
-  
-            className="w-32 h-32 object-cover border-2 border-gray-300 rounded"
+            alt={`Imagem do ambiente ${nome}`}
+            className="w-full h-40 object-cover"
           />
+          {/* Borda inferior vinho */}
+          <div className="h-[3px] bg-[#9A1915]"></div>
         </div>
 
         {/* Informações do Ambiente */}
-        <div className="text-gray-600 space-y-2 p-6">
-          <h2 className="text-center text-xl font-semibold text-gray-800">
+        <div className="text-[#9A1915]-600 space-y-2 p-6">
+          <h2 className="text-center text-xl font-semibold text-[#9A1915]">
             {nome}
           </h2>
           <p><strong>Número do Ambiente:</strong> {numero_ambiente}</p>
