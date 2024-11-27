@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 export default axios.create({
-        baseURL: 'https://192.168.69.191:3033',
-        timeout: 50000,
+        baseURL: 'http://localhost:3033',
+        timeout: 5000,
         headers: {'X-Custom-Header': 'foobar'}
 })
