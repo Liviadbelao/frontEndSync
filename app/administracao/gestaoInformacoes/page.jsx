@@ -2,12 +2,17 @@
 import React, { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { useRouter, useSearchParams } from 'next/navigation';
 import api from '../../../src/config/configApi';
+import Header from '@/app/components/header/Header';
+import Footer from '@/app/components/footer/Footer';
 
 const HistoricoSala = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const nif = searchParams.get('nif');
   useEffect(() => {
     async function fetchHistorico() {
       try {
@@ -41,7 +46,7 @@ const HistoricoSala = () => {
     const totalUsage = Object.values(aggregated).reduce((acc, count) => acc + count, 0) || 1;
 
     return {
-      labels: Object.keys(aggregated),
+        labels: Object.keys(aggregated),
       datasets: [
         {
           label: 'Room Usage Count',
@@ -56,25 +61,50 @@ const HistoricoSala = () => {
           ],
         },
       ],
+      // Adicionando as opções de configuração do gráfico
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'right',  // Define a posição da legenda à direita
+            labels: {
+              boxWidth: 10,  // Define o tamanho da caixa de cor ao lado da legenda
+              padding: 20,   // Espaço entre o gráfico e a legenda
+            },
+          },
+        },
+        layout: {
+          padding: 20, // Ajusta o padding ao redor do gráfico
+        },
+      },
     };
   };
-
   const chartData = data.length ? aggregateData(data) : null;
 
   return (
-    <div className="p-10">
+    <div>
+<Header/>
+<img
+        src="/images/imgMenuAdm/btvoltar.png"
+        alt="botao voltar"
+        className="mr-10 cursor-pointer w-10 h-10 mt-8 ml-10"
+        onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
+      />
       <h2 className="text-center font-bold text-2xl mb-5">Uso das Salas nos Últimos 6 Meses</h2>
       <div className="flex justify-center min-h-[300px] min-w-[300px]">
         {loading ? (
           <p>Carregando...</p>
         ) : (
           chartData ? (
+            <div className='w-[40%] h-[40%]'>
             <Pie data={chartData} />
+            </div>
           ) : (
             <p>Sem dados para exibir</p>
           )
         )}
       </div>
+      <Footer/>
     </div>
   );
 };
