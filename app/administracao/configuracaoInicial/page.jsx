@@ -3,43 +3,69 @@ import Header from "@/app/components/header/Header";
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ToggleButton from "@/app/components/togglebotao/ToggleBotao";
-import api from "../../src/config/configApi";
+import api from "../../../src/config/configApi";
 import Popup from "@/app/components/popupinical/PopupInicial";
 
 
 const ConfigInicial = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [whatsappOn, setWhatsappOn] = useState(false)
-  const [emailOn, setEmailOn] = useState(false)
+  const [whatsappOn, setWhatsappOn] = useState(false);
+  const [emailOn, setEmailOn] = useState(false);
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const nif = searchParams.get("nif");
-
   useEffect(() => {
     async function fetchUser() {
-      try {
-        const response = await api.get(`/usuarios/${nif}`);
-        if (response.data) {
-          setUser(response.data);
-        } else {
-          setUser(null); // API não retornou dados
+        try {
+            const response = await api.get(`/usuarios/${nif}`);
+            console.log("Resposta da API:", response.data);
+
+            if (response.data) {
+                const { notiwhere } = response.data;
+
+                // Configura estados com base no campo `notiwhere`
+                setWhatsappOn(notiwhere === 'whatsapp' || notiwhere === 'ambos');
+                setEmailOn(notiwhere === 'email' || notiwhere === 'ambos');
+            } else {
+                setWhatsappOn(false);
+                setEmailOn(false);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar o usuário: ", error);
+            setWhatsappOn(false);
+            setEmailOn(false);
         }
-      } catch (error) {
-        console.error("Erro ao buscar o usuário:", error);
-        setUser(null); // Tratar como usuário não encontrado
-      } finally {
-        setLoading(false);
-      }
     }
 
-    if (nif) {
-      fetchUser();
-    } else {
-      setLoading(false);
-      setUser(null); // Garante um estado consistente
+    if (nif) fetchUser();
+}, [nif]);
+
+
+
+
+
+
+  async function atualizarNotificacoes() {
+    const { nif } = req.params;
+    const notificacao = { email: false, whatsapp: false }; // Nenhum ativo
+
+    try {
+      const response = await axios.put(`http://localhost:3033/usuarios/${nif}/notificacoes`, {
+        notificacao: notificacao,
+        notiwhere: notificacao.email
+          ? 'email'
+          : notificacao.whatsapp
+            ? 'whatsapp'
+            : 'nenhum', // Opção "nenhum"
+      });
+
+      console.log('Preferências de notificações atualizadas com sucesso:', response.data);
+    } catch (error) {
+      console.error('Erro ao atualizar preferências:', error);
     }
-  }, [nif]);
+  }
 
 
   async function testar() {
@@ -54,6 +80,8 @@ const ConfigInicial = () => {
       notiwhere = 'whatsapp';
     } else if (emailOn) {
       notiwhere = 'email';
+    } else {
+      notiwhere = 'nenhum';
     }
 
     // Salvar preferências no backend
@@ -124,6 +152,7 @@ const ConfigInicial = () => {
                     Whatsapp
                   </label>
                   <ToggleButton ativado={whatsappOn} setAtivado={setWhatsappOn} />
+                  
                 </div>
                 <div className="flex items-center justify-between border-2 p-1 rounded-md">
                   <label htmlFor="email" className="text-gray-700">

@@ -110,6 +110,12 @@ const TelaMenuAdm = () => {
             imgSrc="/images/imgMenuAdm/painel.png"
             onClick={() => redirecionar('/administracao/gestaoInformacoes')}
           />
+
+        {/* Configurações */}
+          <TopicosMenu
+            topicos="Configurações"
+            onClick={() => redirecionar('/administracao/configuracaoInicial')}
+          />
         </div>
       </div>
       {carregando && <TelaCarregar />}
