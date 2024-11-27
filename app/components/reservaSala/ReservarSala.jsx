@@ -6,13 +6,8 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
   const getCurrentTime = () => {
     const now = new Date();
     const hours = now.getHours();
-    if (typeAmb == 'externo') {
-      const minutes = now.getMinutes() + 2;
-      return { hours, minutes };
-    } else {
-      const minutes = now.getMinutes();
-      return { hours, minutes };
-    }
+    const minutes = typeAmb === 'externo' ? now.getMinutes() + 2 : now.getMinutes();
+    return { hours, minutes };
   };
 
   const formatTime = (hours, minutes) => {
@@ -41,19 +36,21 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
 
   const handleConfirmTime = () => {
     const now = new Date();
-    const [startHour, startMinute] = startTime.split(':');
-    const [endHour, endMinute] = endTime.split(':');
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
     const startDateTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), startHour, startMinute);
     const endDateTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), endHour, endMinute);
 
-    if (startDateTime < now || endDateTime < now) {
-      setTimeError('Os horários devem ser posteriores ao horário atual.');
+    const minStartTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 30); // 07:30
+    const maxEndTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 0);  // 22:00
+
+    if (startDateTime < minStartTime || endDateTime > maxEndTime) {
+      setTimeError('Reservas devem ser entre 07:30am e 22:00pm.');
     } else if (startDateTime >= endDateTime) {
       setTimeError('O horário de término deve ser posterior ao horário de início.');
     } else {
       setTimeError('');
       setShowTimeSelection(false);
-      // Aqui você pode definir os horários de início e término conforme necessário
     }
   };
 
@@ -66,14 +63,11 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-10 overflow-hidden">
-      <Modal open={true} onClose={handleClose} BackdropProps={{
-        style: { pointerEvents: 'none' }
-      }}>
+      <Modal open={true} onClose={handleClose} BackdropProps={{ style: { pointerEvents: 'none' } }}>
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[10px] shadow-lg w-[50%] h-[55%] p-16"
+          className="flex flex-col justify-center  items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[10px] shadow-lg w-[30%] h-[75%] p-16"
         >
-
           <img
             src="/images/modal/fechar.png"
             alt="botao fechar"
@@ -81,10 +75,10 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
             onClick={handleClose}
           />
 
-          <p className="text-black text-2xl font-semibold mb-11 ">Confirmar reserva?</p>
+          <p className="text-black text-2xl font-semibold mb-8 ">Confirmar reserva?</p>
           <div className="flex items-center justify-center h-32 mb-6 ">
             <img
-              src={img || "/images/default-placeholder.png"} // imagem padrão
+              src={img || "/images/default-placeholder.png"}
               width={480}
               height={480}
               className="w-48 h-48 object-cover rounded mt-7"
@@ -92,9 +86,9 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
             />
           </div>
 
-          <p className='mt-16 text-black text-xl font-bold text-center'>{name}</p>
+          <p className='mt-10 text-black text-xl font-bold text-center'>{name}</p>
           <p className='text-black text-lg mt-4'>Início: {startTime} {typeAmb === 'externo' && `| Fim: ${endTime}`}</p>
-          <button className="rounded-full bg-[#b42424] w-80 mt-10 p-4 px-10 text-white" onClick={onConfirm}>
+          <button className="rounded-full bg-[#b42424] w-80 mt-5 p-4 px-10 text-white" onClick={onConfirm}>
             Sim
           </button>
           {typeAmb === 'externo' && (
@@ -106,12 +100,10 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
       </Modal>
 
       {typeAmb === 'externo' && (
-        <Modal open={showTimeSelection} onClose={() => setShowTimeSelection(false)} BackdropProps={{
-          style: { pointerEvents: 'none' }
-        }}>
+        <Modal open={showTimeSelection} onClose={() => setShowTimeSelection(false)} BackdropProps={{ style: { pointerEvents: 'none' } }}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[10px] shadow-lg w-[35%] w-[45%] h-[50%] p-16"
+            className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[10px] shadow-lg w-[45%] h-[50%] p-16"
           >
             <p className="text-black text-2xl font-semibold mb-4">Definir horários</p>
             <input
