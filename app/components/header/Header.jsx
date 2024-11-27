@@ -1,7 +1,9 @@
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const Header = () => {
   const router = useRouter();
+  const searchParams = useSearchParams(); 
+  const nif = searchParams.get('nif'); 
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -9,7 +11,7 @@ const Header = () => {
   };
 
   const handleConfigClick = () => {
-    router.push(`/configuracaoInicial/${nif}`);
+    router.push(`/configuracaoInicial/?nif=${nif}`);
   };
 
   return (

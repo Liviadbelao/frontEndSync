@@ -111,6 +111,12 @@ const ConfigInicial = () => {
 
       {user && <Popup nome={user.nome} />}
 
+      <img
+        src="/images/imgMenuAdm/btvoltar.png"
+        alt="botao voltar"
+        className="mr-10 cursor-pointer w-10 h-10 mt-8 ml-10"
+        onClick={() => router.push(`/administracao/telaMenuAdm?nif=${nif}`)}
+      />
 
       <div className="max-w-3xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
