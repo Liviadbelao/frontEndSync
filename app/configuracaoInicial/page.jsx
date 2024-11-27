@@ -10,87 +10,108 @@ import Popup from "@/app/components/popupinical/PopupInicial";
 const ConfigInicial = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [whatsappOn, setWhatsappOn] = useState(false)
-  const [emailOn, setEmailOn] = useState(false)
+  const [whatsappOn, setWhatsappOn] = useState(false);
+  const [emailOn, setEmailOn] = useState(false);
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const nif = searchParams.get("nif");
 
+
   useEffect(() => {
     async function fetchUser() {
-      try {
-        const response = await api.get(`/usuarios/${nif}`);
-        console.log(response.data[0])
-        if (response.data.length > 0) {
-          setUser(response.data[0]);
-          if (response.data[0].notificacao) {
-            if (response.data[0].notiwhere == 1 || response.data[0].notiwhere == 3) {
-              setWhatsappOn(true)
+        try {
+            const response = await api.get(`/usuarios/${nif}`);
+            console.log("Resposta da API:", response.data);
+
+            if (response.data) {
+                setUser(response.data); // Atualiza o estado com os dados do usuário
+
+                const { notiwhere } = response.data;
+                setWhatsappOn(notiwhere === 'whatsapp' || notiwhere === 'ambos');
+                setEmailOn(notiwhere === 'email' || notiwhere === 'ambos');
+            } else {
+                setWhatsappOn(false);
+                setEmailOn(false);
             }
-            if (response.data[0].notiwhere == 2 || response.data[0].notiwhere == 3) {
-              setEmailOn(true)
-            }
-          }
-        } else {
-          setUser(null);
+        } catch (error) {
+            console.error("Erro ao buscar o usuário: ", error);
+            setWhatsappOn(false);
+            setEmailOn(false);
+        } finally {
+            setLoading(false); // Atualiza o estado de carregamento
         }
-      } catch (error) {
-        console.error("Erro ao buscar o usuário: ", error);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
     }
 
-    if (nif) {
-      fetchUser();
-    } else {
-      setLoading(false);
-    }
-  }, [nif]);
+    if (nif) fetchUser();
+}, [nif]);
 
-  useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        alert(
-          "Nenhum usuário com esse NIF encontrado, redirecionando para login."
-        );
-        router.push("/totem/telaDescanso");
-      }
-    }
-  }, [loading, user, router]);
 
-  function testar() {
-    let contador = 0;
 
-    console.log('whatsapp ' + whatsappOn)
-    console.log('email ' + emailOn)
-    if (whatsappOn) {
-      contador++;
-    }
 
-    if (emailOn) {
-      contador++;
-      contador++;
-    }
+  async function atualizarNotificacoes() {
+    const { nif } = req.params;
+    const notificacao = { email: false, whatsapp: false }; // Nenhum ativo
 
-    console.log(contador)
+    try {
+      const response = await axios.put(`http://localhost:3033/usuarios/${nif}/notificacoes`, {
+        notificacao: notificacao,
+        notiwhere: notificacao.email
+          ? 'email'
+          : notificacao.whatsapp
+            ? 'whatsapp'
+            : 'nenhum', // Opção "nenhum"
+      });
 
-    if (whatsappOn || emailOn) {
-      console.log('notificacao está agora true')
-    } else {
-      console.log('notificacao está agora false')
+      console.log('Preferências de notificações atualizadas com sucesso:', response.data);
+    } catch (error) {
+      console.error('Erro ao atualizar preferências:', error);
     }
   }
 
-  if (loading) {
-    return <div>Carregando...</div>;
+
+  async function testar() {
+    console.log('whatsapp:', whatsappOn);
+    console.log('email:', emailOn);
+
+    // Determinar o valor de 'notiwhere'
+    let notiwhere = '';
+    if (whatsappOn && emailOn) {
+      notiwhere = 'ambos';
+    } else if (whatsappOn) {
+      notiwhere = 'whatsapp';
+    } else if (emailOn) {
+      notiwhere = 'email';
+    } else {
+      notiwhere = 'nenhum';
+    }
+
+    // Salvar preferências no backend
+    try {
+      // Corrigido para usar crases e remover espaços desnecessários
+      const response = await api.put(`/usuarios/${nif}/notificacoes`, {
+        notificacao: whatsappOn || emailOn, // true se qualquer uma estiver ativa
+        notiwhere: notiwhere
+      });
+
+      console.log("Preferências de notificações atualizadas com sucesso:", response.data);
+    } catch (error) {
+      console.error("Erro ao atualizar preferências:", error);
+    }
+
+
+    if (loading) {
+      return <div>Carregando...</div>;
+    }
   }
 
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
-      <Popup />
+
+      {user && <Popup nome={user.nome} />}
+
+
       <div className="max-w-3xl mx-auto py-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">
           Configurações
@@ -99,36 +120,28 @@ const ConfigInicial = () => {
           {/* Faixa vermelha cobrindo a parte do professor */}
           <div className="relative">
             <div className="bg-red-700 h-24"></div> {/* Faixa vermelha */}
-            // Dentro da sua declaração de retorno
+
             <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4">
               <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center">
-                  <img
-                    src="/images/editar.png"
-                    alt="botao editar"
-                    className="mr-10 cursor-pointer w-6 h-6 mt-10"
-                    onClick={() =>
-                      router.push(`/administracao/telaMenuAdm?nif=${nif}`)
-                    }
-                  />
-                </div>
-
-                <div>
-                  {user ? (
-                    <>
-                      <h2 className="text-xl font-semibold text-white">
-                        {user.nome}
-                      </h2>
-                      <p className="text-sm text-gray-300">Professor</p>
-                    </>
-                  ) : (
-                    <h2 className="text-xl font-semibold text-white">
-                      Usuário não encontrado
-                    </h2>
-                  )}
-                </div>
+                {user && (
+                  <>
+                    <img
+                     src={`http://localhost:3033${user?.caminho_imagem}`}
+                      alt={`imagem do usuario ${user.nome}`}
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                    <div>
+                      <h2 className="text-xl font-semibold text-white">{user.nome}</h2>
+                      <p className="text-sm text-gray-300">
+                        {user.adm ? "Administrador" : "Usuário"}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
+
+
           </div>
           <div className="p-6">
             <div className="mb-4">
@@ -141,6 +154,7 @@ const ConfigInicial = () => {
                     Whatsapp
                   </label>
                   <ToggleButton ativado={whatsappOn} setAtivado={setWhatsappOn} />
+                  
                 </div>
                 <div className="flex items-center justify-between border-2 p-1 rounded-md">
                   <label htmlFor="email" className="text-gray-700">
@@ -149,9 +163,13 @@ const ConfigInicial = () => {
                   <ToggleButton ativado={emailOn} setAtivado={setEmailOn} />
                 </div>
               </div>
-              <button className="bg-red-700 rounded" onClick={testar}>
+              <button
+                className="bg-red-700 mt-10 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200"
+                onClick={testar}
+              >
                 Salvar
               </button>
+
             </div>
           </div>
         </div>
@@ -159,14 +177,14 @@ const ConfigInicial = () => {
         <img
           src="/images/imgMenuAdm/botao-adicionar.png"
           alt="botao mais"
-          className="mr-10 mt-8 cursor-pointer"
+          className="mr-10 mt-8 cursor-pointer w-24 h-24"
           onClick={() =>
             router.push(`/administracao/cadastroAmbiente?nif=${nif}`)
           }
         />
       </div>
-    </div>
+    </div >
   );
 };
 
-export default ConfigInicial;
+export default ConfigInicial; 
