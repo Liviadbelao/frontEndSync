@@ -38,7 +38,7 @@ const Footer = () => {
             </div>
             <div className="flex flex-col justify-between mt-4 h-[150px] text-right w-[20%]">
                 <p className="text-sm text-black">Copyright 2024 © Todos os direitos reservados.</p>
-                <img className="w-24 sm:w-48 ml-24" src={'/images/logoSenai/logo.png'} alt="Logo SENAI" />
+                <img className="w-24 sm:w-48 ml-24 sm:w-16 sm:w-32 sm:ml-0" src={'/images/logoSenai/logo.png'} alt="Logo SENAI" />
             </div>
         </div>
     )

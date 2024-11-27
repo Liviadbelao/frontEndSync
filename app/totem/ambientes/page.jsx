@@ -232,93 +232,69 @@ const ambientes = () => {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 ml-10">
-    {tab === 'ativado' ? (
-        ambientesFiltrados && ambientesFiltrados.filter((ambiente) => ambiente.disponivel).length > 0 ? (
-            ambientesFiltrados
-                .filter((ambiente) => ambiente.disponivel)
-                .map((ambiente) => (
-                    <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10 ml-16" key={ambiente.numero_ambiente}>
-                        <img width={480} height={480} src={`${process.env.NEXT_PUBLIC_API_URL}${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
-                        <div className="p-4">
-                            <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
-                            <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                            {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
-                            {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
-                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
-                        </div>
-                        <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-                            <button className="bg-[#9A1915] text-white p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente)}>
-                                Reservar
-                            </button>
-                        </div>
-                        <div className="bg-[#9A1915] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-                            {ambiente.chave && <IoKeyOutline />}
-                            {ambiente.ar_condicionado && <TbAirConditioning />}
-                            {ambiente.ventilador && <GiComputerFan />}
-                            {ambiente.wifi && <AiOutlineWifi />}
-                            {ambiente.projetor && <LuProjector />}
-                        </div>
-                    </div>
-                ))
-        ) : (
-            <p className="text-center text-gray-500">Nenhum ambiente disponível</p>
-        )
-    ) : tab === 'reservado' ? (
-        ambientesFiltrados && ambientesFiltrados.filter((ambiente) => !ambiente.disponivel).length > 0 ? (
-            ambientesFiltrados
-                .filter((ambiente) => !ambiente.disponivel)
-                .map((ambiente) => (
-                    <div className="bg-[#D9D9D9] ml-16 w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
-                        <img width={480} height={480} src={`${process.env.NEXT_PUBLIC_API_URL}${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
-                        <div className="p-4">
-                            <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
-                            <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                            {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
-                            {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
-                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
-                        </div>
-                        <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-                            <p className="bg-[#2e2e2e] text-white p-2 rounded-full z-20">Indisponível</p>
-                        </div>
-                        <div className="bg-[#2e2e2e] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-                            {ambiente.chave && <IoKeyOutline />}
-                            {ambiente.ar_condicionado && <TbAirConditioning />}
-                            {ambiente.ventilador && <GiComputerFan />}
-                            {ambiente.wifi && <AiOutlineWifi />}
-                            {ambiente.projetor && <LuProjector />}
-                        </div>
-                    </div>
-                ))
-        ) : (
-            <p className="text-center text-gray-500">Nenhum ambiente reservado</p>
-        )
-    ) : tab === 'minhasSalas' ? (
-        ambientesReservados && ambientesReservados.length > 0 ? (
-            ambientesReservados
-                .filter((ambiente) => ambiente.funcionario === nif) // Filtra pelos ambientes reservados pelo usuário
-                .map((ambiente) => (
-                    <div className="bg-[#D9D9D9] ml-16 w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
-                        <img width={480} height={480} src={`${process.env.NEXT_PUBLIC_API_URL}${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
-                        <div className="p-4">
-                            <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
-                            <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
-                        </div>
-                        <div className="bg-[#2e2e2e] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-                            {ambiente.chave && <IoKeyOutline />}
-                            {ambiente.ar_condicionado && <TbAirConditioning />}
-                            {ambiente.ventilador && <GiComputerFan />}
-                            {ambiente.wifi && <AiOutlineWifi />}
-                            {ambiente.projetor && <LuProjector />}
-                        </div>
-                    </div>
-                ))
-        ) : (
-            <p className="text-center text-gray-500">Nenhum ambiente associado a este usuário</p>
-        )
-    ) : null}
-</div>
+                <div className="grid grid-cols-2 gap-4">
+                    {tab === 'ativado' ? (
+                        ambientesFiltrados && ambientesFiltrados.filter((ambiente) => ambiente.disponivel).length > 0 ? (
+                            ambientesFiltrados
+                                .filter((ambiente) => ambiente.disponivel)
+                                .map((ambiente) => (
+                                    <div className="bg-[#D9D9D9] w-[60%] h-50 rounded-lg z-10 fixed relative mb-10 ml-16" key={ambiente.numero_ambiente}>
+                                        <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
+                                        <div className="p-4">
+                                            <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
+                                            <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
+                                            {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
+                                            {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
+                                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
+                                        </div>
+                                        <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                                            <button className="bg-[#9A1915] text-white p-2 rounded-full z-20" onClick={() => reservarAmbiente(ambiente)}>
+                                                Reservar
+                                            </button>
+                                        </div>
+                                        <div className="bg-[#9A1915] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                                            {ambiente.chave && <IoKeyOutline />}
+                                            {ambiente.ar_condicionado && <TbAirConditioning />}
+                                            {ambiente.ventilador && <GiComputerFan />}
+                                            {ambiente.wifi && <AiOutlineWifi />}
+                                            {ambiente.projetor && <LuProjector />}
+                                        </div>
+                                    </div>
+                                ))
+                        ) : (
+                            <p className="text-center text-gray-500">Nenhum ambiente disponível</p>
+                        )
+                    ) : (
+                        ambientesFiltrados && ambientesFiltrados.filter((ambiente) => !ambiente.disponivel).length > 0 ? (
+                            ambientesFiltrados
+                                .filter((ambiente) => !ambiente.disponivel)
+                                .map((ambiente) => (
+                                    <div className="bg-[#D9D9D9] ml-16 w-[60%] h-50 rounded-lg z-10 fixed relative mb-10" key={ambiente.numero_ambiente}>
+                                        <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
+                                        <div className="p-4">
+                                            <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
+                                            <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
+                                            {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
+                                            {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
+                                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
+                                        </div>
+                                        <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                                            <p className="bg-[#2e2e2e] text-white p-2 rounded-full z-20">Indisponível</p>
+                                        </div>
+                                        <div className="bg-[#2e2e2e] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                                            {ambiente.chave && <IoKeyOutline />}
+                                            {ambiente.ar_condicionado && <TbAirConditioning />}
+                                            {ambiente.ventilador && <GiComputerFan />}
+                                            {ambiente.wifi && <AiOutlineWifi />}
+                                            {ambiente.projetor && <LuProjector />}
+                                        </div>
+                                    </div>
+                                ))
+                        ) : (
+                            <p className="text-center text-gray-500">Nenhum ambiente reservado</p>
+                        )
+                    )}
+                </div>
             </div>
 
             {ambienteParaReserva && (

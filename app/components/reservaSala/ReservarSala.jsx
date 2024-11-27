@@ -71,7 +71,7 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
       }}>
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[3%] shadow-lg w-[25%] h-[75%] p-16"
+          className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[10px] shadow-lg w-[50%] h-[55%] p-16"
         >
 
           <img
@@ -83,7 +83,7 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
 
           <p className="text-black text-2xl font-semibold mb-11 ">Confirmar reserva?</p>
           <div className="flex items-center justify-center h-32 mb-6 ">
-            <Image
+            <img
               src={img || "/images/default-placeholder.png"} // imagem padrão
               width={480}
               height={480}
@@ -94,7 +94,7 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
 
           <p className='mt-16 text-black text-xl font-bold text-center'>{name}</p>
           <p className='text-black text-lg mt-4'>Início: {startTime} {typeAmb === 'externo' && `| Fim: ${endTime}`}</p>
-          <button className="rounded-full bg-[#b42424] w-80  p-4 px-10 text-white" onClick={onConfirm}>
+          <button className="rounded-full bg-[#b42424] w-80 mt-10 p-4 px-10 text-white" onClick={onConfirm}>
             Sim
           </button>
           {typeAmb === 'externo' && (
@@ -111,7 +111,7 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
         }}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[3%] shadow-lg w-[35%] h-[60%] p-16"
+            className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[10px] shadow-lg w-[35%] w-[45%] h-[50%] p-16"
           >
             <p className="text-black text-2xl font-semibold mb-4">Definir horários</p>
             <input
