@@ -127,7 +127,7 @@ export default function BasicModal({
 
         {/* Descrição e detalhes do ambiente */}
         <p className="text-sm text-gray-600 mb-6 text-center">
-          Ambiente reservado com sucesso! Aproveite sua reserva.
+          Deseja devolver todas as reservas ou apenas a chave deste ambiente?
         </p>
 
         {/* Botões de ação */}
