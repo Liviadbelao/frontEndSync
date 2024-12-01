@@ -141,7 +141,6 @@ const GestaoAmbiente = () => {
                             imgSrc2={`http://localhost:3033${ambiente.caminho_imagem}`}
                             onEdit={() => handleEditClick(ambiente)}
                             onDelete={() => handleDeleteClick(ambiente)}
-                            on={() => abrirModal(ambiente)} // Função para abrir o modal
                         />
                     ))
                 ) : (
