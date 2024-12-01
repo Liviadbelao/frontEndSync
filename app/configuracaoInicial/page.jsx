@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ToggleButton from "@/app/components/togglebotao/ToggleBotao";
 import api from "../../src/config/configApi";
 import Popup from "@/app/components/popupinical/PopupInicial";
+import ModalSalaFixa from "../components/ModalSalaFixa/ModalSalaFixa";
 
 
 const ConfigInicial = () => {
@@ -12,11 +13,27 @@ const ConfigInicial = () => {
   const [loading, setLoading] = useState(true);
   const [whatsappOn, setWhatsappOn] = useState(false);
   const [emailOn, setEmailOn] = useState(false);
-
+  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const nif = searchParams.get("nif");
 
+  const [dados, setDados] = useState([]);
+  useEffect(() => {
+      async function fetchAmbientes() {
+          try {
+              const response = await api.get(`/ambientes`);
+              setDados(response.data);
+              console.log(dados);
+              
+          } catch (error) {
+              console.error("Error fetching data:", error);
+          }
+      }
+
+      fetchAmbientes();
+  }, []);
+ 
 
   useEffect(() => {
     async function fetchUser() {
@@ -184,10 +201,10 @@ const ConfigInicial = () => {
           src="/images/imgMenuAdm/botao-adicionar.png"
           alt="botao mais"
           className="mr-10 mt-8 cursor-pointer w-24 h-24"
-          onClick={() =>
-            router.push(`/administracao/cadastroAmbiente?nif=${nif}`)
-          }
+          onClick={() => setShowModal(true)} 
         />
+            {/* Exibir modal apenas quando showModal for true */}
+            {showModal && <ModalSalaFixa nome={user.nome} onClose={()=>setShowModal(false)} />}
       </div>
     </div >
   );
