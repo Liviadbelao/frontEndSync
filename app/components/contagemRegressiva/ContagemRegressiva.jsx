@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import Header from '../header/Header';
 import TelaCarregar from '../telaCarregar/TelaCarregar';
 
-function ContagemRegressiva({ tempoInicial = 3 }) {
+function ContagemRegressiva({ tempoInicial = 3, nif }) {
   const [tempoRestante, setTempoRestante] = useState(tempoInicial);
   const [ativo, setAtivo] = useState(true); // Novo estado para controlar a contagem
   const [loading, setLoading] = useState(false); // Novo estado para controlar a contagem
@@ -27,7 +27,7 @@ function ContagemRegressiva({ tempoInicial = 3 }) {
   const handleReservarOutraChave = () => {
     setAtivo(false); // Para o contador
     setLoading(true)
-    router.push(`/totem/ambientes`);
+    router.push(`/totem/ambientes?nif=${nif}`);
   };
 
   return (

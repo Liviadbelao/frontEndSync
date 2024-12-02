@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { IoClose } from 'react-icons/io5';
 import api from '../../../src/config/configApi';
@@ -14,6 +14,7 @@ export default function BasicModal({
   variavel,
   atualizarChavesPendentes
 }) {
+  const [isDevolucaoUmaChave, setIsDevolucaoUmaChave] = useState(false); // Novo estado
 
   const devolverTodasReservas = async () => {
     try {
@@ -23,7 +24,6 @@ export default function BasicModal({
         data_fim: date,
         usuario: usuarioid
       };
-
 
       const response = await api.put(`/historico/todos`, usuarioEditado); // Endpoint ajustado
       console.log(response);
@@ -45,7 +45,6 @@ export default function BasicModal({
       alert("Erro ao tentar devolver as chaves. Tente novamente.");
     }
   };
-
 
   // Função para devolver 1 ambiente
   const devolverUmaChave = async () => {
@@ -77,8 +76,13 @@ export default function BasicModal({
       alert("Erro ao tentar devolver a chave. Tente novamente.");
     }
   };
+
+  // Atualiza o estado para marcar a devolução de uma chave específica
+  const handleDevolucaoUmaChave = () => {
+    setIsDevolucaoUmaChave(true); // Marca a devolução de uma chave específica
+  };
+
   return (
-  
     <Modal
       open={open}
       onClose={handleClose}
@@ -132,17 +136,22 @@ export default function BasicModal({
 
         {/* Botões de ação */}
         <div className="flex justify-center gap-4">
-          {/* Botão para devolver uma chave */}
-          <button
-            onClick={devolverTodasReservas}
-            className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
-          >
-            Devolver todas reservas
-          </button>
+          {/* Condicional para exibir o botão de devolver todas as reservas */}
+          {!isDevolucaoUmaChave && (
+            <button
+              onClick={devolverTodasReservas}
+              className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
+            >
+              Devolver todas reservas
+            </button>
+          )}
 
-          {/* Botão para devolver todas as chaves */}
+          {/* Botão para devolver apenas este ambiente */}
           <button
-            onClick={devolverUmaChave}
+            onClick={() => {
+              devolverUmaChave();
+              handleDevolucaoUmaChave(); // Marca que a devolução é de uma chave específica
+            }}
             className="bg-[#9A1915] text-white py-2 px-6 rounded-full hover:bg-[#7a1510] transition-colors duration-300"
           >
             Devolver apenas este ambiente
