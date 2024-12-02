@@ -160,41 +160,49 @@ const ConfigInicial = () => {
             </div>
           </div>
         </div>
-
-        {/* Salas Fixas */}
         <h1 className="text-3xl font-bold text-gray-800 mt-14">Salas Fixas</h1>
-        <img
-          src="/images/imgMenuAdm/botao-adicionar.png"
-          alt="botao mais"
-          className="mr-10 mt-8 cursor-pointer w-24 h-24"
-          onClick={() => setShowModal(true)}
-        />
 
-        {showModal && (
-          <ModalSalaFixa
-            nome={user.nome}
-            onClose={() => setShowModal(false)}
-            usuario_id={user.nif}
+{/* Botão para adicionar sala fixa */}
+<img
+  src="/images/imgMenuAdm/botao-adicionar.png"
+  alt="botao mais"
+  className="mr-10 mt-8 cursor-pointer w-24 h-24 md:w-28 md:h-28"
+  onClick={() => setShowModal(true)}
+/>
+
+{/* Modal de adição de sala fixa */}
+{showModal && (
+  <ModalSalaFixa
+    nome={user.nome}
+    onClose={() => setShowModal(false)}
+    usuario_id={user.nif}
+  />
+)}
+
+{/* Exibição das Salas Fixas */}
+<div className="mt-8">
+  {fixedClasses.length > 0 ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {fixedClasses.map((sala) => (
+        <div
+          key={sala.id}
+          className="bg-gray-200 p-6 mb-6 shadow-lg rounded-lg flex flex-col items-center"
+        >
+          <img
+            src={`http://localhost:3033${sala.caminho_imagem}`} // Substitua pela URL correta da imagem
+            alt={`Imagem da sala ${sala.ambiente_nome}`}
+            className="w-full h-48 object-cover rounded-lg mb-4"
           />
-        )}
-
-        {/* Exibição das Salas Fixas */}
-        <div className="mt-8">
-          {fixedClasses.length > 0 ? (
-            <div>
-              {fixedClasses.map((sala) => (
-                <div key={sala.id} className="bg-white p-4 mb-4 shadow-md rounded-lg">
-                  <h3 className="text-lg font-semibold">{sala.ambiente_nome}</h3>
-                  <p className="text-sm text-gray-600">Número: {sala.numero_ambiente}</p>
-                  <p className="text-sm text-gray-600">Capacidade de Alunos: {sala.capacidadeAlunos}</p>
-                  <p className="text-sm text-gray-600">Tipo: {sala.tipodoambiente}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-600">Nenhuma sala fixa associada a este usuário.</p>
-          )}
+          <h2 className="bg-[#9A1915] text-white p-2 rounded-full z-20">Fixada</h2>
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">{sala.ambiente_nome}</h3>
+          <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
         </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-600">Nenhuma sala fixa associada a este usuário.</p>
+  )}
+</div>
       </div>
     </div>
   );
