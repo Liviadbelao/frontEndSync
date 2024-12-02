@@ -20,6 +20,7 @@ import Footer from "@/app/components/footer/Footer";
 import ModalReservarSalaFixa from "@/app/components/modalReservarSalaFixa/ModalReservaSalaFixa";
 
 const ambientes = () => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [dados, setDados] = useState([]);
     const [user, setUser] = useState('');
     const [loading, setLoading] = useState(true);
@@ -53,15 +54,15 @@ const ambientes = () => {
     const handleOpen = (ambienteId) => {
         setModaisAbertos((prev) => [...prev, ambienteId]);  // Adiciona o ambienteId ao array
     };
-  
-        
+
+
     const handleClose = () => {
         setOpenModal(false);
     };
     const handleOpenModal = () => {
         setShowModal(true);
         console.log('showModal', showModal);
-        
+
     };
 
     const handleCloseModal = () => {
@@ -94,6 +95,10 @@ const ambientes = () => {
 
     const reservarAmbiente = async (ambiente) => {
         setAmbienteParaReserva(ambiente)
+    };
+
+    const handleButtonClick = (ambienteId) => {
+        setModaisAbertos((prev) => [...prev, ambienteId]);
     };
 
     const confirmarReservarAmbiente = async (ambiente) => {
@@ -182,18 +187,11 @@ const ambientes = () => {
     }, []);
 
 
-    const handleCloseAndUpdateAmbientes = async (ambienteId) => {
-        try {
-            // Fecha o modal
-            setModaisAbertos(modaisAbertos.filter(id => id !== ambienteId));
-
-            // Atualiza os ambientes
-            const response = await api.get(`/ambientes`);
-            setDados(response.data);
-        } catch (error) {
-            console.error("Erro ao atualizar ambientes:", error);
-        }
+    const handleCloseAndUpdateAmbientes = (ambienteId) => {
+        setModaisAbertos((prev) => prev.filter((id) => id !== ambienteId));
+        // Aqui você pode também atualizar os ambientes reservados se necessário
     };
+    
 
     // Filtrar ambientes com base no texto do filtro
     const ambientesFiltrados = dados.filter(ambiente =>
@@ -230,19 +228,19 @@ const ambientes = () => {
                     </>
                 ) : null
             }
-                <button
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-                    onClick={() => handleOpenModal()}
-                >
-                    Reservar Sala Fixa
-                </button>
-{showModal && (
-    <ModalReservarSalaFixa
-        usuario_id={nif}
-      
-        onClose={() => handleCloseModal(false)}
-    />
-)}
+            <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                onClick={() => handleOpenModal()}
+            >
+                Reservar Sala Fixa
+            </button>
+            {showModal && (
+                <ModalReservarSalaFixa
+                    usuario_id={nif}
+
+                    onClose={() => handleCloseModal(false)}
+                />
+            )}
             <div className="p-10 bg-white min-h-screen">
                 {/*  <TimerInatividade /> */}
 
@@ -391,8 +389,12 @@ const ambientes = () => {
                                             {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
                                             <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
                                         </div>
-                                        
-
+                                        <button
+                                            className="bg-red-700 mt-10 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200"
+                                            onClick={() => handleButtonClick(ambiente.numero_ambiente)}
+                                        >
+                                            devolver
+                                        </button>
 
                                         <BasicModal
                                             id={ambiente.id}
