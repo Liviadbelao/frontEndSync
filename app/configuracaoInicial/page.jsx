@@ -7,43 +7,37 @@ import api from "../../src/config/configApi";
 import Popup from "@/app/components/popupinical/PopupInicial";
 import ModalSalaFixa from "../components/ModalSalaFixa/ModalSalaFixa";
 
-
 const ConfigInicial = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [whatsappOn, setWhatsappOn] = useState(false);
   const [emailOn, setEmailOn] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
+  const [fixedClasses, setFixedClasses] = useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
   const nif = searchParams.get("nif");
 
-  const [dados, setDados] = useState([]);
   useEffect(() => {
     async function fetchAmbientes() {
       try {
         const response = await api.get(`/ambientes`);
         setDados(response.data);
-        console.log(dados);
-
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
-
     fetchAmbientes();
   }, []);
 
-
+  // Buscar dados do usuário
   useEffect(() => {
     async function fetchUser() {
       try {
         const response = await api.get(`/usuarios/${nif}`);
-        console.log("Resposta da API:", response.data);
-
         if (response.data) {
-          setUser(response.data); // Atualiza o estado com os dados do usuário
-
+          setUser(response.data);
           const { notiwhere } = response.data;
           setWhatsappOn(notiwhere === 'whatsapp' || notiwhere === 'ambos');
           setEmailOn(notiwhere === 'email' || notiwhere === 'ambos');
@@ -56,42 +50,30 @@ const ConfigInicial = () => {
         setWhatsappOn(false);
         setEmailOn(false);
       } finally {
-        setLoading(false); // Atualiza o estado de carregamento
+        setLoading(false);
       }
     }
 
     if (nif) fetchUser();
   }, [nif]);
 
-
-
-
-  async function atualizarNotificacoes() {
-    const { nif } = req.params;
-    const notificacao = { email: false, whatsapp: false }; // Nenhum ativo
-
-    try {
-      const response = await axios.put(`http://localhost:3033/usuarios/${nif}/notificacoes`, {
-        notificacao: notificacao,
-        notiwhere: notificacao.email
-          ? 'email'
-          : notificacao.whatsapp
-            ? 'whatsapp'
-            : 'nenhum', // Opção "nenhum"
-      });
-
-      console.log('Preferências de notificações atualizadas com sucesso:', response.data);
-    } catch (error) {
-      console.error('Erro ao atualizar preferências:', error);
+  // Buscar salas fixas associadas ao usuário
+  useEffect(() => {
+    async function fetchFixedClasses() {
+      if (user) {
+        try {
+          const response = await api.get(`/salas_fixas/${user.nif}`);
+          setFixedClasses(response.data);
+        } catch (error) {
+          console.error("Erro ao buscar salas fixas:", error);
+        }
+      }
     }
-  }
 
+    fetchFixedClasses();
+  }, [user]);
 
   async function testar() {
-    console.log('whatsapp:', whatsappOn);
-    console.log('email:', emailOn);
-
-    // Determinar o valor de 'notiwhere'
     let notiwhere = '';
     if (whatsappOn && emailOn) {
       notiwhere = 'ambos';
@@ -103,19 +85,15 @@ const ConfigInicial = () => {
       notiwhere = 'nenhum';
     }
 
-    // Salvar preferências no backend
     try {
-      // Corrigido para usar crases e remover espaços desnecessários
       const response = await api.put(`/usuarios/${nif}/notificacoes`, {
-        notificacao: whatsappOn || emailOn, // true se qualquer uma estiver ativa
+        notificacao: whatsappOn || emailOn,
         notiwhere: notiwhere
       });
-
       console.log("Preferências de notificações atualizadas com sucesso:", response.data);
     } catch (error) {
       console.error("Erro ao atualizar preferências:", error);
     }
-
 
     if (loading) {
       return <div>Carregando...</div>;
@@ -136,14 +114,10 @@ const ConfigInicial = () => {
       />
 
       <div className="max-w-3xl mx-auto py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Configurações
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">Configurações</h1>
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          {/* Faixa vermelha cobrindo a parte do professor */}
           <div className="relative">
-            <div className="bg-red-700 h-24"></div> {/* Faixa vermelha */}
-
+            <div className="bg-red-700 h-24"></div>
             <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4">
               <div className="flex items-center space-x-4">
                 {user && (
@@ -163,26 +137,17 @@ const ConfigInicial = () => {
                 )}
               </div>
             </div>
-
-
           </div>
           <div className="p-6">
             <div className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                Deseja receber notificações?
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">Deseja receber notificações?</h3>
               <div className="space-y-2">
                 <div className="flex items-center justify-between border-2 p-1 rounded-md">
-                  <label htmlFor="whatsapp" className="text-gray-700">
-                    Whatsapp
-                  </label>
+                  <label htmlFor="whatsapp" className="text-gray-700">Whatsapp</label>
                   <ToggleButton ativado={whatsappOn} setAtivado={setWhatsappOn} />
-
                 </div>
                 <div className="flex items-center justify-between border-2 p-1 rounded-md">
-                  <label htmlFor="email" className="text-gray-700">
-                    Email
-                  </label>
+                  <label htmlFor="email" className="text-gray-700">Email</label>
                   <ToggleButton ativado={emailOn} setAtivado={setEmailOn} />
                 </div>
               </div>
@@ -192,10 +157,11 @@ const ConfigInicial = () => {
               >
                 Salvar
               </button>
-
             </div>
           </div>
         </div>
+
+        {/* Salas Fixas */}
         <h1 className="text-3xl font-bold text-gray-800 mt-14">Salas Fixas</h1>
         <img
           src="/images/imgMenuAdm/botao-adicionar.png"
@@ -203,18 +169,35 @@ const ConfigInicial = () => {
           className="mr-10 mt-8 cursor-pointer w-24 h-24"
           onClick={() => setShowModal(true)}
         />
-        {/* Exibir modal apenas quando showModal for true */}
-        { showModal && (
+
+        {showModal && (
           <ModalSalaFixa
             nome={user.nome}
             onClose={() => setShowModal(false)}
-            usuario_id={user.nif} 
+            usuario_id={user.nif}
           />
-        )
-}
+        )}
+
+        {/* Exibição das Salas Fixas */}
+        <div className="mt-8">
+          {fixedClasses.length > 0 ? (
+            <div>
+              {fixedClasses.map((sala) => (
+                <div key={sala.id} className="bg-white p-4 mb-4 shadow-md rounded-lg">
+                  <h3 className="text-lg font-semibold">{sala.ambiente_nome}</h3>
+                  <p className="text-sm text-gray-600">Número: {sala.numero_ambiente}</p>
+                  <p className="text-sm text-gray-600">Capacidade de Alunos: {sala.capacidadeAlunos}</p>
+                  <p className="text-sm text-gray-600">Tipo: {sala.tipodoambiente}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600">Nenhuma sala fixa associada a este usuário.</p>
+          )}
+        </div>
       </div>
-    </div >
+    </div>
   );
 };
 
-export default ConfigInicial; 
+export default ConfigInicial;

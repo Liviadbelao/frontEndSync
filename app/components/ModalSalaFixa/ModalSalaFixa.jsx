@@ -25,22 +25,25 @@ const ModalSalaFixa = ({ nome, onClose, usuario_id }) => {
             setError("Selecione um ambiente para fixar.");
             return;
         }
-
+    
         setLoading(true);
         setError(null);
-
+    
         try {
-            await api.post("/salas_fixas", {
+            const response = await api.post("/salas-fixas", {
                 ambiente_id: selectedAmbiente,
                 usuario_id
             });
+            console.log("Resposta do servidor:", response.data);  // Usar a variável `response` corretamente aqui
             onClose();
         } catch (err) {
+            console.error("Erro ao fixar a sala:", err.response?.data || err.message);
             setError("Erro ao fixar a sala. Tente novamente.");
         } finally {
             setLoading(false);
         }
     };
+    
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
