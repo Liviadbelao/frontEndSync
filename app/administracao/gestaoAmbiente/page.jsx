@@ -127,11 +127,11 @@ const GestaoAmbiente = () => {
                 />
             </div>
             <img
-          src="/images/imgMenuAdm/botao-adicionar.png"
-          alt="botao mais"
-          className="mr-10 mt-8 cursor-pointer w-24 h-24"
-          onClick={() => router.push(`/administracao/cadastroAmbiente?nif=${nif}`)} 
-        />
+                src="/images/imgMenuAdm/botao-adicionar.png"
+                alt="botao mais"
+                className="mr-10 mt-8 cursor-pointer w-24 h-24"
+                onClick={() => router.push(`/administracao/cadastroAmbiente?nif=${nif}`)}
+            />
             <div className="grid lg:grid-cols-4 gap-10 ml-10 mt-16">
                 {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                     ambientesFiltrados.map((ambiente) => (
@@ -139,14 +139,22 @@ const GestaoAmbiente = () => {
                             key={ambiente.numero_ambiente}
                             nome={ambiente.nome}
                             imgSrc2={`http://localhost:3033${ambiente.caminho_imagem}`}
-                            onEdit={() => handleEditClick(ambiente)}
-                            onDelete={() => handleDeleteClick(ambiente)}
+                            onEdit={(event) => {
+                                event.stopPropagation(); // Previne a abertura do modal
+                                handleEditClick(ambiente);
+                            }}
+                            onDelete={(event) => {
+                                event.stopPropagation(); // Previne a abertura do modal
+                                handleDeleteClick(ambiente);
+                            }}
+                            on={() => abrirModal(ambiente)} // Apenas o card abre o modal
                         />
                     ))
                 ) : (
                     <p className="text-center text-gray-500">Nenhum ambiente encontrado</p>
                 )}
             </div>
+
 
             {excluirClicado && (
                 <ConcluirExclusao
