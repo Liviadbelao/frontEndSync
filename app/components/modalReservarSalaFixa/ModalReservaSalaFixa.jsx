@@ -54,7 +54,7 @@ const ModalReservarSalaFixa = ({ usuario_id, onClose }) => {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <div className="bg-[#D9D9D9] p-6 rounded-lg shadow-lg w-1/3">
                 <button
                     className="absolute top-2 right-2 text-red-600 font-bold text-xl"
                     onClick={onClose}
@@ -89,12 +89,7 @@ const ModalReservarSalaFixa = ({ usuario_id, onClose }) => {
                 )}
 
                 <div className="mt-4 flex space-x-4">
-                    <button
-                        className="px-4 py-2 bg-red-600 text-white rounded-lg"
-                        onClick={onClose}
-                    >
-                        Fechar
-                    </button>
+            
                     {salasFixas.length === 0 && (
                         <button
                             className="px-4 py-2 bg-blue-600 text-white rounded-lg"
