@@ -6,6 +6,27 @@ const ModalReservarSalaFixa = ({ usuario_id, onClose }) => {
     const [salasFixas, setSalasFixas] = useState([]);
     const [error, setError] = useState(null);
 
+    const confirmarReservarAmbiente = async (ambiente) => {
+        const date = new Date();
+
+        const data = {
+            data_inicio: date.toISOString(),
+            funcionario: usuario_id, // Substituir por uma variável válida
+            ambiente: ambiente.numero_ambiente,
+        };
+
+        try {
+            const response = await api.post(`/historico`, data);
+            console.log("Reserva realizada com sucesso:", response.data);
+
+            // Atualiza a lista de salas após a reserva
+           
+        } catch (error) {
+            console.error("Erro ao reservar o ambiente:", error);
+            setError("Erro ao tentar reservar o ambiente. Por favor, tente novamente.");
+        }
+    };
+
     useEffect(() => {
         const fetchSalasFixas = async () => {
             try {
@@ -53,7 +74,7 @@ const ModalReservarSalaFixa = ({ usuario_id, onClose }) => {
                             <div
                                 key={sala.id}
                                 className="border p-3 rounded-lg cursor-pointer hover:bg-gray-200"
-                                onClick={() => alert(`Sala ${sala.numero_ambiente} reservada!`)}
+                                onClick={() => confirmarReservarAmbiente(sala)}
                             >
                                 <h3 className="text-lg font-semibold">
                                     {sala.nome} (Nº {sala.numero_ambiente})
