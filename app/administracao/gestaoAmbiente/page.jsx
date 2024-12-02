@@ -126,13 +126,17 @@ const GestaoAmbiente = () => {
                     className="focus:outline-none w-full text-black"
                 />
             </div>
-            <img
-          src="/images/imgMenuAdm/botao-adicionar.png"
-          alt="botao mais"
-          className="mr-10 mt-8 cursor-pointer w-24 h-24"
+            <div className="grid lg:grid-cols-4 gap-10 ml-16">
+
+        <div className="flex items-center ml-10 mb-4">
+          <img
+             src="/images/imgMenuAdm/botao-adicionar.png"
+            alt="botao mais"
+            className="mr-10 mt-8 cursor-pointer w-32 h-32"
           onClick={() => router.push(`/administracao/cadastroAmbiente?nif=${nif}`)} 
-        />
-            <div className="grid lg:grid-cols-4 gap-10 ml-10 mt-16">
+          />
+        </div>
+           
                 {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                     ambientesFiltrados.map((ambiente) => (
                         <GestaoAmbientes
@@ -146,7 +150,8 @@ const GestaoAmbiente = () => {
                 ) : (
                     <p className="text-center text-gray-500">Nenhum ambiente encontrado</p>
                 )}
-            </div>
+        
+                 </div>
 
             {excluirClicado && (
                 <ConcluirExclusao
