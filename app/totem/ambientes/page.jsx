@@ -11,7 +11,29 @@ import { AiOutlineWifi } from "react-icons/ai";
 import { LuProjector } from "react-icons/lu";
 import { GiStaplerPneumatic } from "react-icons/gi";
 import { FaSearch } from "react-icons/fa";
+import { TbEngine } from "react-icons/tb";
+import { GiTeePipe } from "react-icons/gi";
+import { GiMicrophone } from "react-icons/gi";
+
+import { TbForklift } from "react-icons/tb";
+import { GiBookshelf } from "react-icons/gi";
+import { VscTools } from "react-icons/vsc";
+import { HiMiniArrowPathRoundedSquare } from "react-icons/hi2";
+
+import { RiComputerLine } from "react-icons/ri";
+import { FaRegLightbulb } from "react-icons/fa6";
+
 import { GiTheater } from "react-icons/gi";
+
+import { FaBox } from "react-icons/fa";
+
+import { GiSolderingIron } from "react-icons/gi";
+
+import { MdOutlineSportsVolleyball } from "react-icons/md";
+import { SiGoogleclassroom } from "react-icons/si";
+import { MdOutlineDesignServices } from "react-icons/md";
+import { GrTechnology } from "react-icons/gr";
+
 import ReservaSala from "@/app/components/reservaSala/ReservarSala";
 import TelaCarregar from "@/app/components/telaCarregar/TelaCarregar";
 import TimerInatividade from "@/app/components/TimerInatividade/TimerInatividade";
@@ -38,6 +60,49 @@ const ambientes = () => {
     const [endTime, setEndTime] = useState('');
     const [openModal, setOpenModal] = useState(false);
     const [open, setOpen] = useState(false);
+
+    const renderIcons = (categoria) => {
+        switch (categoria) {
+          case 23:
+            return <MdOutlineSportsVolleyball className="w-8 h-8 m-auto text-black" />;
+          case 2:
+            return <SiGoogleclassroom className="w-8 h-8 m-auto text-black" />;
+          case 3:
+            return <MdOutlineDesignServices className="w-8 h-8 m-auto text-black" />;
+          case 7:
+            return <GrTechnology className="w-8 h-8 m-auto text-black" />;
+          case 18:
+            return <GiSolderingIron className="w-8 h-8 m-auto text-black" />;
+            case 19:
+                return <TbEngine className="w-8 h-8 m-auto text-black" />;
+            case 20:
+                return <TbForklift className="w-8 h-8 m-auto text-black" />;
+            case 25:
+                return <GiBookshelf  className="w-8 h-8 m-auto text-black" />;
+            case 1:
+                return <RiComputerLine  className="w-8 h-8 m-auto text-black" />;
+            case 8:
+                return <FaRegLightbulb  className="w-8 h-8 m-auto text-black" />;
+            case 9:
+                return <VscTools  className="w-8 h-8 m-auto text-black" />;
+            case 10:
+                return <FaRegLightbulb  className="w-8 h-8 m-auto text-black" />;
+            case 14:
+                return <HiMiniArrowPathRoundedSquare  className="w-8 h-8 m-auto text-black" />;
+            case 15:
+                return <GiTeePipe  className="w-8 h-8 m-auto text-black" />;
+            case 16:
+                return <FaRegLightbulb className="w-8 h-8 m-auto text-black" />;
+            case 17:
+                return <VscTools className="w-8 h-8 m-auto text-black" />;
+            case 24:
+                return <GiMicrophone  className="w-8 h-8 m-auto text-black" />;
+            case 4:
+                return <FaBox  className="w-8 h-8 m-auto text-black" />;
+          default:
+            return null;
+        }
+      };
 
     const getGreeting = () => {
         const currentHour = new Date().getHours();
@@ -299,8 +364,7 @@ const ambientes = () => {
                                         <div className="p-4">
                                             <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                             <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                                            {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
-                                            {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
+                                            {ambiente.categoria && renderIcons(ambiente.categoria)}
                                             {ambiente.capacidadealunos > 0 && (
                                                 <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
                                             )}
@@ -341,8 +405,7 @@ const ambientes = () => {
                                         <div className="p-4">
                                             <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                             <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                                            {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
-                                            {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
+                                            {ambiente.categoria && renderIcons(ambiente.categoria)}
                                             <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
                                         </div>
                                         <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
@@ -385,8 +448,7 @@ const ambientes = () => {
                                         <div className="p-4">
                                             <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                             <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                                            {ambiente.tipodoambiente === "blocooficina" ? <GiStaplerPneumatic className="w-8 h-8 m-auto text-black" /> : null}
-                                            {ambiente.tipodoambiente === "externo" ? <GiTheater className="w-8 h-8 m-auto text-black" /> : null}
+                                            {ambiente.categoria && renderIcons(ambiente.categoria)}
                                             <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
                                         </div>
                                         <button
