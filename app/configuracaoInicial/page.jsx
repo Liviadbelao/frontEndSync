@@ -57,7 +57,6 @@ const ConfigInicial = () => {
     if (nif) fetchUser();
   }, [nif]);
 
-  // Buscar salas fixas associadas ao usuário
   useEffect(() => {
     async function fetchFixedClasses() {
       if (user) {
@@ -72,7 +71,20 @@ const ConfigInicial = () => {
 
     fetchFixedClasses();
   }, [user]);
-
+  const handleUnfixClass = async (id) => {
+    try {
+      // Realize a exclusão da sala no backend
+      await api.delete(`/salas_fixas/${id}`);
+      
+      // Atualize o estado removendo a sala com o ID correspondente
+      setFixedClasses((prevClasses) =>
+        prevClasses.filter((sala) => sala.id !== id)
+      );
+    } catch (error) {
+      console.error('Erro ao desfixar a sala:', error);
+    }
+  };
+  
   async function testar() {
     let notiwhere = '';
     if (whatsappOn && emailOn) {
@@ -179,30 +191,36 @@ const ConfigInicial = () => {
   />
 )}
 
-{/* Exibição das Salas Fixas */}
-<div className="mt-8">
-  {fixedClasses.length > 0 ? (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {fixedClasses.map((sala) => (
-        <div
-          key={sala.id}
-          className="bg-gray-200 p-6 mb-6 shadow-lg rounded-lg flex flex-col items-center"
-        >
-          <img
-            src={`http://localhost:3033${sala.caminho_imagem}`} // Substitua pela URL correta da imagem
-            alt={`Imagem da sala ${sala.ambiente_nome}`}
-            className="w-full h-48 object-cover rounded-lg mb-4"
-          />
-          <h2 className="bg-[#9A1915] text-white p-2 rounded-full z-20">Fixada</h2>
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">{sala.ambiente_nome}</h3>
-          <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
+ {/* Exibição das Salas Fixas */}
+ <div className="mt-8">
+          {fixedClasses.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {fixedClasses.map((sala) => (
+                <div
+                  key={sala.id}
+                  className="bg-gray-200 p-6 mb-6 shadow-lg rounded-lg flex flex-col items-center relative"
+                >
+                  <button
+                    onClick={() => handleUnfixClass(sala.id)}
+                    className="absolute top-2 right-2 text-red-500 font-bold"
+                  >
+                    X
+                  </button>
+                  <img
+                    src={`http://localhost:3033${sala.caminho_imagem}`} 
+                    alt={`Imagem da sala ${sala.ambiente_nome}`}
+                    className="w-full h-48 object-cover rounded-lg mb-4"
+                  />
+                  <h2 className="bg-[#9A1915] text-white p-2 rounded-full z-20">Fixada</h2>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">{sala.ambiente_nome}</h3>
+                  <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-600">Nenhuma sala fixa associada a este usuário.</p>
+          )}
         </div>
-      ))}
-    </div>
-  ) : (
-    <p className="text-gray-600">Nenhuma sala fixa associada a este usuário.</p>
-  )}
-</div>
       </div>
     </div>
   );
