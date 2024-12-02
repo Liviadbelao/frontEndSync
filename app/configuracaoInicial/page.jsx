@@ -20,48 +20,48 @@ const ConfigInicial = () => {
 
   const [dados, setDados] = useState([]);
   useEffect(() => {
-      async function fetchAmbientes() {
-          try {
-              const response = await api.get(`/ambientes`);
-              setDados(response.data);
-              console.log(dados);
-              
-          } catch (error) {
-              console.error("Error fetching data:", error);
-          }
-      }
+    async function fetchAmbientes() {
+      try {
+        const response = await api.get(`/ambientes`);
+        setDados(response.data);
+        console.log(dados);
 
-      fetchAmbientes();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    fetchAmbientes();
   }, []);
- 
+
 
   useEffect(() => {
     async function fetchUser() {
-        try {
-            const response = await api.get(`/usuarios/${nif}`);
-            console.log("Resposta da API:", response.data);
+      try {
+        const response = await api.get(`/usuarios/${nif}`);
+        console.log("Resposta da API:", response.data);
 
-            if (response.data) {
-                setUser(response.data); // Atualiza o estado com os dados do usuário
+        if (response.data) {
+          setUser(response.data); // Atualiza o estado com os dados do usuário
 
-                const { notiwhere } = response.data;
-                setWhatsappOn(notiwhere === 'whatsapp' || notiwhere === 'ambos');
-                setEmailOn(notiwhere === 'email' || notiwhere === 'ambos');
-            } else {
-                setWhatsappOn(false);
-                setEmailOn(false);
-            }
-        } catch (error) {
-            console.error("Erro ao buscar o usuário: ", error);
-            setWhatsappOn(false);
-            setEmailOn(false);
-        } finally {
-            setLoading(false); // Atualiza o estado de carregamento
+          const { notiwhere } = response.data;
+          setWhatsappOn(notiwhere === 'whatsapp' || notiwhere === 'ambos');
+          setEmailOn(notiwhere === 'email' || notiwhere === 'ambos');
+        } else {
+          setWhatsappOn(false);
+          setEmailOn(false);
         }
+      } catch (error) {
+        console.error("Erro ao buscar o usuário: ", error);
+        setWhatsappOn(false);
+        setEmailOn(false);
+      } finally {
+        setLoading(false); // Atualiza o estado de carregamento
+      }
     }
 
     if (nif) fetchUser();
-}, [nif]);
+  }, [nif]);
 
 
 
@@ -149,7 +149,7 @@ const ConfigInicial = () => {
                 {user && (
                   <>
                     <img
-                     src={`http://localhost:3033${user?.caminho_imagem}`}
+                      src={`http://localhost:3033${user?.caminho_imagem}`}
                       alt={`imagem do usuario ${user.nome}`}
                       className="w-16 h-16 rounded-full object-cover"
                     />
@@ -177,7 +177,7 @@ const ConfigInicial = () => {
                     Whatsapp
                   </label>
                   <ToggleButton ativado={whatsappOn} setAtivado={setWhatsappOn} />
-                  
+
                 </div>
                 <div className="flex items-center justify-between border-2 p-1 rounded-md">
                   <label htmlFor="email" className="text-gray-700">
@@ -201,10 +201,17 @@ const ConfigInicial = () => {
           src="/images/imgMenuAdm/botao-adicionar.png"
           alt="botao mais"
           className="mr-10 mt-8 cursor-pointer w-24 h-24"
-          onClick={() => setShowModal(true)} 
+          onClick={() => setShowModal(true)}
         />
-            {/* Exibir modal apenas quando showModal for true */}
-            {showModal && <ModalSalaFixa nome={user.nome} onClose={()=>setShowModal(false)} />}
+        {/* Exibir modal apenas quando showModal for true */}
+        { showModal && (
+          <ModalSalaFixa
+            nome={user.nome}
+            onClose={() => setShowModal(false)}
+            usuario_id={user.nif} 
+          />
+        )
+}
       </div>
     </div >
   );

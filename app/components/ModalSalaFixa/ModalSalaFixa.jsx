@@ -1,17 +1,40 @@
-import React, { useState } from "react";
-import api from "../../../src/config/configApi"; // Certifique-se de ajustar o caminho corretamente
+import React, { useState, useEffect } from "react";
+import api from "../../../src/config/configApi";
 
-const ModalSalaFixa = ({ nome, onClose, ambiente_id, usuario_id }) => {
+const ModalSalaFixa = ({ nome, onClose, usuario_id }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [ambientes, setAmbientes] = useState([]);
+    const [selectedAmbiente, setSelectedAmbiente] = useState(null);
+
+    useEffect(() => {
+        const fetchAmbientes = async () => {
+            try {
+                const response = await api.get("/ambientes");
+                setAmbientes(response.data);
+            } catch (err) {
+                console.error("Erro ao buscar ambientes:", err);
+                setError("Erro ao carregar ambientes.");
+            }
+        };
+        fetchAmbientes();
+    }, []);
 
     const fixarSala = async () => {
+        if (!selectedAmbiente) {
+            setError("Selecione um ambiente para fixar.");
+            return;
+        }
+
         setLoading(true);
         setError(null);
-        
+
         try {
-            await api.post("/salas_fixas", { ambiente_id, usuario_id });
-            onClose(); // Fechar o modal após a sala ser fixada
+            await api.post("/salas_fixas", {
+                ambiente_id: selectedAmbiente,
+                usuario_id
+            });
+            onClose();
         } catch (err) {
             setError("Erro ao fixar a sala. Tente novamente.");
         } finally {
@@ -26,7 +49,26 @@ const ModalSalaFixa = ({ nome, onClose, ambiente_id, usuario_id }) => {
                 <p>{nome}</p>
 
                 {error && <div className="text-red-500">{error}</div>}
-                
+
+                <div className="mt-4">
+                    <h3 className="font-semibold">Selecione uma sala:</h3>
+                    <ul className="max-h-60 overflow-y-auto">
+                        {ambientes.map((ambiente) => (
+                            <li
+                                key={ambiente.numero_ambiente}
+                                className={`p-2 cursor-pointer rounded ${
+                                    selectedAmbiente === ambiente.numero_ambiente
+                                        ? "bg-blue-200"
+                                        : "hover:bg-gray-200"
+                                }`}
+                                onClick={() => setSelectedAmbiente(ambiente.numero_ambiente)}
+                            >
+                                {ambiente.nome} (Nº {ambiente.numero_ambiente})
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
                 <button
                     className="mt-4 px-4 py-2 bg-red-600 text-white rounded"
                     onClick={fixarSala}
