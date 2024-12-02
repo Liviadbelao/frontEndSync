@@ -20,7 +20,7 @@ import Footer from "@/app/components/footer/Footer";
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState('');
     const [loading, setLoading] = useState(true);
     const [carregando, setCarregando] = useState(false)
     const [filtro, setFiltro] = useState('');
@@ -35,6 +35,17 @@ const ambientes = () => {
     const [endTime, setEndTime] = useState('');
     const [openModal, setOpenModal] = useState(false);
     const [open, setOpen] = useState(false);
+
+    const getGreeting = () => {
+        const currentHour = new Date().getHours();
+        if (currentHour < 12) {
+            return 'Bom dia';
+        } else if (currentHour < 18) {
+            return 'Boa tarde';
+        } else {
+            return 'Boa noite';
+        }
+    };
 
 
     const handleOpen = (ambienteId) => {
@@ -213,7 +224,8 @@ const ambientes = () => {
 
             <div className="p-10 bg-white min-h-screen">
                 {/*  <TimerInatividade /> */}
-                <p className="text-black text-center font-bold text-2xl">Reserve sua sala:</p>
+
+                <p className="text-black text-center font-bold text-2xl">{getGreeting()}, Reserve sua sala:</p>
 
 
                 <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 mb-8 border border-[#808080]-600 p-2 text-black rounded-full">
