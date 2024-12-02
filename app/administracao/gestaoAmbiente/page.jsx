@@ -137,14 +137,22 @@ const GestaoAmbiente = () => {
           />
         </div>
            
+
                 {ambientesFiltrados && ambientesFiltrados.length > 0 ? (
                     ambientesFiltrados.map((ambiente) => (
                         <GestaoAmbientes
                             key={ambiente.numero_ambiente}
                             nome={ambiente.nome}
                             imgSrc2={`http://localhost:3033${ambiente.caminho_imagem}`}
-                            onEdit={() => handleEditClick(ambiente)}
-                            onDelete={() => handleDeleteClick(ambiente)}
+                            onEdit={(event) => {
+                                event.stopPropagation(); // Previne a abertura do modal
+                                handleEditClick(ambiente);
+                            }}
+                            onDelete={(event) => {
+                                event.stopPropagation(); // Previne a abertura do modal
+                                handleDeleteClick(ambiente);
+                            }}
+                            on={() => abrirModal(ambiente)} // Apenas o card abre o modal
                         />
                     ))
                 ) : (
@@ -152,6 +160,7 @@ const GestaoAmbiente = () => {
                 )}
         
                  </div>
+
 
             {excluirClicado && (
                 <ConcluirExclusao

@@ -49,7 +49,7 @@ const ambientes = () => {
     const [carregando, setCarregando] = useState(false)
     const [filtro, setFiltro] = useState('');
     const [ambienteParaReserva, setAmbienteParaReserva] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(true);
     const router = useRouter();
     const [tab, setTab] = useState('ativado');
     const searchParams = useSearchParams();
@@ -293,12 +293,12 @@ const ambientes = () => {
                     </>
                 ) : null
             }
-            <button
+         {/*    <button
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg"
                 onClick={() => handleOpenModal()}
             >
                 Reservar Sala Fixa
-            </button>
+            </button> */}
             {showModal && (
                 <ModalReservarSalaFixa
                     usuario_id={nif}
