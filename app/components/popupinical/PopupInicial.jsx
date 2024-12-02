@@ -11,22 +11,28 @@ const getGreeting = () => {
     }
 };
 
-const Popup = ({nome}) => {
-    const [isVisible, setIsVisible] = useState(true);
+const Popup = ({ nome }) => {
+    const [isVisible, setIsVisible] = useState(false);
     const [greeting, setGreeting] = useState('');
 
     useEffect(() => {
-        setGreeting(getGreeting());
+        const hasSeenPopup = localStorage.getItem('hasSeenPopup');
 
-        const timer = setTimeout(() => {
-            setIsVisible(false);
-        }, 3000); // 3000ms = 3s
+        if (!hasSeenPopup) {
+            setGreeting(getGreeting());
+            setIsVisible(true);
 
-        return () => clearTimeout(timer);
+            const timer = setTimeout(() => {
+                setIsVisible(false);
+                localStorage.setItem('hasSeenPopup', 'true');
+            }, 3000); // 3000ms = 3s
+
+            return () => clearTimeout(timer);
+        }
     }, []);
 
     if (!isVisible) {
-        return null; 
+        return null;
     }
 
     return (
