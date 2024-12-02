@@ -39,14 +39,16 @@ import TelaCarregar from "@/app/components/telaCarregar/TelaCarregar";
 import TimerInatividade from "@/app/components/TimerInatividade/TimerInatividade";
 import Image from 'next/image';
 import Footer from "@/app/components/footer/Footer";
+import ModalReservarSalaFixa from "@/app/components/modalReservarSalaFixa/ModalReservaSalaFixa";
 
 const ambientes = () => {
     const [dados, setDados] = useState([]);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState('');
     const [loading, setLoading] = useState(true);
     const [carregando, setCarregando] = useState(false)
     const [filtro, setFiltro] = useState('');
     const [ambienteParaReserva, setAmbienteParaReserva] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const router = useRouter();
     const [tab, setTab] = useState('ativado');
     const searchParams = useSearchParams();
@@ -101,6 +103,18 @@ const ambientes = () => {
         }
       };
 
+    const getGreeting = () => {
+        const currentHour = new Date().getHours();
+        if (currentHour < 12) {
+            return 'Bom dia';
+        } else if (currentHour < 18) {
+            return 'Boa tarde';
+        } else {
+            return 'Boa noite';
+        }
+    };
+
+
     const handleOpen = (ambienteId) => {
         setModaisAbertos((prev) => [...prev, ambienteId]);  // Adiciona o ambienteId ao array
     };
@@ -109,7 +123,15 @@ const ambientes = () => {
     const handleClose = () => {
         setOpenModal(false);
     };
-    ;
+    const handleOpenModal = () => {
+        setShowModal(true);
+        console.log('showModal', showModal);
+        
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
     useEffect(() => {
         async function fetchUser() {
             try {
@@ -273,11 +295,23 @@ const ambientes = () => {
                     </>
                 ) : null
             }
-
-
+                <button
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                    onClick={() => handleOpenModal()}
+                >
+                    Reservar Sala Fixa
+                </button>
+{showModal && (
+    <ModalReservarSalaFixa
+        usuario_id={nif}
+      
+        onClose={() => handleCloseModal(false)}
+    />
+)}
             <div className="p-10 bg-white min-h-screen">
                 {/*  <TimerInatividade /> */}
-                <p className="text-black text-center font-bold text-2xl">Reserve sua sala:</p>
+
+                <p className="text-black text-center font-bold text-2xl">{getGreeting()}, Reserve sua sala:</p>
 
 
                 <div className="flex gap-2 shadow-lg w-[50%] h-[40%] mx-auto mt-5 mb-8 border border-[#808080]-600 p-2 text-black rounded-full">

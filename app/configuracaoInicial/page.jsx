@@ -6,19 +6,22 @@ import ToggleButton from "@/app/components/togglebotao/ToggleBotao";
 import api from "../../src/config/configApi";
 import Popup from "@/app/components/popupinical/PopupInicial";
 import ModalSalaFixa from "../components/ModalSalaFixa/ModalSalaFixa";
+import PopupConfig from "@/app/components/popUpConfig/PopUpConfig";
 
 const ConfigInicial = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [whatsappOn, setWhatsappOn] = useState(false);
   const [emailOn, setEmailOn] = useState(false);
-
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [fixedClasses, setFixedClasses] = useState([]);
   const router = useRouter();
   const searchParams = useSearchParams();
   const nif = searchParams.get("nif");
-
+  const handleButtonClick = () => {
+    setIsPopupVisible(true);
+  };
   useEffect(() => {
     async function fetchAmbientes() {
       try {
@@ -75,7 +78,7 @@ const ConfigInicial = () => {
     try {
       // Realize a exclusão da sala no backend
       await api.delete(`/salas_fixas/${id}`);
-      
+
       // Atualize o estado removendo a sala com o ID correspondente
       setFixedClasses((prevClasses) =>
         prevClasses.filter((sala) => sala.id !== id)
@@ -84,7 +87,7 @@ const ConfigInicial = () => {
       console.error('Erro ao desfixar a sala:', error);
     }
   };
-  
+
   async function testar() {
     let notiwhere = '';
     if (whatsappOn && emailOn) {
@@ -165,34 +168,38 @@ const ConfigInicial = () => {
               </div>
               <button
                 className="bg-red-700 mt-10 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200"
-                onClick={testar}
+                onClick={() => { testar(); handleButtonClick(); }}
               >
                 Salvar
               </button>
+
+              {isPopupVisible && (
+                <PopupConfig email={emailOn} whatsapp={whatsappOn} osDois={emailOn && whatsappOn} />
+              )}
             </div>
           </div>
         </div>
         <h1 className="text-3xl font-bold text-gray-800 mt-14">Salas Fixas</h1>
 
-{/* Botão para adicionar sala fixa */}
-<img
-  src="/images/imgMenuAdm/botao-adicionar.png"
-  alt="botao mais"
-  className="mr-10 mt-8 cursor-pointer w-24 h-24 md:w-28 md:h-28"
-  onClick={() => setShowModal(true)}
-/>
+        {/* Botão para adicionar sala fixa */}
+        <img
+          src="/images/imgMenuAdm/botao-adicionar.png"
+          alt="botao mais"
+          className="mr-10 mt-8 cursor-pointer w-24 h-24 md:w-28 md:h-28"
+          onClick={() => setShowModal(true)}
+        />
 
-{/* Modal de adição de sala fixa */}
-{showModal && (
-  <ModalSalaFixa
-    nome={user.nome}
-    onClose={() => setShowModal(false)}
-    usuario_id={user.nif}
-  />
-)}
+        {/* Modal de adição de sala fixa */}
+        {showModal && (
+          <ModalSalaFixa
+            nome={user.nome}
+            onClose={() => setShowModal(false)}
+            usuario_id={user.nif}
+          />
+        )}
 
- {/* Exibição das Salas Fixas */}
- <div className="mt-8">
+        {/* Exibição das Salas Fixas */}
+        <div className="mt-8">
           {fixedClasses.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {fixedClasses.map((sala) => (
@@ -207,7 +214,7 @@ const ConfigInicial = () => {
                     X
                   </button>
                   <img
-                    src={`http://localhost:3033${sala.caminho_imagem}`} 
+                    src={`http://localhost:3033${sala.caminho_imagem}`}
                     alt={`Imagem da sala ${sala.ambiente_nome}`}
                     className="w-full h-48 object-cover rounded-lg mb-4"
                   />
