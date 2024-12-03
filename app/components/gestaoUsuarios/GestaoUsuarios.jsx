@@ -8,7 +8,7 @@ const GestaoUsuarios = ({ nome, cargo, imgGestor, editar, excluir, nif, funcao }
   };
 
   return (
-    <div className="w-60 h-80 max-w-sm bg-gray-200 rounded-lg mb-4 hover:bg-[#A9A9A9]" onClick={funcao}>
+    <div className="w-60 h-80 max-w-sm bg-gray-200 rounded-lg mb-4 hover:bg-[#A9A9A9] cursor-pointer" onClick={funcao}>
       <div className="flex items-center justify-center h-32">
         {imgGestor && (
           <Image src={imgGestor} alt={nome} width={480} height={480} className="w-48 h-48 object-cover mt-24 rounded" />
