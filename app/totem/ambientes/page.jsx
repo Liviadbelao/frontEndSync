@@ -60,7 +60,7 @@ const ambientes = () => {
     const [endTime, setEndTime] = useState('');
     const [openModal, setOpenModal] = useState(false);
     const [open, setOpen] = useState(false);
-
+    const [salasFixas, setSalasFixas] = useState([]);
     const renderIcons = (categoria) => {
         switch (categoria) {
             case 23:
@@ -251,6 +251,20 @@ const ambientes = () => {
         fetchAmbientes();
     }, []);
 
+    const fetchSalasFixas = async () => {
+        try {
+            const response = await api.get(`/salas_fixas/${nif}`);
+            setSalasFixas(response.data); // Armazena as salas fixas no estado
+        } catch (error) {
+            console.error("Erro ao buscar salas fixas:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchSalasFixas(); // Chama a função para buscar as salas fixas assim que o componente for montado
+    }, [nif]);
+
+
 
     const handleCloseAndUpdateAmbientes = (ambienteId) => {
         setModaisAbertos((prev) => prev.filter((id) => id !== ambienteId));
@@ -276,6 +290,7 @@ const ambientes = () => {
                             !ambiente.data_fim ? (
                                 <BasicModal
                                     id={ambiente.id}
+                                    
                                     key={ambiente.ambiente_nome}
                                     nomeSala={ambiente.ambiente_nome}
                                     ambienteId={ambiente.ambiente}
@@ -299,13 +314,14 @@ const ambientes = () => {
             >
                 Reservar Sala Fixa
             </button> */}
-            {showModal && (
+            {showModal && salasFixas.length > 0 && (
                 <ModalReservarSalaFixa
                     usuario_id={nif}
-
-                    onClose={() => handleCloseModal(false)}
+                    salasFixas={salasFixas}
+                    onClose={handleCloseModal}
                 />
             )}
+
             <div className="p-10 bg-white min-h-screen">
                 {/*  <TimerInatividade /> */}
 
@@ -466,7 +482,7 @@ const ambientes = () => {
                                             className="bg-red-700 mb-2 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 absolute left-1/2 transform -translate-x-1/2 -translate-y-8" // Alterei -translate-y-16 para -translate-y-8
                                             onClick={() => handleButtonClick(ambiente.numero_ambiente)}
                                         >
-                                            devolver
+                                            Devolver
                                         </button>
 
 
