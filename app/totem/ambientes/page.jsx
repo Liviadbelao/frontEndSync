@@ -41,6 +41,7 @@ import TimerInatividade from "@/app/components/TimerInatividade/TimerInatividade
 import Image from 'next/image';
 import Footer from "@/app/components/footer/Footer";
 import ModalReservarSalaFixa from "@/app/components/modalReservarSalaFixa/ModalReservaSalaFixa";
+import ModalSalas from "@/app/components/modalSalas/modal";
 
 const ambientes = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -62,6 +63,8 @@ const ambientes = () => {
     const [openModal, setOpenModal] = useState(false);
     const [open, setOpen] = useState(false);
     const [salasFixas, setSalasFixas] = useState([]);
+    const [modaisDevolver, setModaisDevolver] = useState([]);
+
     const renderIcons = (categoria) => {
         switch (categoria) {
             case 23:
@@ -295,13 +298,13 @@ const ambientes = () => {
                             !ambiente.data_fim ? (
                                 <BasicModal
                                     id={ambiente.id}
-                                    
+
                                     key={ambiente.ambiente_nome}
                                     nomeSala={ambiente.ambiente_nome}
                                     ambienteId={ambiente.ambiente}
                                     usuarioid={nif}
                                     variavel={setAmbientesReservados}
-                                    imgSala={`${process.env.NEXT_PUBLIC_API_URL}${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
+                                    imgSala={`${process.env.NEXT_PUBLIC_API_URL}${ambiente.ambiente_imagem}`} 
                                     nif={nif} // Passe o nif do usuário
                                     open={modaisAbertos.includes(ambiente.ambiente)}  // Verifica se o modal está aberto para este ambiente
                                     handleClose={() => handleCloseAndUpdateAmbientes(ambiente.ambiente)}  // Chama a função para fechar o modal e atualizar ambientes
@@ -484,8 +487,8 @@ const ambientes = () => {
                                         />
 
                                         <button
-                                            className="bg-red-700 mb-2 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 absolute left-1/2 transform -translate-x-1/2 -translate-y-8" // Alterei -translate-y-16 para -translate-y-8
-                                            onClick={() => handleButtonClick(ambiente.numero_ambiente)}
+                                            className="bg-red-700 mb-2 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 absolute left-1/2 transform -translate-x-1/2 -translate-y-8"
+                                            onClick={() => setModaisDevolver((prev) => [...prev, ambiente.numero_ambiente])}
                                         >
                                             Devolver
                                         </button>
@@ -503,19 +506,19 @@ const ambientes = () => {
                                             <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
                                         </div>
 
-                                        <BasicModal
-                                            id={ambiente.id}
-                                            key={ambiente.ambiente_nome}
-                                            nomeSala={ambiente.ambiente_nome}
-                                            ambienteId={ambiente.ambiente}
-                                            usuarioid={nif}
-                                            variavel={setAmbientesReservados}
-                                            imgSala={`${process.env.NEXT_PUBLIC_API_URL}${ambiente.ambiente_imagem}`} // Passe a imagem do ambiente
-                                            nif={nif} // Passe o nif do usuário
-                                            open={modaisAbertos.includes(ambiente.ambiente)}  // Verifica se o modal está aberto para este ambiente
-                                            handleClose={() => handleCloseAndUpdateAmbientes(ambiente.ambiente)}  // Chama a função para fechar o modal e atualizar ambientes
-                                        />
-
+                                        {modaisDevolver.includes(ambiente.numero_ambiente) && (
+                                            <ModalSalas
+                                                id={ambiente.id}
+                                                nomeSala={ambiente.ambiente_nome}
+                                                ambienteId={ambiente.ambiente}
+                                                usuarioid={nif}
+                                                variavel={setAmbientesReservados}
+                                                imgSala={`${process.env.NEXT_PUBLIC_API_URL}${ambiente.ambiente_imagem}`} 
+                                                nif={nif}
+                                                open={modaisDevolver.includes(ambiente.numero_ambiente)}
+                                                handleClose={() => setModaisDevolver((prev) => prev.filter((id) => id !== ambiente.numero_ambiente))}
+                                            />
+                                        )}
                                         <div className="bg-[#2e2e2e] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                             {ambiente.chave && <IoKeyOutline />}
                                             {ambiente.ar_condicionado && <TbAirConditioning />}
