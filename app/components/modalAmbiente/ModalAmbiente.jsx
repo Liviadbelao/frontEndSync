@@ -1,33 +1,27 @@
 import React from "react";
 
-const ModalAmbiente = ({ 
-  nome, 
-  numero_ambiente, 
-  caminho_imagem, 
-  chave, 
-  capacidadeAlunos, 
-  tipodoambiente, 
-  ar_condicionado, 
-  ventilador, 
-  wifi, 
-  projetor, 
-  chave_eletronica, 
-  maquinas, 
-  disponivel, 
-  categoria, 
-  fechar 
+const ModalAmbiente = ({
+  nome,
+  numero_ambiente,
+  caminho_imagem,
+  chave,
+  capacidadeAlunos,
+  tipodoambiente,
+  ar_condicionado,
+  ventilador,
+  wifi,
+  projetor,
+  chave_eletronica,
+  maquinas,
+  disponivel,
+  categoria,
+  fechar
 }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-lg w-80 max-w-md relative overflow-hidden">
-        
-        {/* Botão de Fechar */}
-        <button
-          onClick={fechar}
-          className="absolute top-2 right-2 text-black-500 hover:text-red-500 focus:outline-none"
-        >
-          ✕
-        </button>
+
+
 
         {/* Imagem do Ambiente */}
         <div >
@@ -36,6 +30,15 @@ const ModalAmbiente = ({
             alt={`Imagem do ambiente ${nome}`}
             className="w-full h-40 object-cover"
           />
+
+          {/* Botão de Fechar */}
+          <img
+            src="/images/modal/fechar.png"
+            alt="botao fechar"
+            className="absolute top-3 left-1 cursor-pointer w-10 h-10"
+            onClick={fechar}
+          />
+
           {/* Borda inferior vinho */}
           <div className="h-[3px] bg-[#9A1915]"></div>
         </div>
