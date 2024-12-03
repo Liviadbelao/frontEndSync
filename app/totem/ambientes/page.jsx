@@ -63,46 +63,46 @@ const ambientes = () => {
 
     const renderIcons = (categoria) => {
         switch (categoria) {
-          case 23:
-            return <MdOutlineSportsVolleyball className="w-8 h-8 m-auto text-black" />;
-          case 2:
-            return <SiGoogleclassroom className="w-8 h-8 m-auto text-black" />;
-          case 3:
-            return <MdOutlineDesignServices className="w-8 h-8 m-auto text-black" />;
-          case 7:
-            return <GrTechnology className="w-8 h-8 m-auto text-black" />;
-          case 18:
-            return <GiSolderingIron className="w-8 h-8 m-auto text-black" />;
+            case 23:
+                return <MdOutlineSportsVolleyball className="w-8 h-8 m-auto text-black" />;
+            case 2:
+                return <SiGoogleclassroom className="w-8 h-8 m-auto text-black" />;
+            case 3:
+                return <MdOutlineDesignServices className="w-8 h-8 m-auto text-black" />;
+            case 7:
+                return <GrTechnology className="w-8 h-8 m-auto text-black" />;
+            case 18:
+                return <GiSolderingIron className="w-8 h-8 m-auto text-black" />;
             case 19:
                 return <TbEngine className="w-8 h-8 m-auto text-black" />;
             case 20:
                 return <TbForklift className="w-8 h-8 m-auto text-black" />;
             case 25:
-                return <GiBookshelf  className="w-8 h-8 m-auto text-black" />;
+                return <GiBookshelf className="w-8 h-8 m-auto text-black" />;
             case 1:
-                return <RiComputerLine  className="w-8 h-8 m-auto text-black" />;
+                return <RiComputerLine className="w-8 h-8 m-auto text-black" />;
             case 8:
-                return <FaRegLightbulb  className="w-8 h-8 m-auto text-black" />;
+                return <FaRegLightbulb className="w-8 h-8 m-auto text-black" />;
             case 9:
-                return <VscTools  className="w-8 h-8 m-auto text-black" />;
+                return <VscTools className="w-8 h-8 m-auto text-black" />;
             case 10:
-                return <FaRegLightbulb  className="w-8 h-8 m-auto text-black" />;
+                return <FaRegLightbulb className="w-8 h-8 m-auto text-black" />;
             case 14:
-                return <HiMiniArrowPathRoundedSquare  className="w-8 h-8 m-auto text-black" />;
+                return <HiMiniArrowPathRoundedSquare className="w-8 h-8 m-auto text-black" />;
             case 15:
-                return <GiTeePipe  className="w-8 h-8 m-auto text-black" />;
+                return <GiTeePipe className="w-8 h-8 m-auto text-black" />;
             case 16:
                 return <FaRegLightbulb className="w-8 h-8 m-auto text-black" />;
             case 17:
                 return <VscTools className="w-8 h-8 m-auto text-black" />;
             case 24:
-                return <GiMicrophone  className="w-8 h-8 m-auto text-black" />;
+                return <GiMicrophone className="w-8 h-8 m-auto text-black" />;
             case 4:
-                return <FaBox  className="w-8 h-8 m-auto text-black" />;
-          default:
-            return null;
+                return <FaBox className="w-8 h-8 m-auto text-black" />;
+            default:
+                return null;
         }
-      };
+    };
 
     const getGreeting = () => {
         const currentHour = new Date().getHours();
@@ -256,7 +256,7 @@ const ambientes = () => {
         setModaisAbertos((prev) => prev.filter((id) => id !== ambienteId));
         // Aqui você pode também atualizar os ambientes reservados se necessário
     };
-    
+
 
     // Filtrar ambientes com base no texto do filtro
     const ambientesFiltrados = dados.filter(ambiente =>
@@ -293,7 +293,7 @@ const ambientes = () => {
                     </>
                 ) : null
             }
-         {/*    <button
+            {/*    <button
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg"
                 onClick={() => handleOpenModal()}
             >
@@ -364,9 +364,17 @@ const ambientes = () => {
                                         <div className="p-4">
                                             <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                             <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                                            {ambiente.categoria && renderIcons(ambiente.categoria)}
-                                            {ambiente.capacidadealunos > 0 && (
-                                                <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
+                                            {ambiente.categoria && renderIcons(ambiente.categoria) && (
+                                                <div className="w-8 h-8 m-auto text-black mt-2">
+                                                    {renderIcons(ambiente.categoria)}
+                                                </div>
+                                            )}
+                                            {ambiente.capacidadealunos >= 0 && (
+                                                <p
+                                                    className={`font-semibold text-xs mt-2 ${ambiente.capacidadealunos === 0 ? 'text-[#D9D9D9]' : 'text-black'}`}
+                                                >
+                                                    Capacidade: {ambiente.capacidadealunos}
+                                                </p>
                                             )}
                                         </div>
                                         <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
@@ -405,7 +413,11 @@ const ambientes = () => {
                                         <div className="p-4">
                                             <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
                                             <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                                            {ambiente.categoria && renderIcons(ambiente.categoria)}
+                                            {ambiente.categoria && renderIcons(ambiente.categoria) && (
+                                                <div className="w-8 h-8 m-auto text-black mt-2">
+                                                    {renderIcons(ambiente.categoria)}
+                                                </div>
+                                            )}
                                             <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
                                         </div>
                                         <div className="absolute top-[53%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
@@ -444,19 +456,31 @@ const ambientes = () => {
                                         className="bg-[#D9D9D9] ml-16 w-[60%] h-50 rounded-lg z-10 fixed relative mb-10"
                                         key={ambiente.numero_ambiente}
                                     >
-                                        <img src={`http://localhost:3033${ambiente.caminho_imagem}`} className="h-[150px] w-[500px] rounded-lg" alt={ambiente.nome} />
-                                        <div className="p-4">
-                                            <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
-                                            <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
-                                            {ambiente.categoria && renderIcons(ambiente.categoria)}
-                                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
-                                        </div>
+                                        <img
+                                            src={`http://localhost:3033${ambiente.caminho_imagem}`}
+                                            className="h-[150px] w-[500px] rounded-lg"
+                                            alt={ambiente.nome}
+                                        />
+
                                         <button
-                                            className="bg-red-700 mt-10 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200"
+                                            className="bg-red-700 mb-2 text-white font-semibold py-2 px-4 rounded-md shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 absolute left-1/2 transform -translate-x-1/2 -translate-y-8" // Alterei -translate-y-16 para -translate-y-8
                                             onClick={() => handleButtonClick(ambiente.numero_ambiente)}
                                         >
                                             devolver
                                         </button>
+
+
+                                        <div className="p-4">
+                                            <p className="font-semibold text-xs mb-2 text-black">{ambiente.nome}</p>
+                                            <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
+                                            {ambiente.categoria && renderIcons(ambiente.categoria) && (
+                                                <div className="w-8 h-8 m-auto text-black mt-2">
+                                                    {renderIcons(ambiente.categoria)}
+                                                </div>
+                                            )}
+
+                                            <p className="font-semibold text-xs mt-2 text-black">Capacidade: {ambiente.capacidadealunos}</p>
+                                        </div>
 
                                         <BasicModal
                                             id={ambiente.id}
@@ -470,11 +494,6 @@ const ambientes = () => {
                                             open={modaisAbertos.includes(ambiente.ambiente)}  // Verifica se o modal está aberto para este ambiente
                                             handleClose={() => handleCloseAndUpdateAmbientes(ambiente.ambiente)}  // Chama a função para fechar o modal e atualizar ambientes
                                         />
-
-
-
-
-
 
                                         <div className="bg-[#2e2e2e] gap-2 flex text-white z-20 p-2 rounded-full absolute left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                             {ambiente.chave && <IoKeyOutline />}
