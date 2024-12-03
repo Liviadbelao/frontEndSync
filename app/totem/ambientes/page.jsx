@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import api from "../../../src/config/configApi";
 import BasicModal from "@/app/components/modal/modal";
+import MonitorDeInatividade from "@/app/components/timerInatividade/TimerInatividade";
 import Header from "@/app/components/header/Header";
 import { IoKeyOutline } from "react-icons/io5";
 import { TbAirConditioning } from "react-icons/tb";
@@ -280,6 +281,10 @@ const ambientes = () => {
     return (
         <div className=" bg-white min-h-screen ">
             <Header />
+
+              {/* Aqui, você chama o componente MonitorDeInatividade */}
+      <MonitorDeInatividade tempoInatividade={10000} />
+
 
 
             {

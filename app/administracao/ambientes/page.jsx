@@ -10,6 +10,8 @@ import { LuProjector } from "react-icons/lu";
 import { GiStaplerPneumatic } from "react-icons/gi";
 import { GiTheater } from "react-icons/gi";
 import { FaSearch } from "react-icons/fa";
+
+
 // import BasicModal from "@/app/components/modal/modal"; 
 
 import Header from "@/app/components/header/Header";
@@ -150,6 +152,7 @@ const ambientes = () => {
 
         <div className=" bg-white min-h-screen ">
             <Header />
+
 
             <img
                 src="/images/imgMenuAdm/btvoltar.png"
