@@ -3,12 +3,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 function MonitorDeInatividade({ tempoInatividade = 10000 }) {
   const timerRef = useRef(null);
+  const modalTimeoutRef = useRef(null); // Novo ref para o timeout do modal
   const [showModal, setShowModal] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [isInactive, setIsInactive] = useState(false);
 
-  const searchParams = useSearchParams(); // Definido antes de usá-lo
-  const nif = searchParams.get("nif"); // Agora 'nif' pode ser obtido corretamente
+  const searchParams = useSearchParams();
+  const nif = searchParams.get("nif");
   const router = useRouter();
 
   const redirecionar = (caminhoTela) => {
@@ -16,52 +17,46 @@ function MonitorDeInatividade({ tempoInatividade = 10000 }) {
     router.push(`${caminhoTela}?nif=${nif}`);
   };
 
-  // Função de iniciar o temporizador
   const startTimer = () => {
     timerRef.current = setTimeout(() => {
-      setIsInactive(true); // Mostra o modal de inatividade
-      setShowModal(true);  // Exibe o modal
+      setIsInactive(true);
+      setShowModal(true);
     }, tempoInatividade);
   };
 
-  // Reseta o contador quando tem interatividade com a tela
   useEffect(() => {
     const resetTimer = () => {
       clearTimeout(timerRef.current);
-      startTimer();  // Agora startTimer está disponível
+      startTimer();
     };
 
-    // Ouvintes de eventos para detectar atividade dentro do componente
     const events = ['mousemove', 'keydown', 'click'];
     events.forEach((event) => window.addEventListener(event, resetTimer));
 
-    // Inicia o temporizador
     startTimer();
 
-    // Limpeza ao desmontar o componente
     return () => {
       clearTimeout(timerRef.current);
       events.forEach((event) => window.removeEventListener(event, resetTimer));
     };
   }, [tempoInatividade]);
 
-  // Funções de resposta ao modal
   const handleSim = () => {
+    console.log("Usuário clicou em 'Sim', fechando modal e reiniciando contador.");
     setShowModal(false);
     setIsInactive(false);
     clearTimeout(timerRef.current);
+    clearTimeout(modalTimeoutRef.current); // Limpa o timeout do redirecionamento
     startTimer();
   };
 
-  // Quando o modal está visível, inicia um timeout para redirecionar
   useEffect(() => {
     if (showModal) {
-      const modalTimeout = setTimeout(() => {
-        redirecionar('/totem/faceID'); // Redireciona para a tela configurada no botão "Não"
-      }, 5000); // 5 segundos
+      modalTimeoutRef.current = setTimeout(() => {
+        redirecionar('/totem/faceID');
+      }, 5000);
 
-      // Limpa o timeout ao desmontar ou ao fechar o modal
-      return () => clearTimeout(modalTimeout);
+      return () => clearTimeout(modalTimeoutRef.current); // Limpa o timeout ao desmontar
     }
   }, [showModal]);
 

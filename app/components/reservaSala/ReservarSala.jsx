@@ -69,7 +69,7 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
       <Modal open={true} onClose={handleClose} BackdropProps={{ style: { pointerEvents: 'none' } }}>
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex flex-col justify-center  items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[10px] shadow-lg w-[30%] h-[75%] p-16"
+          className="flex flex-col justify-center  items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#d9d9d9] rounded-[10px] shadow-lg w-[50%] h-[55%] p-16"
         >
           <img
             src="/images/modal/fechar.png"
@@ -111,7 +111,7 @@ const ReservaSala = ({ onClose, onConfirm, img, name, typeAmb, startTime, setSta
         <Modal open={showTimeSelection} onClose={() => setShowTimeSelection(false)} BackdropProps={{ style: { pointerEvents: 'none' } }}>
           <div
             onClick={(e) => e.stopPropagation()}
-            className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-[60%] sm:w-[50%] md:w-[20%] lg:w-[20%] p-8 transition-all ease-in-out duration-300"
+            className="flex flex-col justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl  w-[50%] h-[55%] p-8 transition-all ease-in-out duration-300"
           >
             <p className="text-[#333] text-2xl font-semibold mb-6">Definir horários</p>
 

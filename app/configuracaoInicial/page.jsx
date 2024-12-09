@@ -26,13 +26,15 @@ const ConfigInicial = () => {
     async function fetchAmbientes() {
       try {
         const response = await api.get(`/ambientes`);
-        setDados(response.data);
+        setFixedClasses(response.data); // Ajustado para usar setFixedClasses
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
     fetchAmbientes();
   }, []);
+
+  
  
   // Buscar dados do usuário
   useEffect(() => {
@@ -76,17 +78,18 @@ const ConfigInicial = () => {
   }, [user]);
   const handleUnfixClass = async (id) => {
     try {
-      // Realize a exclusão da sala no backend
       await api.delete(`/salas_fixas/${id}`);
-
-      // Atualize o estado removendo a sala com o ID correspondente
       setFixedClasses((prevClasses) =>
         prevClasses.filter((sala) => sala.id !== id)
       );
     } catch (error) {
-      console.error('Erro ao desfixar a sala:', error);
+      console.error("Erro ao desfixar a sala:", error.response || error);
     }
   };
+  
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
   async function testar() {
     let notiwhere = '';
@@ -119,6 +122,13 @@ const ConfigInicial = () => {
     <div className="min-h-screen bg-gray-100">
       <Header />
 
+      <img
+                src="/images/imgMenuAdm/btvoltar.png"
+                alt="botao voltar"
+                className="mr-10 cursor-pointer w-10 h-10 ml-10 mt-10"
+                onClick={() => router.push(`/totem/ambientes?nif=${nif}`)}
+            />
+
       {user && <Popup nome={user.nome} />}
 
       <div className="max-w-3xl mx-auto py-8">
@@ -131,7 +141,7 @@ const ConfigInicial = () => {
                 {user && (
                   <>
                     <img
-                      src={`http://localhost:3033${user?.caminho_imagem}`}
+                       src={`http://localhost:3033${user?.caminho_imagem}`}
                       alt={`imagem do usuario ${user.nome}`}
                       className="w-16 h-16 rounded-full object-cover"
                     />
@@ -206,13 +216,10 @@ const ConfigInicial = () => {
                   >
                     X
                   </button>
-                  <img
-                    src={`http://localhost:3033${sala.caminho_imagem}`}
-                    alt={`Imagem da sala ${sala.ambiente_nome}`}
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                  />
-                  <h2 className="bg-[#9A1915] text-white p-2 rounded-full z-20">Fixada</h2>
+                
+                  
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">{sala.ambiente_nome}</h3>
+                  <h2 className="bg-[#9A1915] text-white p-2 rounded-full z-20">Fixada</h2>
                   <div className="bg-[#9A1915] w-10 h-[2px] m-auto"></div>
                 </div>
               ))}
